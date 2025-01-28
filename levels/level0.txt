@@ -1,0 +1,27 @@
+background level0sky.png END
+
+foreground level0grass.png END
+
+floater level0floater.png END
+
+atmosphere nature1atmos.ogg END
+
+music MUSIC006.mp3 END
+
+yellow blupi 500 208 END
+
+blue blupi 1000 208 END
+
+orange blupi 20 208 END
+
+green blupi 100 208 END
+
+house 600 208 END
+
+shed 1100 208 END
+ 
+jeep 2500 208 END
+
+water 1645 260 END
+
+water 1012 388 END
