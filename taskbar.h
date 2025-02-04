@@ -206,7 +206,8 @@ class Taskbar
 							if(blupi[selected].state=="moveright")
 								blupi[selected].state="right";
 							blupi[selected].destination = (int)MPosition.x;
-							//blupi[selected].busy = true;
+							
+							
 						}
 						else
 						{

@@ -129,6 +129,8 @@ class Blupi
 	
 	Vector2f now;
 	
+	std::string color;
+	
 	int destination;
 	float gravity = 0.2;
 	Vector2f velocity;
@@ -389,7 +391,6 @@ class Blupi
 				}
 				int deep = groundedge[x] - water.puddle[index].pos.y;
 				
-				std::cout << x << ":" << deep << std::endl; 
 				
 				
 				
@@ -755,74 +756,77 @@ class Blupi
 	
 	void checkSelfClicks(Image &ground)
 	{
-		
-		if(sprite.getGlobalBounds().contains(MPosition))
+		if(UserColor == color)
 		{
-			static bool released=false;
 			
-			if(Mouse::isButtonPressed(Mouse::Left))
+		
+			if(sprite.getGlobalBounds().contains(MPosition))
 			{
-				if(released)
-				{
-					
-					if(toplayer.type=="blupi" && toplayer.ID == ID)
-					{
-					
-						selected = toplayer.ID;
+				static bool released=false;
 				
-						int b = rand()%5;
+				if(Mouse::isButtonPressed(Mouse::Left))
+				{
+					if(released)
+					{
 						
-						if(sound[0].getStatus()!=Sound::Status::Playing)
-						{
-							if(b == 0)
-								say.loadFromFile("ASSETS/say/sound002.wav");
-							if(b == 1)
-								say.loadFromFile("ASSETS/say/sound003.wav");
-							if(b == 2)
-								say.loadFromFile("ASSETS/say/sound004.wav");
-							if(b == 3)
-								say.loadFromFile("ASSETS/say/sound005.wav");
-							if(b == 4)
-								say.loadFromFile("ASSETS/say/sound006.wav");
-							sound[0].stop();
-							sound[0].setBuffer(say);
-							sound[0].play();
-						}
-			
-					
-					
-					
-						
-					
-						if(!busy)
+						if(toplayer.type=="blupi" && toplayer.ID == ID)
 						{
 						
-							if(locomotion!="walk")
+							selected = toplayer.ID;
+					
+							int b = rand()%5;
+							
+							if(sound[0].getStatus()!=Sound::Status::Playing)
 							{
-								if(!checkGroundNow(ground,now))
+								if(b == 0)
+									say.loadFromFile("ASSETS/say/sound002.wav");
+								if(b == 1)
+									say.loadFromFile("ASSETS/say/sound003.wav");
+								if(b == 2)
+									say.loadFromFile("ASSETS/say/sound004.wav");
+								if(b == 3)
+									say.loadFromFile("ASSETS/say/sound005.wav");
+								if(b == 4)
+									say.loadFromFile("ASSETS/say/sound006.wav");
+								sound[0].stop();
+								sound[0].setBuffer(say);
+								sound[0].play();
+							}
+				
+						
+						
+						
+							
+						
+							if(!busy)
+							{
+							
+								if(locomotion!="walk")
 								{
-									
-								}
-								else
-								{
-									iconrect.clear();
-									buttons.clear();
-									buttons.push_back("stop drive");
-									
-									
+									if(!checkGroundNow(ground,now))
+									{
+										
+									}
+									else
+									{
+										iconrect.clear();
+										buttons.clear();
+										buttons.push_back("stop drive");
+										
+										
+									}
 								}
 							}
 						}
 					}
+					
+					released=false;
 				}
+				else
+					released=true;
 				
-				released=false;
 			}
-			else
-				released=true;
-			
 		}
-		
 		
 	}
 	

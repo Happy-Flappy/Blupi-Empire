@@ -7,7 +7,7 @@
 class Map
 {
 	public:
-		
+			
 	Sprite ground;	
 	Image iground;	
 	Texture tground;
@@ -21,19 +21,26 @@ class Map
 	Music music;
 	Music atmosphere;
 	std::string folder;
+	std::string name;
 	
+	
+
 		
-	void loadMap(std::string folder,std::string name)
+		
+		
+		
+		
+		
+	void loadMap(std::string name)
 	{
-		this->folder = folder;
 		
 		
 		
+		folder = "levels/";
+		this->name = name;
 		
 		
-		
-		
-		if(!iground.loadFromFile(folder + name +".png"))
+		if(!iground.loadFromFile("levels/" + name +".png"))
 		{
 			iground.create(1920,540,Color::Transparent);
 		}
@@ -42,6 +49,7 @@ class Map
 		
 		
 		
+		getGroundEdge(iground);
 		
 		
 		
@@ -50,7 +58,7 @@ class Map
 		
 		
 		std::ifstream file;
-		file.open(folder + name + ".txt");
+		file.open("levels/" + name + ".txt");
 		
 		
 		if(file.is_open())
@@ -67,7 +75,7 @@ class Map
 				}	
 			}
 		} 
-		
+		file.close();
 		
 	}
 	
@@ -145,6 +153,7 @@ class Map
 			newblupi.ID = blupi.size();
 			newblupi.now=Vector2f(stringToInt(key[2]),stringToInt(key[3]));
 			newblupi.Stop();
+			newblupi.color = key[0];
 			if(key[0]=="yellow")
 				newblupi.sprite.setTexture(textures.blupiyellow);
 			if(key[0]=="blue")
@@ -224,5 +233,17 @@ class Map
 			
 		}
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
 	}
-};
+}map;

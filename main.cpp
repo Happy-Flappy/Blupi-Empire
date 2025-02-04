@@ -1,5 +1,6 @@
 #include <SFML\Graphics.hpp>
 #include <SFML\Audio.hpp>
+#include <SFML\Network.hpp>
 using namespace sf;
 
 Vector2f MPosition;
@@ -25,19 +26,12 @@ void getTopHoveredLayer();
 
 
 
-
-
-
-
-
-
-
-
 Sound sound[16];
 
+bool isHost=false;
 
-
-
+std::string UserColor="none";
+bool playing;
 
 
 
@@ -59,6 +53,7 @@ Sound sound[16];
 #include "taskbar.h"
 #include "map.h"
 
+#include "network.h"
 
 using namespace sf;
 
@@ -152,15 +147,37 @@ void getTopHoveredLayer()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int main()
 {
 
-	Map map;
-	map.loadMap("levels/","level0");
+
+	
+	
+	
+	map.loadMap("level0");
 	
 	float parallax;
 	
-	getGroundEdge(map.iground);
 	
 	RenderWindow window(VideoMode(960+100,540+100),"",Style::Fullscreen);
 	View view;
@@ -172,8 +189,9 @@ int main()
 	
 	window.setMouseCursorVisible(false);
 	
-	
-	
+
+	network.udpsocket.bind(Socket::AnyPort);//start as a broadcasting program to get/check for the host
+	network.udpsocket.setBlocking(false);	
 	
 	
 	while(window.isOpen())
@@ -200,93 +218,138 @@ int main()
 			
 			
 			
-			if(Keyboard::isKeyPressed(Keyboard::Left)) 
+			
+			if(Keyboard::isKeyPressed(Keyboard::Left))
 			{
-				if(view.getCenter().x > (view.getSize().x/2)) 
-				{ 
-					view.move(-3,0); 
-					parallax-=0.1; 
-				} 
-			} 
-			
-			if(Keyboard::isKeyPressed(Keyboard::Right)) 
-			{
-			
-				if(view.getCenter().x < map.tground.getSize().x - (view.getSize().x/2)-1) 
-				{ 
-					view.move(3,0); 
-					parallax+=0.1; 
-				} 
-			} 
-			
-			if(Mouse::getPosition(window).x < window.getSize().x/32 && Mouse::getPosition(window).x >= 0) 
-			{
-				if(view.getCenter().x > (view.getSize().x/2)) 
-				{ 
-					view.move(-3,0); 
-					parallax-=0.1; 
-				} 
-			} 
-			
-			if(Mouse::getPosition(window).x > window.getSize().x - (window.getSize().x/32) && Mouse::getPosition(window).x <= window.getSize().x) 
-			{ 
-				if(view.getCenter().x < map.tground.getSize().x - (view.getSize().x/2)) 
-				{ 
-					view.move(3,0); 
-					parallax+=0.1; 
-				} 
+				playing=true;
 			}
 			
 			
 			
-			
-			
-			
-			
-			
-			
-			if(view.getCenter().x < view.getSize().x/2)
+			if(playing)
 			{
-				view.setCenter(view.getSize().x/2,view.getCenter().y);
-			}
 			
 			
-			if(view.getCenter().x > map.iground.getSize().x-(view.getSize().x/2)-1)
-			{
-				view.setCenter(map.iground.getSize().x-(view.getSize().x/2)-1,view.getCenter().y);
-			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			map.background.setPosition(view.getCenter().x-(view.getSize().x/2)-int(parallax),0);
-			
-			
-			
-			getTopHoveredLayer();
-			
-			
-			for(auto& b : blupi)
-				b.update(map.iground);
+				if(Keyboard::isKeyPressed(Keyboard::Left)) 
+				{
+					if(view.getCenter().x > (view.getSize().x/2)) 
+					{ 
+						view.move(-3,0); 
+						parallax-=0.1; 
+					} 
+				} 
 				
-			cursor.update(window);
+				if(Keyboard::isKeyPressed(Keyboard::Right)) 
+				{
+				
+					if(view.getCenter().x < map.tground.getSize().x - (view.getSize().x/2)-1) 
+					{ 
+						view.move(3,0); 
+						parallax+=0.1; 
+					} 
+				} 
+				
+				if(Mouse::getPosition(window).x < window.getSize().x/32 && Mouse::getPosition(window).x >= 0) 
+				{
+					if(view.getCenter().x > (view.getSize().x/2)) 
+					{ 
+						view.move(-3,0); 
+						parallax-=0.1; 
+					} 
+				} 
+				
+				if(Mouse::getPosition(window).x > window.getSize().x - (window.getSize().x/32) && Mouse::getPosition(window).x <= window.getSize().x) 
+				{ 
+					if(view.getCenter().x < map.tground.getSize().x - (view.getSize().x/2)) 
+					{ 
+						view.move(3,0); 
+						parallax+=0.1; 
+					} 
+				}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				if(view.getCenter().x < view.getSize().x/2)
+				{
+					view.setCenter(view.getSize().x/2,view.getCenter().y);
+				}
+				
+				
+				if(view.getCenter().x > map.iground.getSize().x-(view.getSize().x/2)-1)
+				{
+					view.setCenter(map.iground.getSize().x-(view.getSize().x/2)-1,view.getCenter().y);
+				}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				map.background.setPosition(view.getCenter().x-(view.getSize().x/2)-int(parallax),0);
+				
+				
+				
+				getTopHoveredLayer();
+				
+				
+				for(auto& b : blupi)
+					b.update(map.iground);
 			
-			for(int a=0;a < element.size();a++)
-			{
-				element[a].ID=a;
-				element[a].update(map.iground,blupi[selected].locomotion);
+				
+				for(int a=0;a < element.size();a++)
+				{
+					element[a].ID=a;
+					element[a].update(map.iground,blupi[selected].locomotion);
+				}
+				
+				map.floater.move(0,-1);
+	
+	
+				water.update(map.iground);
+				
+
+				
+				
+					
 			}
 			
-			map.floater.move(0,-1);
-
-
-			water.update(map.iground);
-
+			
+			
+			network.getData();
+			network.sendData();
+			
+			
+			
+			
+		
+			if(UserColor=="none")
+			{
+				std::cout << "UserColor: ";
+				std::string str;
+				std::cin >> str;
+				UserColor = str;
+			}
+			
+			if(network.hostip != IpAddress::None)
+			{
+				if(isHost)
+					std::cout<<"I am Host\n";
+				else
+					std::cout<<"I am Client\n";
+					
+			}
+			
+			
+			cursor.update(window);
 		
 		}
 		
@@ -297,67 +360,72 @@ int main()
 		
 		window.clear(Color::Cyan);
 		
-		
-		if(map.background.getTextureRect().width > 0)	
-			window.draw(map.background);
-		
-		
-		
-		if(map.floater.getTextureRect().width > 0)
+		if(playing)
 		{
+		
+			if(map.background.getTextureRect().width > 0)	
+				window.draw(map.background);
 			
-			if(map.floater.getPosition().y + map.floater.getTextureRect().height + 5 < 0)
+			
+			
+			if(map.floater.getTextureRect().width > 0)
 			{
-				map.floater.setPosition(rand() % map.iground.getSize().x,map.iground.getSize().y + 50);
-			}
-			
-			
-			
-			
-			window.draw(map.floater);
-		}
-		
-		for(int a=0;a<element.size();a++){
-			Layer newlayer;
-			newlayer.ID = a;
-			newlayer.layer = layers.size(); 
-			newlayer.type = "element";
-			if(element[a].active)
-			{
-				layers.push_back(newlayer);
-				element[a].draw(window);
-			}
-		}
-
-		
-		
-		
-		
-		window.draw(map.ground);
-
-
-
-		for(int a=0;a<blupi.size();a++)
-		{
-			Layer newlayer;
-			newlayer.ID = a;
-			newlayer.layer = layers.size(); 
-			newlayer.type = "blupi";
-			layers.push_back(newlayer);
-			
-			blupi[a].draw(window);
-		}
-		
-			
-		if(map.foreground.getTextureRect().width > 0)	
-			window.draw(map.foreground);
-		
-		
-		
-		water.draw(window);
 				
-		taskbar.update(window,map.iground);
+				if(map.floater.getPosition().y + map.floater.getTextureRect().height + 5 < 0)
+				{
+					map.floater.setPosition(rand() % map.iground.getSize().x,map.iground.getSize().y + 50);
+				}
+				
+				
+				
+				
+				window.draw(map.floater);
+			}
+			
+			for(int a=0;a<element.size();a++){
+				Layer newlayer;
+				newlayer.ID = a;
+				newlayer.layer = layers.size(); 
+				newlayer.type = "element";
+				if(element[a].active)
+				{
+					layers.push_back(newlayer);
+					element[a].draw(window);
+				}
+			}
+	
+			
+			
+			
+			
+			window.draw(map.ground);
+	
+	
+	
+			for(int a=0;a<blupi.size();a++)
+			{
+				Layer newlayer;
+				newlayer.ID = a;
+				newlayer.layer = layers.size(); 
+				newlayer.type = "blupi";
+				layers.push_back(newlayer);
+				
+				blupi[a].draw(window);
+			}
+			
+				
+			if(map.foreground.getTextureRect().width > 0)	
+				window.draw(map.foreground);
+			
+			
+			
+			water.draw(window);
+					
+			taskbar.update(window,map.iground);
+		}
+		
 		cursor.draw(window);
+		
 		
 		window.display();
 	}

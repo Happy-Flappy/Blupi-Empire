@@ -9,7 +9,7 @@ class Element
 	public:
 	Sprite sprite;
 	std::string type="";
-	int ID;
+	int ID=-1;
 	int averageHeight;
 	Vector2f velocity;
 	Vector2f now;
