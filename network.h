@@ -231,122 +231,7 @@ class Network
 		
 		
 		
-		if(isHost)
-		{
-			Packet packet;
-			
-			if(udpsocket.receive(packet,hostip,hostport)!=Socket::Done)
-				return;
-			
-			
-			
-			
-			if(playing)
-			{
-			
-			
-				std::string color;
-				packet >> color;
-					
-				
-				
-				for(int a=0;a<blupi.size();a++)
-				{
-					
-					if(blupi[a].color == color)
-					{
-						packet >> blupi[a].action;
-						packet >> blupi[a].state;	
-					}
-					
-				}
-				
-			}
-			else
-			{
-				IpAddress ip;
-				unsigned short port;
-				
-				udpsocket.receive(packet,ip,port);
-				
-				std::string color;
-				packet >> color;
-				
-				bool known=false;
-				for(int a=0;a<clients.size();a++)
-				{
-					if(clients[a].ip == ip)
-					{
-						known=true;
-						break;
-					}
-				}
-				
-				if(!known)
-				{
-					Client newclient;
-					newclient.ip=ip;
-					newclient.port = port;
-					newclient.color = color;
-					clients.push_back(newclient);
-				}
-				
-				
-			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		}
-		else
-		{
-			
-			
-			
-			if(playing)
-			{
-				
-			
-				Packet packet;
-				
-				
-				if(udpsocket.receive(packet,hostip,hostport)!=Socket::Done)
-					return;
-				
-				
-				
-				packet >> playing;
-				
-				std::string level;
-				packet >> level;
-				if(map.name!=level)
-				{
-					map.loadMap(level);
-				}
-				
-				int size;
-				
-				packet >> size;
-				
-				blupi.resize(size);
-				
-				for(int a=0; a < blupi.size(); a++)
-				{
-					
-					packet >> blupi[a].velocity.x;
-					packet >> blupi[a].velocity.y;
-					
-					
-				}
-			}
-			else
+			if(isHost)
 			{
 				Packet packet;
 				
@@ -354,21 +239,136 @@ class Network
 					return;
 				
 				
-				packet >> playing; 
+				
+				
+				if(playing)
+				{
+				
+				
+					std::string color;
+					packet >> color;
+						
+					
+					
+					for(int a=0;a<blupi.size();a++)
+					{
+						
+						if(blupi[a].color == color)
+						{
+							packet >> blupi[a].action;
+							packet >> blupi[a].state;	
+						}
+						
+					}
+					
+				}
+				else
+				{
+					IpAddress ip;
+					unsigned short port;
+					
+					udpsocket.receive(packet,ip,port);
+					
+					std::string color;
+					packet >> color;
+					
+					bool known=false;
+					for(int a=0;a<clients.size();a++)
+					{
+						if(clients[a].ip == ip)
+						{
+							known=true;
+							break;
+						}
+					}
+					
+					if(!known)
+					{
+						Client newclient;
+						newclient.ip=ip;
+						newclient.port = port;
+						newclient.color = color;
+						clients.push_back(newclient);
+					}
+					
+					
+				}
+				
+				
+				
+				
+				
+				
+				
+				
 				
 				
 				
 			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		}
+			else
+			{
+				
+				
+				
+				if(playing)
+				{
+					
+				
+					Packet packet;
+					
+					
+					if(udpsocket.receive(packet,hostip,hostport)!=Socket::Done)
+						return;
+					
+					
+					
+					packet >> playing;
+					
+					std::string level;
+					packet >> level;
+					if(map.name!=level)
+					{
+						map.loadMap(level);
+					}
+					
+					int size;
+					
+					packet >> size;
+					
+					blupi.resize(size);
+					
+					for(int a=0; a < blupi.size(); a++)
+					{
+						
+						packet >> blupi[a].velocity.x;
+						packet >> blupi[a].velocity.y;
+						
+						
+					}
+				}
+				else
+				{
+					Packet packet;
+					
+					if(udpsocket.receive(packet,hostip,hostport)!=Socket::Done)
+						return;
+					
+					
+					packet >> playing; 
+					
+					
+					
+				}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+			}
 		
 		}
 		
