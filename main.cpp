@@ -173,9 +173,6 @@ int main()
 
 	
 	
-	
-	map.loadMap("level0");
-	
 	float parallax;
 	
 	
@@ -190,9 +187,7 @@ int main()
 	window.setMouseCursorVisible(false);
 	
 
-	network.udpsocket.bind(Socket::AnyPort);//start as a broadcasting program to get/check for the host
-	network.udpsocket.setBlocking(false);	
-	
+
 	
 	while(window.isOpen())
 	{
@@ -221,7 +216,11 @@ int main()
 			
 			if(Keyboard::isKeyPressed(Keyboard::Left))
 			{
-				playing=true;
+				if(isHost)
+				{
+					playing=true;
+					map.loadMap("level0");
+				}
 			}
 			
 			
@@ -333,20 +332,14 @@ int main()
 		
 			if(UserColor=="none")
 			{
-				std::cout << "UserColor: ";
-				std::string str;
-				std::cin >> str;
-				UserColor = str;
-			}
-			
-			if(network.hostip != IpAddress::None)
-			{
-				if(isHost)
-					std::cout<<"I am Host\n";
-				else
-					std::cout<<"I am Client\n";
+				if(Keyboard::isKeyPressed(Keyboard::Y))
+					UserColor = "yellow";
+				if(Keyboard::isKeyPressed(Keyboard::B))
+					UserColor = "blue";
 					
 			}
+			
+		
 			
 			
 			cursor.update(window);

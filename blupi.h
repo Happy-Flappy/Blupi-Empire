@@ -131,7 +131,10 @@ class Blupi
 	
 	std::string color;
 	
-	int destination;
+	float destination;
+	
+	float listenToHost=0;
+	
 	float gravity = 0.2;
 	Vector2f velocity;
 	float speed;
@@ -850,7 +853,7 @@ class Blupi
 	{
 		
 	
-		
+		listenToHost += seconds(1.f/60.f).asSeconds();
 		
 		
 		sprite.setOrigin(sprite.getTextureRect().width/2,sprite.getTextureRect().height/2);
@@ -860,26 +863,26 @@ class Blupi
 		
 			sprite.setPosition(now.x,now.y - 35);
 		
-			
-			Gravity(sprite,ground,velocity,now,gravity); // apply gravity and resolve collisions.
-			
-			
-			
-			
-			sprite.setRotation(getGroundAngle(ground,now.x,sprite.getRotation() ,10));
 		
-			
 		
-			destination = (int)destination;
-			
-			if(checkGroundNow(ground,now))
+			if(isHost)
 			{
+			
+				Gravity(sprite,ground,velocity,now,gravity); // apply gravity and resolve collisions.
 				
-				if (!busy)
-				{    
-				    if (state.find("move") == std::string::npos)//if move not found
+				
+				
+				
+				sprite.setRotation(getGroundAngle(ground,now.x,sprite.getRotation() ,10));
+			
+				
+				
+				if (checkGroundNow(ground, now))
+				{
+				    if (!busy)
 				    {
-				        if (abs(destination - now.x) > 5)
+				        // Check if destination is far enough to start moving
+				        if (std::abs(destination - now.x) > 0.1f) // Adjust threshold as needed
 				        {
 				            if (destination < now.x)
 				            {
@@ -894,24 +897,20 @@ class Blupi
 				                action = "move";
 				            }
 				        }
-				    }        
-				}
-	
-	
+				    }
+				}			
+				
+			
+			
+				setBoundsOfRoomSides(ground);
+					
+				checkmove();	
+			
 			}
-			
-			
-			
-			
-			setBoundsOfRoomSides(ground);
-			
-			checkmove();
+		
 			
 			
 			updateShifts();
-			
-			
-			
 			
 			
 			
@@ -924,15 +923,13 @@ class Blupi
 		
 		doAction(ground);
 			
-			
 		checkSelfClicks(ground);	
 			
-			
-//		if(liveitem==-1)
-//		{
-//			buttons.clear();
-//			buttons.push_back("stop");
-//		}	
+	
+		
+		
+		
+		
 		
 	}
 	

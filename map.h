@@ -31,13 +31,13 @@ class Map
 		
 		
 		
-	void loadMap(std::string name)
+	void loadMap(std::string levelname)
 	{
 		
 		
 		
 		folder = "levels/";
-		this->name = name;
+		this->name = levelname;
 		
 		
 		if(!iground.loadFromFile("levels/" + name +".png"))
