@@ -21,10 +21,10 @@ class Water
 	
 	public:
 	
-	
 	Image image;	
 	Texture texture;
 	Sprite sprite;
+	int width,height;
 	
 	
 	
@@ -33,6 +33,10 @@ class Water
 	
 	Water()
 	{
+		
+		
+		
+		
 	}
 	
 	
@@ -42,7 +46,10 @@ class Water
 	{
 		int left=-1;
 		int right;
-		Vector2i pos;	
+		Vector2i pos;
+		Vector2i last;
+		std::vector<Vector2i> linepos;
+		
 	};
 	
 	std::vector <Puddle> puddle;
@@ -57,7 +64,7 @@ class Water
 		Vector2i pos = group.pos;
 		for(int x = pos.x; x > 0; x--)
 		{
-			if(ground.getPixel(x,pos.y)!=Color::Transparent)
+			if(pos.y >= groundedge[x])
 			{
 				left = x;
 				break;
@@ -67,7 +74,7 @@ class Water
 		int right = ground.getSize().x-1;
 		for(int x = pos.x; x < ground.getSize().x-1; x++)
 		{
-			if(ground.getPixel(x,pos.y)!=Color::Transparent)
+			if(pos.y >= groundedge[x])
 			{
 				right = x;
 				break;
@@ -84,108 +91,151 @@ class Water
 	}
 	
 	
-	Image empty;
 	
 	void update(Image &ground)
 	{
 		
-		
-		
-		if(image.getSize().x==0)
+
+
+
+		if(image.getSize().x==0) //create line
 		{
-			image.create(ground.getSize().x,ground.getSize().y,Color::Transparent);
-			empty = image;
+			image.create(1,ground.getSize().y,Color::Transparent);
+			int hue=0;
+			for(int y=0;y < ground.getSize().y;y++)
+			{
+				hue++;
+				
+				
+				if(hue < 20)
+					image.setPixel(0,y,Color(0,142,212,80));
+				if(hue >= 20 && hue < 60)
+					image.setPixel(0,y,Color(0,45,145,80));
+				if(hue >= 60)
+					image.setPixel(0,y,Color(0,5,212,80));
+				
+			}
+			
+			
+			texture.loadFromImage(image);
+			sprite.setTexture(texture);
 		}
-	
+
+		width = ground.getSize().x;
+		height = ground.getSize().y;
+
+
+
 		
 
 
 
-		image = empty;
-		
-
-
-		static float offset=0;	
-		float speed = 0.1;	
-		
 		for(int a=0;a<puddle.size();a++)
 		{
-			if(puddle[a].left==-1)
-				getClamp(ground,puddle[a]);
 			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		
+			
+			float speed = 0.1;	
+			
+
+			if(puddle[a].left==-1)
+			{
+				getClamp(ground,puddle[a]);
+				puddle[a].last = puddle[a].pos;
+			}
+			else
+			{
+				if(puddle[a].pos.y != puddle[a].last.y || puddle[a].pos.x != puddle[a].last.x)
+				{
+					puddle[a].last = puddle[a].pos;
+					getClamp(ground,puddle[a]);
+				}
+			}
 			
 			
 			float amplitude=5;
 			float frequency=0.02;
 			
+			
+			
+			
+			static float offset=0;
+			
+			
 			if(puddle[a].right - puddle[a].left > 0)
 			{
+			
+			
+				if(puddle[a].linepos.size() != puddle[a].right - puddle[a].left)
+					puddle[a].linepos.resize(puddle[a].right - puddle[a].left);	
 				
-				for(int x=puddle[a].left; x < puddle[a].right; x++)	
+				for(int x=0; x < puddle[a].linepos.size(); x++)	
 				{
 					
 					float wave = amplitude * std::sin((frequency * x) + offset);
 					wave+=amplitude;
 					
-					int hue = 0; 
-					for(int y = puddle[a].pos.y + wave; y < image.getSize().y; y++)
-					{	
-						hue++;
-						
-						if(ground.getPixel(x,y)!=Color::Transparent)
-						{
-							break;
-						}
-						else
-						{
-							if(hue < 20)
-							{
-								image.setPixel(x,y,Color(0,142,212,80));
-								
-							}
-							if(hue >= 20 && hue < 60)
-							{
-								
-								image.setPixel(x,y,Color(0,45,145,80));
-							}
-							if(hue >= 60)
-							{
-								
-								image.setPixel(x,y,Color(0,5,212,80));
-							}
-							
-							
-							
-						}
-						
-						
-					}
+					int y = puddle[a].pos.y + wave; 
+					
+					
+					puddle[a].linepos[x] = Vector2i(puddle[a].left + x,y);
+					
 					
 				}
 					
 			}
-			else
-				break;
+				
 			
 			
+			offset += speed;
+			
+			
+				
 		}
 		
-		offset += speed;
 		
-		texture.loadFromImage(image);
-		sprite.setTexture(texture);
-	
+		
+
 		
 	}
+	
+	
+	
 	
 	
 	
 	void draw(RenderWindow &window)
 	{
-		window.draw(sprite);
-		
+		for(int a=0;a<puddle.size();a++)
+		{
+			for(int b=0;b<puddle[a].linepos.size();b++)
+			{
+				
+				int height = groundedge[puddle[a].linepos[b].x] - puddle[a].linepos[b].y;
+				if(height > 0)
+				{	
+					sprite.setTextureRect(IntRect(0,0,1,height+1));
+					sprite.setPosition(puddle[a].linepos[b].x,puddle[a].linepos[b].y);
+					window.draw(sprite);
+				}
+				
+			}
+		}
 	}
-	
 	
 	
 	

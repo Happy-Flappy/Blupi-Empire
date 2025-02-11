@@ -7,19 +7,10 @@ bool checkGroundResolve(Image &ground,Vector2f &future,Vector2f &resolve)
 	if(future.x>=0 && future.x < ground.getSize().x && future.y >= 0 && future.y < ground.getSize().y)
 	{
 	
-		if(ground.getPixel(future.x ,future.y)!=Color::Transparent)
+		if(future.y > groundedge[future.x])
 		{
 			//collision on bottom center
-		
-		
-			for(int y = future.y; y > 0; y--)
-			{
-				if(ground.getPixel(future.x , y)==Color::Transparent)
-				{
-					resolve.y = y+1;
-					break;
-				}
-			}
+			resolve.y = groundedge[future.x]+1;
 		
 			return true;
 		}
@@ -40,7 +31,7 @@ bool checkGroundNow(Image &ground,Vector2f now)
 	if(future.x>=0 && future.x < ground.getSize().x && future.y >= 0 && future.y < ground.getSize().y)
 	{
 	
-		if(ground.getPixel(future.x ,future.y)!=Color::Transparent)
+		if(future.y > groundedge[future.x])
 		{
 			//collision on bottom center
 			return true;

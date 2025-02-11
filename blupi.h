@@ -132,9 +132,7 @@ class Blupi
 	std::string color;
 	
 	float destination;
-	
-	float listenToHost=0;
-	
+	float rotation = 0;
 	float gravity = 0.2;
 	Vector2f velocity;
 	float speed;
@@ -169,6 +167,7 @@ class Blupi
 		
 		sound[0].stop();
 		
+		
 		if(a==0)
 			say.loadFromFile("ASSETS/say/sound056.wav");
 		
@@ -177,7 +176,7 @@ class Blupi
 		
 		if(a==2)
 			say.loadFromFile("ASSETS/say/sound058.wav");
-		
+	
 		
 		sound[0].setBuffer(say);
 		sound[0].play();
@@ -368,44 +367,45 @@ class Blupi
 			//std::cout << x << "," << groundedge[x] << std::endl;
 			
 			
-			if(water.image.getPixel(x,groundedge[x])!=Color::Transparent)
+		
+				
+			
+			//get deepness
+			
+			int index=-1;
+			for(int a=0; a < water.puddle.size(); a++)
 			{
+				int left = water.puddle[a].left;	
+				int right = water.puddle[a].right;	
 				
-				
-				//get deepness
-				
-				int index=-1;
-				for(int a=0; a < water.puddle.size(); a++)
+				if(x > left && x < right)
 				{
-					int left = water.puddle[a].left;	
-					int right = water.puddle[a].right;	
-					
-					if(x > left && x < right)
-					{
-						index = a;
-						break;
-					}	
-				}
-				
-				if(index==-1)
-				{
-					std::cout <<"failed to get index"<<std::endl;
+					index = a;
 					break;
-				}
-				int deep = groundedge[x] - water.puddle[index].pos.y;
+				}	
+			}
+			
+			if(index==-1)
+			{
+				std::cout <<"failed to get index"<<std::endl;
+				break;
+			}
+			
+			int deep=0;
+			if(x >= 0 && x < water.width)
+				deep = groundedge[x] - water.puddle[index].pos.y;
+			
 				
 				
 				
 				
 				
 				
-				
-				if(deep > 40)
+			if(deep > 40)
+			{
+				if(locomotion != "boat")
 				{
-					if(locomotion != "boat")
-					{
-						return false;
-					}
+					return false;
 				}
 			}
 			
@@ -759,26 +759,36 @@ class Blupi
 	
 	void checkSelfClicks(Image &ground)
 	{
-		if(UserColor == color)
+	
+		if(sprite.getGlobalBounds().contains(MPosition))
 		{
+			static bool released=false;
 			
-		
-			if(sprite.getGlobalBounds().contains(MPosition))
+			if(Mouse::isButtonPressed(Mouse::Left))
 			{
-				static bool released=false;
-				
-				if(Mouse::isButtonPressed(Mouse::Left))
+				if(released)
 				{
-					if(released)
+					
+					if(toplayer.type=="blupi" && toplayer.ID == ID)
 					{
-						
-						if(toplayer.type=="blupi" && toplayer.ID == ID)
+						if(color!=UserColor)
 						{
+							say.loadFromFile("ASSETS/say/sound056.wav");
+							sound[0].stop();
+							sound[0].setBuffer(say);
+							sound[0].play();
+						}
+						else
+						{
+						
 						
 							selected = toplayer.ID;
 					
 							int b = rand()%5;
 							
+							
+								
+								
 							if(sound[0].getStatus()!=Sound::Status::Playing)
 							{
 								if(b == 0)
@@ -822,13 +832,13 @@ class Blupi
 							}
 						}
 					}
-					
-					released=false;
 				}
-				else
-					released=true;
 				
+				released=false;
 			}
+			else
+				released=true;
+			
 		}
 		
 	}
@@ -853,7 +863,6 @@ class Blupi
 	{
 		
 	
-		listenToHost += seconds(1.f/60.f).asSeconds();
 		
 		
 		sprite.setOrigin(sprite.getTextureRect().width/2,sprite.getTextureRect().height/2);
@@ -873,7 +882,7 @@ class Blupi
 				
 				
 				
-				sprite.setRotation(getGroundAngle(ground,now.x,sprite.getRotation() ,10));
+				rotation = getGroundAngle(ground,now.x,sprite.getRotation() ,10);
 			
 				
 				
@@ -907,7 +916,8 @@ class Blupi
 				checkmove();	
 			
 			}
-		
+			
+			sprite.setRotation(rotation);
 			
 			
 			updateShifts();

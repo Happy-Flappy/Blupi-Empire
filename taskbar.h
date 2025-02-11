@@ -197,7 +197,7 @@ class Taskbar
 				if(released)
 				{
 				
-					if(ground.getPixel((int)MPosition.x,(int)MPosition.y)!=Color::Transparent)
+					if(MPosition.y > groundedge[(int)MPosition.x])
 					{
 						if(!blupi[selected].busy && blupi[selected].possible((int)MPosition.x))
 						{

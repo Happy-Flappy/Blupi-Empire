@@ -22,6 +22,4 @@ shed 1100 208 END
  
 jeep 2500 208 END
 
-water 1645 260 END
-
-water 1012 388 END
+water 714 100 END

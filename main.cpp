@@ -54,6 +54,7 @@ bool playing;
 #include "map.h"
 
 #include "network.h"
+#include <thread>
 
 using namespace sf;
 
@@ -175,8 +176,8 @@ int main()
 	
 	float parallax;
 	
-	
-	RenderWindow window(VideoMode(960+100,540+100),"",Style::Fullscreen);
+	//,Style::Fullscreen
+	RenderWindow window(VideoMode(960+100,540+100),"");
 	View view;
 	view.reset(FloatRect(0,0,960+100,540+100));
 	
@@ -311,7 +312,6 @@ int main()
 				}
 				
 				map.floater.move(0,-1);
-	
 	
 				water.update(map.iground);
 				
