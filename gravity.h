@@ -7,10 +7,10 @@ bool checkGroundResolve(Image &ground,Vector2f &future,Vector2f &resolve)
 	if(future.x>=0 && future.x < ground.getSize().x && future.y >= 0 && future.y < ground.getSize().y)
 	{
 	
-		if(future.y > groundedge[future.x])
+		if(future.y > groundedge(future.x,future.y))
 		{
 			//collision on bottom center
-			resolve.y = groundedge[future.x]+1;
+			resolve.y = groundedge(future.x,future.y)+1;
 		
 			return true;
 		}
@@ -31,7 +31,7 @@ bool checkGroundNow(Image &ground,Vector2f now)
 	if(future.x>=0 && future.x < ground.getSize().x && future.y >= 0 && future.y < ground.getSize().y)
 	{
 	
-		if(future.y > groundedge[future.x])
+		if(future.y > groundedge(future.x,now.y))
 		{
 			//collision on bottom center
 			return true;

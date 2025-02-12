@@ -25,6 +25,7 @@ class Water
 	Texture texture;
 	Sprite sprite;
 	int width,height;
+	int depthlimit = 20;
 	
 	
 	
@@ -64,7 +65,7 @@ class Water
 		Vector2i pos = group.pos;
 		for(int x = pos.x; x > 0; x--)
 		{
-			if(pos.y >= groundedge[x])
+			if(pos.y >= groundedge(x,pos.y))
 			{
 				left = x;
 				break;
@@ -74,7 +75,7 @@ class Water
 		int right = ground.getSize().x-1;
 		for(int x = pos.x; x < ground.getSize().x-1; x++)
 		{
-			if(pos.y >= groundedge[x])
+			if(pos.y >= groundedge(x,pos.y))
 			{
 				right = x;
 				break;
@@ -89,6 +90,38 @@ class Water
 		
 		
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	int getPuddleIndex(int x)
+	{
+		
+		
+		for(int a=0; a < puddle.size(); a++)
+		{
+			int left = puddle[a].left;	
+			int right = puddle[a].right;	
+			
+			if(x > left && x < right)
+			{
+				return a;
+			}	
+		}
+		
+		
+		
+		return -1;
+	}
+	
+	
+	
+	
 	
 	
 	
@@ -225,7 +258,7 @@ class Water
 			for(int b=0;b<puddle[a].linepos.size();b++)
 			{
 				
-				int height = groundedge[puddle[a].linepos[b].x] - puddle[a].linepos[b].y;
+				int height = groundedge(puddle[a].linepos[b].x,puddle[a].linepos[b].y) - puddle[a].linepos[b].y;
 				if(height > 0)
 				{	
 					sprite.setTextureRect(IntRect(0,0,1,height+1));

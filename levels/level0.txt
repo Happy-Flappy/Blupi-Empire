@@ -1,3 +1,5 @@
+ground level0groundshort2.png END
+
 background level0sky.png END
 
 foreground level0grass.png END
@@ -16,10 +18,14 @@ orange blupi 20 208 END
 
 green blupi 100 208 END
 
+blue blupi 1639 146 END
+
 house 600 208 END
 
 shed 1100 208 END
  
 jeep 2500 208 END
 
-water 714 100 END
+water 1486 297 END
+
+boat 2500 100 END

@@ -60,7 +60,56 @@ class Element
 			Gravity(sprite,ground,velocity,now,gravity);
 			
 			
-			sprite.setRotation(getGroundAngle(ground,now.x, sprite.getRotation() , sprite.getTextureRect().width/2 ));
+			sprite.setRotation(getGroundAngle(ground,now, sprite.getRotation() , sprite.getTextureRect().width/2 ));
+			
+			
+			
+			
+			
+			
+			if(type=="boat")
+			{
+				
+				
+				sprite.setRotation(0);
+				
+				
+				int index = water.getPuddleIndex(now.x);
+				
+				if(index!=-1)
+				{
+					if(water.puddle[index].linepos.size()>now.x)
+					{
+						now.y = water.puddle[index].linepos[50].y;
+					}
+					if(water.puddle[index].left!=-1)
+					{
+					
+						int middle = water.puddle[index].left + ((water.puddle[index].right-water.puddle[index].left)/2/*width*/);//left + half-width
+						
+						if(now.x > middle)
+						{
+							now.x = water.puddle[index].right - 30;
+							//sprite.setScale(-1,1);
+						}
+						else
+						{
+							now.x = water.puddle[index].left + 30;
+							//sprite.setScale(1,1);
+						}
+					}
+					
+					
+				}
+
+			}
+			
+			
+			
+			
+			
+			
+			
 			
 			
 			
@@ -124,8 +173,7 @@ class Element
 							}
 						}
 						
-						
-						
+			
 						
 						released=false;
 					}

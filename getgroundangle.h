@@ -1,29 +1,33 @@
 
 
-std::vector <int> groundedge;
+std::vector<std::vector <bool>> groundmap;//map out pixels
 
-void getGroundEdge(Image &ground)
+void getGroundEdges(Image &ground)
 {
-	int pos[ground.getSize().x];
-	//get positions of edge pixels
+	
+	groundmap.resize(ground.getSize().x);
+	
+	
+	for(int a=0;a<groundmap.size();a++)
+	{
+		groundmap[a].resize(ground.getSize().y);
+	}
+	
+	
 	for(int x=0;x<ground.getSize().x;x++)
 	{
 	
-		for(int y = ground.getSize().y-1; y > 0; y--)
+		for(int y = 0; y < ground.getSize().y; y++)
 		{
-			if(ground.getPixel(x,y)==Color::Transparent)
+			if(ground.getPixel(x,y)!=Color::Transparent)
 			{
-				pos[x]=y;
-				break;
+				groundmap[x][y]=true;
+			}
+			else
+			{
+				groundmap[x][y]=false;
 			}
 		}
-	}
-	groundedge.resize(ground.getSize().x);
-	
-	
-	for(int a=0;a<groundedge.size();a++)
-	{
-		groundedge[a]=pos[a];
 	}
 	
 	
@@ -37,19 +41,60 @@ void getGroundEdge(Image &ground)
 
 
 
-int getGroundAngle(Image &ground, int point, float lastangle, int range = 10,bool resolve=true)
+
+int groundedge(int x,int y)
 {
-    if (point + (range / 2) >= ground.getSize().x)
+	
+	for(int y2 = y-5; y2 < groundmap[x].size(); y2++)
+	{
+		if(groundmap[x][y2])
+		{
+			return y2;
+		}
+	}		
+	
+	return groundmap[x].size() + 500;
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+int getGroundAngle(Image &ground, Vector2f now, float lastangle, int range = 10,bool resolve=true)
+{
+    if (now.x + (range / 2) >= ground.getSize().x)
         return 0;
 
     Vector2f center;
     Vector2f right;
 
-    center.x = point;
-    right.x = point + (range / 2);
+    center.x = now.x;
+    right.x = now.x + (range / 2);
 
-    center.y = groundedge[point];
-    right.y = groundedge[point + (range / 2)];
+    center.y = groundedge(now.x,now.y);
+    right.y = groundedge(now.x + (range / 2),now.y);
 
     int opp = right.y - center.y;
     int adj = right.x - center.x;

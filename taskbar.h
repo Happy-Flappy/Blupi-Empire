@@ -197,29 +197,27 @@ class Taskbar
 				if(released)
 				{
 				
-					if(MPosition.y > groundedge[(int)MPosition.x])
+					if(!blupi[selected].busy && blupi[selected].possible((int)MPosition.x))
 					{
-						if(!blupi[selected].busy && blupi[selected].possible((int)MPosition.x))
-						{
-							if(blupi[selected].state=="moveleft")
-								blupi[selected].state="left";
-							if(blupi[selected].state=="moveright")
-								blupi[selected].state="right";
-							blupi[selected].destination = (int)MPosition.x;
-							
-							
-						}
-						else
-						{
-							blupi[selected].failed();
-						}
-	//					buttons.clear();
-	//					iconrect.clear();
-	//					
-	//					buttons.push_back("stop");
-	//					iconrect.push_back(IntRect(160,280,40,40));
-						liveitem=-1;
+						if(blupi[selected].state=="moveleft")
+							blupi[selected].state="left";
+						if(blupi[selected].state=="moveright")
+							blupi[selected].state="right";
+						blupi[selected].destination = (int)MPosition.x;
+						
+						
 					}
+					else
+					{
+						blupi[selected].failed();
+					}
+//					buttons.clear();
+//					iconrect.clear();
+//					
+//					buttons.push_back("stop");
+//					iconrect.push_back(IntRect(160,280,40,40));
+					liveitem=-1;
+				
 				}
 				released=false;
 			}

@@ -71,6 +71,7 @@ class Blupi
 			
 			
 			
+			
 				
 		}
 		
@@ -85,8 +86,6 @@ class Blupi
 		struct Jeep
 		{
 			ShiftData left;
-			ShiftData turnleft;
-			ShiftData turnright;
 			ShiftData right;
 			
 			
@@ -116,7 +115,42 @@ class Blupi
 		
 		
 		
+		struct Boat
+		{
+			ShiftData left;
+			ShiftData right;
+			ShiftData exit;
+			ShiftData enter;
+			
+			
+			
+			Boat()
+			{
+				
+				
+				
+				left.delay = 0.25;
+				left.rect.push_back(IntRect(62*13,62*27,62,62));
+				left.rect.push_back(IntRect(62*14,62*27,62,62));
+				left.rect.push_back(IntRect(62*15,62*27,62,62));
+				left.rect.push_back(IntRect(62*14,62*27,62,62));
+				
+				
+				right.delay = 0.25;
+				right.rect.push_back(IntRect(62*7,62*27,62,62));
+				right.rect.push_back(IntRect(62*8,62*27,62,62));
+				right.rect.push_back(IntRect(62*9,62*27,62,62));
+				right.rect.push_back(IntRect(62*8,62*27,62,62));
+				
+				
+				
 		
+				
+			}
+			
+			
+			
+		}boat;
 		
 		
 		
@@ -142,7 +176,7 @@ class Blupi
 	bool busy = false;
 	float idledelay = 0;
 	std::string state = "right"; //direction
-	std::string locomotion="walk"; //form of locomotion such as jeep,boat,walk
+	std::string locomotion="boat"; //form of locomotion such as jeep,boat,walk
 	
 	Element carrying;
 	std::string action="none"; // the action that blupi is currently trying to accomplish
@@ -364,7 +398,6 @@ class Blupi
 				condition = (x < dest);
 			}
 
-			//std::cout << x << "," << groundedge[x] << std::endl;
 			
 			
 		
@@ -372,28 +405,16 @@ class Blupi
 			
 			//get deepness
 			
-			int index=-1;
-			for(int a=0; a < water.puddle.size(); a++)
-			{
-				int left = water.puddle[a].left;	
-				int right = water.puddle[a].right;	
-				
-				if(x > left && x < right)
-				{
-					index = a;
-					break;
-				}	
-			}
+			int index = water.getPuddleIndex(x);
 			
 			if(index==-1)
 			{
-				std::cout <<"failed to get index"<<std::endl;
 				break;
 			}
 			
 			int deep=0;
 			if(x >= 0 && x < water.width)
-				deep = groundedge[x] - water.puddle[index].pos.y;
+				deep = groundedge(x,water.puddle[index].pos.y) - water.puddle[index].pos.y;
 			
 				
 				
@@ -401,12 +422,13 @@ class Blupi
 				
 				
 				
-			if(deep > 40)
+			if(deep > 20)
 			{
 				if(locomotion != "boat")
 				{
 					return false;
 				}
+				
 			}
 			
 			
@@ -698,8 +720,17 @@ class Blupi
 		}
 		
 		
+		if(locomotion=="boat")
+		{
+			if(state=="left" || state == "moveleft")
+				sprite.setTextureRect(Shift(shift.boat.left));
+			
+			if(state=="right"|| state == "moveright")
+				sprite.setTextureRect(Shift(shift.boat.right));
+			
+			
 		
-		
+		}
 		
 		
 		
@@ -852,8 +883,110 @@ class Blupi
 	
 	
 	
-	
-	
+	void updatePhysics(Image &ground)
+	{
+		if(locomotion=="walk")
+		{
+			gravity = 0.2;
+			
+			int x = now.x;
+			int index = water.getPuddleIndex(x);
+			
+			if(index!=-1)
+			{
+				
+				
+				
+				
+				int deep=0;
+				if(x >= 0 && x < water.width)
+					deep = groundedge(x,now.y) - water.puddle[index].pos.y;
+				
+				
+				if(deep > water.depthlimit)
+				{
+				
+				
+				
+					if(water.puddle[index].left!=-1)
+					{
+					
+						int middle = water.puddle[index].left + ((water.puddle[index].right-water.puddle[index].left)/2/*width*/);//left + half-width
+						
+						if(now.x > middle)
+						{
+							now.x +=1;
+							Stop();
+						}
+						else
+						{
+							Stop();
+							now.x -=1;
+						}
+					}
+				}
+				
+			}
+
+
+			if(ID==selected)
+			{
+				if(Keyboard::isKeyPressed(Keyboard::Up))
+				{
+					if(checkGroundNow(ground,now))
+					{	
+						velocity.y = -10;
+					}
+				}
+			}
+			
+			Gravity(sprite,ground,velocity,now,gravity); // apply gravity and resolve collisions.
+			if(checkGroundNow(ground,now))
+				rotation = getGroundAngle(ground,now,sprite.getRotation() ,10);
+			
+			
+			
+		}
+		if(locomotion=="boat")
+		{
+			now.x += velocity.x;
+			
+			
+			int x = now.x;
+			int index = water.getPuddleIndex(x);
+			
+			
+			if(index==-1)
+			{
+				locomotion="walk";
+				//leave boat there
+			}
+			else
+			{
+				
+				int deep=0;
+				if(x >= 0 && x < water.width)
+					deep = groundedge(x,water.puddle[index].pos.y) - water.puddle[index].pos.y;
+			
+				
+				if(x >= 0 && x < water.puddle[index].linepos.size())
+				{
+					now.y = water.puddle[index].linepos[x].y;
+				}
+				
+				
+				
+			}
+			
+			rotation = -velocity.x*3;
+				
+		}
+		
+		
+		
+		
+		
+	}
 	
 	
 	
@@ -877,37 +1010,49 @@ class Blupi
 			if(isHost)
 			{
 			
-				Gravity(sprite,ground,velocity,now,gravity); // apply gravity and resolve collisions.
-				
-				
-				
-				
-				rotation = getGroundAngle(ground,now.x,sprite.getRotation() ,10);
+				updatePhysics(ground);
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			
 				
 				
-				if (checkGroundNow(ground, now))
-				{
-				    if (!busy)
-				    {
-				        // Check if destination is far enough to start moving
-				        if (std::abs(destination - now.x) > 0.1f) // Adjust threshold as needed
-				        {
-				            if (destination < now.x)
-				            {
-				                velocity.x = -speed;
-				                state = "moveleft";
-				                action = "move";
-				            }
-				            else if (destination > now.x)
-				            {
-				                velocity.x = speed;
-				                state = "moveright";
-				                action = "move";
-				            }
-				        }
-				    }
-				}			
+				
+				
+				
+				
+				
+				
+				
+
+			    if (!busy)
+			    {
+			        // Check if destination is far enough to start moving
+			        if (std::abs(destination - now.x) > 5) // Adjust threshold as needed
+			        {
+			            if (destination < now.x)
+			            {
+			            	state = "moveleft";
+							action = "move";
+							velocity.x = -speed;
+						
+			            }
+			            else if (destination > now.x)
+			            {
+		            		state = "moveright";
+							action = "move";
+							velocity.x = speed;
+					    
+			            }
+			        }
+			    }			
 				
 			
 			

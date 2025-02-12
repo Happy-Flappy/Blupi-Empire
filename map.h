@@ -40,16 +40,7 @@ class Map
 		this->name = levelname;
 		
 		
-		if(!iground.loadFromFile("levels/" + name +".png"))
-		{
-			iground.create(1920,540,Color::Transparent);
-		}
-		tground.loadFromImage(iground);
-		ground.setTexture(tground);
 		
-		
-		
-		getGroundEdge(iground);
 		
 		
 		
@@ -98,6 +89,21 @@ class Map
 	
 	void obey()
 	{
+		
+		
+		
+		if(key[0]=="ground")
+		{
+			if(!iground.loadFromFile(folder + key[1]))
+			{
+				iground.create(1920,540,Color::Transparent);
+			}
+			tground.loadFromImage(iground);
+			ground.setTexture(tground);
+			
+			getGroundEdges(iground);
+		}
+		
 		
 		if(key[0]=="background")
 		{
@@ -225,6 +231,19 @@ class Map
 		}
 		
 		
+		if(key[0]=="boat")
+		{
+			Element newelement;
+			newelement.type = "boat";
+			newelement.sprite.setTexture(textures.element);
+			newelement.sprite.setTextureRect(IntRect(0,645,58,27));
+			newelement.now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));
+			newelement.averageHeight = newelement.sprite.getTextureRect().height;	
+			element.push_back(newelement);			
+			
+		}
+		
+		
 		if(key[0]=="water")
 		{
 			Water::Puddle newdrop;
@@ -235,8 +254,7 @@ class Map
 		
 		
 		
-		
-		
+
 		
 		
 		
