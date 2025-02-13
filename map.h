@@ -24,7 +24,7 @@ class Map
 	std::string name;
 	
 	
-
+	
 		
 		
 		

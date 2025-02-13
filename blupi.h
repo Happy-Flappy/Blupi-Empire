@@ -165,11 +165,13 @@ class Blupi
 	
 	std::string color;
 	
-	float destination;
+	Vector2f destination;
 	float rotation = 0;
 	float gravity = 0.2;
 	Vector2f velocity;
 	float speed;
+	int maxjumpdist = -1;
+	int jumpvelo = -10;
 	int ID;
 	int haven=-1;
 	int itemref = -1;
@@ -234,7 +236,7 @@ class Blupi
 	{
 		sprite.setTexture(textures.blupiblue);
 		sprite.setTextureRect(IntRect(202+1,185+1,32,49));
-		destination = sprite.getPosition().x;
+		destination = sprite.getPosition();
 		sprite.setScale(1.5,1.5);
 		sprite.setOrigin(sprite.getTextureRect().width/2,sprite.getTextureRect().height);
 		
@@ -277,7 +279,7 @@ class Blupi
 	
 		if (state.find("move")!=std::string::npos)
 		{
-		    if (abs(destination - now.x) <= 5)
+		    if (abs(destination.x - now.x) <= 5)
 		    {
 		        velocity.x = 0;
 		        if(state =="moveleft")
@@ -285,7 +287,7 @@ class Blupi
 				if(state =="moveright")
 					state = "right";
 					
-				now.x = destination; // Ensure exact position
+				now.x = destination.x; // Ensure exact position
 		        
 		    }
 		}
@@ -334,8 +336,8 @@ class Blupi
 	{
 		
 		action = "none";
-		destination = now.x; 
-		
+		destination.x = now.x; 
+		destination.y = now.y;
 	}
 	
 	
@@ -355,7 +357,7 @@ class Blupi
 	
 	
 	
-	bool possible(int dest)
+	bool possible(Vector2f dest)
 	{
 		//check if path can currently be completed
 		
@@ -366,13 +368,13 @@ class Blupi
 		std::string dir;
 		
 
-		if(now.x > dest)
+		if(now.x > dest.x)
 		{
 			condition = true;
 			dir = "left";
 			increment = -1;	
 		}
-		else if (now.x < dest)
+		else if (now.x < dest.x)
 		{
 			condition = true;
 			increment = 1;
@@ -391,11 +393,11 @@ class Blupi
 		
 			if(dir == "left")
 			{
-				condition = (x > dest);
+				condition = (x > dest.x);
 			}
 			else
 			{
-				condition = (x < dest);
+				condition = (x < dest.x);
 			}
 
 			
@@ -418,15 +420,25 @@ class Blupi
 			
 				
 				
-				
+			float destwidth = water.puddle[index].right - water.puddle[index].left;	
 				
 				
 				
 			if(deep > 20)
 			{
-				if(locomotion != "boat")
+				if(locomotion=="walk")
 				{
-					return false;
+					if(destwidth > maxjumpdist)
+					{
+						return false;
+					}
+				}
+				else
+				{
+					if(locomotion != "boat")
+					{
+						return false;
+					}
 				}
 				
 			}
@@ -458,7 +470,7 @@ class Blupi
 		
 		
 		
-		if(destination == now.x)
+		if(destination.x == now.x)
 			return true;
 		
 		return false;
@@ -906,22 +918,25 @@ class Blupi
 				if(deep > water.depthlimit)
 				{
 				
-				
-				
-					if(water.puddle[index].left!=-1)
+					if(now.y > water.puddle[index].pos.y-20)
 					{
 					
-						int middle = water.puddle[index].left + ((water.puddle[index].right-water.puddle[index].left)/2/*width*/);//left + half-width
+				
+						if(water.puddle[index].left!=-1)
+						{
 						
-						if(now.x > middle)
-						{
-							now.x +=1;
-							Stop();
-						}
-						else
-						{
-							Stop();
-							now.x -=1;
+							int middle = water.puddle[index].left + ((water.puddle[index].right-water.puddle[index].left)/2/*width*/);//left + half-width
+							
+							if(now.x > middle)
+							{
+								now.x += (water.puddle[index].right - now.x)/20;
+								Stop();
+							}
+							else
+							{
+								Stop();
+								now.x -= (now.x - water.puddle[index].left)/20;
+							}
 						}
 					}
 				}
@@ -935,7 +950,7 @@ class Blupi
 				{
 					if(checkGroundNow(ground,now))
 					{	
-						velocity.y = -10;
+						velocity.y = jumpvelo;
 					}
 				}
 			}
@@ -944,6 +959,46 @@ class Blupi
 			if(checkGroundNow(ground,now))
 				rotation = getGroundAngle(ground,now,sprite.getRotation() ,10);
 			
+
+
+
+
+
+
+
+
+
+
+			//get distance of a jump
+			if(maxjumpdist==-1)
+			{
+				Vector2f v;
+				Vector2f p;
+				v.x=speed;
+				v.y=jumpvelo;
+				p.x=0;
+				p.y=0;
+				
+				for(int future=0;future < 1000; future++)
+				{
+					
+					
+					p.y+=v.y;
+					p.x+=v.x;
+					v.y+=gravity;
+					
+					if(p.y >= 0)
+					{
+						maxjumpdist = p.x;
+						break;
+					}
+						
+				}
+			}
+
+
+
+
 			
 			
 		}
@@ -960,6 +1015,9 @@ class Blupi
 			{
 				locomotion="walk";
 				//leave boat there
+				//element[itemref].now.x = now.x;
+				//element[itemref].active=true;
+				
 			}
 			else
 			{
@@ -968,10 +1026,11 @@ class Blupi
 				if(x >= 0 && x < water.width)
 					deep = groundedge(x,water.puddle[index].pos.y) - water.puddle[index].pos.y;
 			
+				int x2 = now.x - water.puddle[index].left;
 				
-				if(x >= 0 && x < water.puddle[index].linepos.size())
+				if(x2 >= 0 && x2 < water.puddle[index].linepos.size())
 				{
-					now.y = water.puddle[index].linepos[x].y;
+					now.y = water.puddle[index].linepos[x2].y;
 				}
 				
 				
@@ -1035,16 +1094,16 @@ class Blupi
 			    if (!busy)
 			    {
 			        // Check if destination is far enough to start moving
-			        if (std::abs(destination - now.x) > 5) // Adjust threshold as needed
+			        if (std::abs(destination.x - now.x) > 5) // Adjust threshold as needed
 			        {
-			            if (destination < now.x)
+			            if (destination.x < now.x)
 			            {
 			            	state = "moveleft";
 							action = "move";
 							velocity.x = -speed;
 						
 			            }
-			            else if (destination > now.x)
+			            else if (destination.x > now.x)
 			            {
 		            		state = "moveright";
 							action = "move";
@@ -1107,7 +1166,7 @@ class Blupi
 		{
 			now = element[haven].now;
 			
-			destination = now.x;
+			destination.x = now.x;
 			sprite.setRotation(element[haven].sprite.getRotation());
 			sprite.setPosition(element[haven].now.x -15,element[haven].now.y - 62);
 			sprite.setTextureRect(IntRect(137,8,29,27));

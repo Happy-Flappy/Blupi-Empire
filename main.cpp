@@ -220,7 +220,8 @@ int main()
 				if(isHost)
 				{
 					playing=true;
-					map.loadMap("level0");
+					if(map.name=="")
+						map.loadMap("level0");
 				}
 			}
 			
@@ -389,6 +390,7 @@ int main()
 	
 			
 			
+			water.draw(window);
 			
 			
 			window.draw(map.ground);
@@ -412,7 +414,6 @@ int main()
 			
 			
 			
-			water.draw(window);
 					
 			taskbar.update(window,map.iground);
 		}

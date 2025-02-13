@@ -24,6 +24,13 @@ bool checkGroundResolve(Image &ground,Vector2f &future,Vector2f &resolve)
 
 
 
+
+
+
+
+
+
+
 bool checkGroundNow(Image &ground,Vector2f now)
 {
 	Vector2f future;
@@ -65,6 +72,7 @@ void Gravity(Sprite &sprite,Image &ground,Vector2f &velocity,Vector2f &now,float
 	
 	
 	
+
 	
 	
 	if(checkGroundResolve(ground,future,resolve))
@@ -78,10 +86,10 @@ void Gravity(Sprite &sprite,Image &ground,Vector2f &velocity,Vector2f &now,float
 	}
 	else
 	{
-
-		now = Vector2f(future.x,future.y);
+		
 		velocity.y += gravity;
 		
+		now = Vector2f(future.x,future.y);
 	}
 	
 	

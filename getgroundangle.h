@@ -58,7 +58,25 @@ int groundedge(int x,int y)
 }
 
 
-
+int getRoof(int x,int y)
+{
+	
+	for(int y2 = y+5; y2 > 0; y2--)
+	{
+		if(y2 < groundmap[x].size())
+		{
+	
+			if(groundmap[x][y2])
+			{
+				std::cout << "top:" << y2 << "\n"; 
+				return y2;
+			
+			}
+		}
+	}		
+	
+	return 0;	
+}
 
 
 

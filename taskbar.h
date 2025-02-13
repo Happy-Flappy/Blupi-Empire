@@ -134,12 +134,12 @@ class Taskbar
 			{
 				if(cursor.released)
 				{
-					if(!blupi[selected].busy && blupi[selected].possible(element[liveitem].now.x))
+					if(!blupi[selected].busy && blupi[selected].possible(element[liveitem].now))
 					{
 						blupi[selected].action = buttons[a];
 						blupi[selected].itemindex = liveitem;
 						if(buttons[a]!="stop drive")
-							blupi[selected].destination = element[liveitem].now.x;
+							blupi[selected].destination = element[liveitem].now;
 					}
 					else
 					{
@@ -197,13 +197,13 @@ class Taskbar
 				if(released)
 				{
 				
-					if(!blupi[selected].busy && blupi[selected].possible((int)MPosition.x))
+					if(!blupi[selected].busy && blupi[selected].possible(MPosition))
 					{
 						if(blupi[selected].state=="moveleft")
 							blupi[selected].state="left";
 						if(blupi[selected].state=="moveright")
 							blupi[selected].state="right";
-						blupi[selected].destination = (int)MPosition.x;
+						blupi[selected].destination = MPosition;
 						
 						
 					}

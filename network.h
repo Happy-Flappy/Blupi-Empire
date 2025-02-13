@@ -111,7 +111,8 @@ class Network {
                         {
                             packet << blupi[a].action;
                             packet << blupi[a].locomotion;
-                            packet << blupi[a].destination;
+                            packet << blupi[a].destination.x;
+                            packet << blupi[a].destination.y;
 						}
                     }
  	            } 
@@ -265,7 +266,8 @@ class Network {
 		                        
 		                        packet >> blupi[a].action;
 		                        packet >> blupi[a].locomotion;
-		                        packet >> blupi[a].destination;
+		                        packet >> blupi[a].destination.x;
+		                        packet >> blupi[a].destination.y;
 								
 								
 		                    }
