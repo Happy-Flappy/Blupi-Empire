@@ -1,6 +1,5 @@
 #include <chrono>
 #include <windows.h>
-
 class Network {
 
     public:
@@ -109,10 +108,35 @@ class Network {
                     {
                         if(blupi[a].color == UserColor) 
                         {
-                            packet << blupi[a].action;
-                            packet << blupi[a].locomotion;
-                            packet << blupi[a].destination.x;
-                            packet << blupi[a].destination.y;
+                        	
+                        	if(blupi[a].action!=blupi[a].laction)
+                        	{
+                        		packet << "action";
+                        		packet << blupi[a].action;	
+								blupi[a].laction = blupi[a].action;
+                        	}
+                        	else
+                        		packet << "none";
+                        	
+							if(blupi[a].locomotion!=blupi[a].llocomotion)
+                        	{
+                        		packet << "locomotion";
+                        		packet << blupi[a].locomotion;	
+								blupi[a].llocomotion = blupi[a].locomotion;
+                        	}
+                        	else
+                        		packet << "none";
+                        	
+							if(blupi[a].destination!=blupi[a].ldestination)
+                        	{
+                        		packet << "destination";
+                        		packet << blupi[a].destination.x;
+								packet << blupi[a].destination.y;	
+								blupi[a].ldestination = blupi[a].destination;
+                        	}
+                        	else
+                        		packet << "none";
+                        	
 						}
                     }
  	            } 
@@ -262,13 +286,22 @@ class Network {
 		                {
 		                    if(blupi[a].color == color) 
 		                    {
-		                    	
-		                        
-		                        packet >> blupi[a].action;
-		                        packet >> blupi[a].locomotion;
-		                        packet >> blupi[a].destination.x;
-		                        packet >> blupi[a].destination.y;
+		                    	std::string ID;
+		                    	packet >> ID;
+		                        if(ID=="action")
+		                        	packet >> blupi[a].action;
 								
+								packet >> ID;
+								if(ID=="locomotion")
+									packet >> blupi[a].locomotion;
+		                        
+								packet >> ID;
+								if(ID=="destination")	
+								{
+									packet >> blupi[a].destination.x;
+		                        	packet >> blupi[a].destination.y;
+								}
+		                        
 								
 		                    }
 		                }

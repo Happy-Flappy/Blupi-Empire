@@ -166,9 +166,11 @@ class Blupi
 	std::string color;
 	
 	Vector2f destination;
+	Vector2f ldestination;
 	float rotation = 0;
 	float gravity = 0.2;
 	Vector2f velocity;
+	Vector2f lvelocity;
 	float speed;
 	int maxjumpdist = -1;
 	int jumpvelo = -10;
@@ -178,11 +180,12 @@ class Blupi
 	bool busy = false;
 	float idledelay = 0;
 	std::string state = "right"; //direction
+	std::string lstate;
 	std::string locomotion="boat"; //form of locomotion such as jeep,boat,walk
-	
+	std::string llocomotion;
 	Element carrying;
 	std::string action="none"; // the action that blupi is currently trying to accomplish
-	
+	std::string laction;
 	
 	SoundBuffer say;
 	

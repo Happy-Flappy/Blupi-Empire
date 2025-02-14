@@ -177,7 +177,7 @@ int main()
 	float parallax;
 	
 	//,Style::Fullscreen
-	RenderWindow window(VideoMode(960+100,540+100),"",Style::Fullscreen);
+	RenderWindow window(VideoMode(960+100,540+100),"");
 	View view;
 	view.reset(FloatRect(0,0,960+100,540+100));
 	
