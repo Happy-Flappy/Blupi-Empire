@@ -9,7 +9,7 @@ class Network {
         std::string hostname = "MAX-PC";
         unsigned short hostport = 12345;
         bool hostknown=false;
-		long long lastTimestamp=0;
+
 	
 
         struct Client {
@@ -49,9 +49,7 @@ class Network {
 	        {
 	            Packet packet;
 	            
-				auto now = std::chrono::system_clock::now();
-  		        auto timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-        		packet << timestamp;
+
 
 				
 				packet << playing;
@@ -72,6 +70,7 @@ class Network {
 		                packet << b.velocity.y;
 		                packet << b.state;
 		                packet << b.rotation;
+		                packet << b.locomotion;	
 		            }
 	            }
 	            
@@ -92,10 +91,7 @@ class Network {
 		        Packet packet;
                 
 				
-				auto now = std::chrono::system_clock::now();
-  		        auto timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-        		packet << timestamp;
-	            
+
 				
 				
 				packet << UserColor;
@@ -108,35 +104,10 @@ class Network {
                     {
                         if(blupi[a].color == UserColor) 
                         {
-                        	
-                        	if(blupi[a].action!=blupi[a].laction)
-                        	{
-                        		packet << "action";
-                        		packet << blupi[a].action;	
-								blupi[a].laction = blupi[a].action;
-                        	}
-                        	else
-                        		packet << "none";
-                        	
-							if(blupi[a].locomotion!=blupi[a].llocomotion)
-                        	{
-                        		packet << "locomotion";
-                        		packet << blupi[a].locomotion;	
-								blupi[a].llocomotion = blupi[a].locomotion;
-                        	}
-                        	else
-                        		packet << "none";
-                        	
-							if(blupi[a].destination!=blupi[a].ldestination)
-                        	{
-                        		packet << "destination";
-                        		packet << blupi[a].destination.x;
-								packet << blupi[a].destination.y;	
-								blupi[a].ldestination = blupi[a].destination;
-                        	}
-                        	else
-                        		packet << "none";
-                        	
+                    		packet << blupi[a].action;	
+							packet << blupi[a].destination.x;
+							packet << blupi[a].destination.y;	
+						
 						}
                     }
  	            } 
@@ -265,17 +236,7 @@ class Network {
 		            
 		            
 				            
-		            long long timestamp;
-		            packet >> timestamp;
-		            
-		            
-		            
-		            if(lastTimestamp > timestamp)
-		            {
-						return;
-		        	}
-		            
-		            lastTimestamp = timestamp;
+
 	
 	                std::string color;
 	                packet >> color;
@@ -286,25 +247,17 @@ class Network {
 		                {
 		                    if(blupi[a].color == color) 
 		                    {
-		                    	std::string ID;
-		                    	packet >> ID;
-		                        if(ID=="action")
-		                        	packet >> blupi[a].action;
-								
-								packet >> ID;
-								if(ID=="locomotion")
-									packet >> blupi[a].locomotion;
-		                        
-								packet >> ID;
-								if(ID=="destination")	
-								{
-									packet >> blupi[a].destination.x;
-		                        	packet >> blupi[a].destination.y;
-								}
-		                        
+		                        packet >> blupi[a].action;
+	                        	packet >> blupi[a].destination.x;
+	                        	packet >> blupi[a].destination.y;
+							
 								
 		                    }
 		                }
+		                
+	
+		                
+		                
 		            } 
 		            else 
 		            {
@@ -327,7 +280,25 @@ class Network {
 		                    newclient.color = color;
 		                    clients.push_back(newclient);
 		                }
+		                
+		                
+	
+		                
 		            }
+		            
+		            
+		            bool clearold=true;
+		                
+	                while(clearold)
+	                {
+						packet.clear();
+		                
+		        	    Socket::Status status = udpsocket.receive(packet, ip, port);
+	    				if(status == Socket::NotReady)
+		        	    {
+		        	    	clearold=false;
+						}
+					}
 		        } 
 		        else 
 		        {
@@ -345,20 +316,8 @@ class Network {
 		        	
 		        	
 		        	
-		        	
-		        	long long timestamp;
-		            packet >> timestamp;
-		            
-		            
-		            
-		            if(lastTimestamp > timestamp)
-		            {
-		            	return;
-		            }
-		            lastTimestamp = timestamp;
-		            
-		        	
-		        	
+
+
 		        	
 		        	
 		        	
@@ -402,11 +361,27 @@ class Network {
 			                packet >> b.velocity.y;
 			                packet >> b.state;
 				            packet >> b.rotation;
+				            packet >> b.locomotion;
 			                
 			                
 			            }
 
 		            }
+		            
+		            
+		            bool clearold=true;
+		                
+	                while(clearold)
+	                {
+						packet.clear();
+		                
+		        	    Socket::Status status = udpsocket.receive(packet, ip, port);
+	    				if(status == Socket::NotReady)
+		        	    {
+		        	    	clearold=false;
+						}
+					}
+		            
 				
 		        }
 		    }

@@ -1,14 +1,14 @@
-ground level0groundshort2.png END
+ground level0/level0groundshort2.png END
 
-background level0sky.png END
+background level0/level0sky.png END
 
-foreground level0grass.png END
+foreground level0/level0grass.png END
 
-floater level0floater.png END
+floater level0/level0floater.png END
 
-atmosphere nature1atmos.ogg END
+atmosphere level0/nature1atmos.ogg END
 
-music MUSIC006.mp3 END
+music level0/MUSIC006.mp3 END
 
 yellow blupi 2068 153 END
 
@@ -30,3 +30,5 @@ water 1550 225 END
 water 2068 225 END
 
 boat 2500 100 END
+
+overlay 0 0 0 0 END

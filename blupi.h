@@ -924,7 +924,16 @@ class Blupi
 					if(now.y > water.puddle[index].pos.y-20)
 					{
 					
-				
+						
+						for(int a=0;a<element.size();a++)
+						{
+						//	if(element[a].type==)
+						}
+						
+//						if(now.x == element)
+//						
+						
+						
 						if(water.puddle[index].left!=-1)
 						{
 						

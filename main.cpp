@@ -235,8 +235,8 @@ int main()
 				{
 					if(view.getCenter().x > (view.getSize().x/2)) 
 					{ 
-						view.move(-3,0); 
-						parallax-=0.1; 
+						view.move(-map.viewspeed,0); 
+						parallax-=map.parallaxspeed; 
 					} 
 				} 
 				
@@ -245,8 +245,8 @@ int main()
 				
 					if(view.getCenter().x < map.tground.getSize().x - (view.getSize().x/2)-1) 
 					{ 
-						view.move(3,0); 
-						parallax+=0.1; 
+						view.move(map.viewspeed,0); 
+						parallax+=map.parallaxspeed; 
 					} 
 				} 
 				
@@ -254,8 +254,8 @@ int main()
 				{
 					if(view.getCenter().x > (view.getSize().x/2)) 
 					{ 
-						view.move(-3,0); 
-						parallax-=0.1; 
+						view.move(-map.viewspeed,0); 
+						parallax-=map.parallaxspeed; 
 					} 
 				} 
 				
@@ -263,8 +263,8 @@ int main()
 				{ 
 					if(view.getCenter().x < map.tground.getSize().x - (view.getSize().x/2)) 
 					{ 
-						view.move(3,0); 
-						parallax+=0.1; 
+						view.move(map.viewspeed,0); 
+						parallax+=map.parallaxspeed; 
 					} 
 				}
 				
@@ -279,12 +279,14 @@ int main()
 				if(view.getCenter().x < view.getSize().x/2)
 				{
 					view.setCenter(view.getSize().x/2,view.getCenter().y);
+					parallax += map.parallaxspeed;
 				}
 				
 				
 				if(view.getCenter().x > map.iground.getSize().x-(view.getSize().x/2)-1)
 				{
 					view.setCenter(map.iground.getSize().x-(view.getSize().x/2)-1,view.getCenter().y);
+					parallax -= map.parallaxspeed;
 				}
 				
 				
@@ -412,13 +414,17 @@ int main()
 			if(map.foreground.getTextureRect().width > 0)	
 				window.draw(map.foreground);
 			
-			
+			if(map.overlay.getFillColor() != Color(0,0,0,0))
+				window.draw(map.overlay);
 			
 					
 			taskbar.update(window,map.iground);
+			
+			
 		}
 		
 		cursor.draw(window);
+		
 		
 		
 		window.display();

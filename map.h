@@ -17,13 +17,14 @@ class Map
 	Sprite foreground;
 	Texture tfloater;
 	Sprite floater;
+	RectangleShape overlay;
 	std::vector <std::string> key;
 	Music music;
 	Music atmosphere;
 	std::string folder;
 	std::string name;
-	
-	
+	float parallaxspeed = 0.1;
+	float viewspeed = 3;
 	
 		
 		
@@ -80,6 +81,17 @@ class Map
 		return result;
 	}
 	
+	
+	// Function to convert a string to a float safely
+	int stringToFloat(std::string str) 
+	{
+		float result=0;
+	    std::stringstream ss(str);
+	    ss >> result;
+		return result;
+	}
+	
+	
 
 	
 	
@@ -109,6 +121,14 @@ class Map
 		{
 			tbackground.loadFromFile(folder + key[1]);
 			background.setTexture(tbackground);
+			
+			if(key.size()>3)
+			{
+				if(key[2]=="scroll%")
+				{
+					parallaxspeed = viewspeed*(stringToFloat(key[3])*0.01);
+				}
+			}
 		}
 		
 		
@@ -256,8 +276,13 @@ class Map
 		
 
 		
-		
-		
+		if(key[0]=="overlay")
+		{
+			//RGBA
+			overlay.setSize(Vector2f(iground.getSize().x,iground.getSize().y));
+			overlay.setPosition(0,0);
+			overlay.setFillColor(Color(stringToInt(key[1]),stringToInt(key[2]),stringToInt(key[3]),stringToInt(key[4])));
+		}
 		
 		
 	

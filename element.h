@@ -87,14 +87,19 @@ class Element
 					
 						int middle = water.puddle[index].left + ((water.puddle[index].right-water.puddle[index].left)/2/*width*/);//left + half-width
 						
+						
+						int width = sprite.getTextureRect().width * 0.85;
+						
 						if(now.x > middle)
 						{
-							now.x = water.puddle[index].right - 30;
+							now.x = water.puddle[index].right - width;
+							now.y = water.puddle[index].linepos[water.puddle[index].linepos.size()-width].y;
 							//sprite.setScale(-1,1);
 						}
 						else
 						{
-							now.x = water.puddle[index].left + 30;
+							now.x = water.puddle[index].left + width;
+							now.y = water.puddle[index].linepos[width].y;
 							//sprite.setScale(1,1);
 						}
 					}
