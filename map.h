@@ -1,6 +1,6 @@
 
 
-
+#include <sstream>
 
 
 
@@ -21,11 +21,11 @@ class Map
 	std::vector <std::string> key;
 	Music music;
 	Music atmosphere;
-	std::string folder;
+	std::string folder = "levels/";
 	std::string name;
 	float parallaxspeed = 0.1;
 	float viewspeed = 3;
-	
+	std::vector<std::string> filepaths;
 		
 		
 		
@@ -37,24 +37,30 @@ class Map
 		
 		
 		
-		folder = "levels/";
+		filepaths.clear();
+		
+		
 		this->name = levelname;
 		
 		
 		
 		
-		
-		
-		
-		
-		
-		
 		std::ifstream file;
-		file.open("levels/" + name + ".txt");
+		file.open(folder + name);
+		
+		
+		
+		
+		
 		
 		
 		if(file.is_open())
-		{	
+		{
+		
+		
+			filepaths.push_back(name);
+		
+			
 			std::string word;
 			while(file >> word)
 			{
@@ -66,10 +72,21 @@ class Map
 					key.clear();
 				}	
 			}
+			
+			
+		
+		}
+		else
+		{
+			//fail message
 		} 
 		file.close();
 		
 	}
+	
+	
+	
+
 	
 
 	// Function to convert a string to an int safely
@@ -106,9 +123,14 @@ class Map
 		
 		if(key[0]=="ground")
 		{
-			if(!iground.loadFromFile(folder + key[1]))
+			if(iground.getSize().x==0)
 			{
-				iground.create(1920,540,Color::Transparent);
+			
+				if(!iground.loadFromFile(folder + key[1]))
+				{
+					iground.create(1920,540,Color::Transparent);
+				}
+				filepaths.push_back(key[1]);
 			}
 			tground.loadFromImage(iground);
 			ground.setTexture(tground);
@@ -119,8 +141,12 @@ class Map
 		
 		if(key[0]=="background")
 		{
-			tbackground.loadFromFile(folder + key[1]);
+			if(tbackground.getSize().x==0)
+				tbackground.loadFromFile(folder + key[1]);
+			
+			filepaths.push_back(key[1]);
 			background.setTexture(tbackground);
+			
 			
 			if(key.size()>3)
 			{
@@ -134,7 +160,10 @@ class Map
 		
 		if(key[0]=="foreground")
 		{
-			tforeground.loadFromFile(folder + key[1]);
+			if(tforeground.getSize().x==0)
+				tforeground.loadFromFile(folder + key[1]);
+			
+			filepaths.push_back(key[1]);
 			foreground.setTexture(tforeground);
 			
 		}
@@ -143,7 +172,10 @@ class Map
 		
 		if(key[0]=="floater")
 		{
-			tfloater.loadFromFile(folder + key[1]);
+			if(tfloater.getSize().x==0)
+				tfloater.loadFromFile(folder + key[1]);
+			
+			filepaths.push_back(key[1]);
 			floater.setTexture(tfloater);
 			floater.setPosition(0,-floater.getTextureRect().height);
 		}
@@ -152,17 +184,31 @@ class Map
 		if(key[0]=="atmosphere")
 		{
 			atmosphere.stop();
-			atmosphere.openFromFile(folder + key[1]);
-			atmosphere.setLoop(true);
-			atmosphere.play();
+			if(atmosphere.getStatus()!=Sound::Status::Playing)
+			{
+			
+				atmosphere.openFromFile(folder + key[1]);
+				atmosphere.setLoop(true);
+				atmosphere.play();
+				
+				
+				filepaths.push_back(key[1]);
+			}
 		}
 		
 		if(key[0]=="music")
 		{
-			music.stop();
-			music.openFromFile(folder + key[1]);
-			music.setLoop(true);
-			music.play();
+			if(music.getStatus()!=Sound::Status::Playing)
+			{
+			
+				music.stop();
+				music.openFromFile(folder + key[1]);
+				music.setLoop(true);
+				music.play();
+				
+				
+				filepaths.push_back(key[1]);
+			}
 		}
 		
 		
@@ -175,6 +221,8 @@ class Map
 		
 		if(key[1]=="blupi")
 		{
+			
+			std::cout <<"blupi\n";
 			Blupi newblupi;
 			newblupi.ID = blupi.size();
 			newblupi.now=Vector2f(stringToInt(key[2]),stringToInt(key[3]));
@@ -278,10 +326,14 @@ class Map
 		
 		if(key[0]=="overlay")
 		{
-			//RGBA
-			overlay.setSize(Vector2f(iground.getSize().x,iground.getSize().y));
-			overlay.setPosition(0,0);
-			overlay.setFillColor(Color(stringToInt(key[1]),stringToInt(key[2]),stringToInt(key[3]),stringToInt(key[4])));
+			if(overlay.getSize().x==0)
+			{
+			
+				//RGBA
+				overlay.setSize(Vector2f(iground.getSize().x,iground.getSize().y));
+				overlay.setPosition(0,0);
+				overlay.setFillColor(Color(stringToInt(key[1]),stringToInt(key[2]),stringToInt(key[3]),stringToInt(key[4])));
+			}
 		}
 		
 		

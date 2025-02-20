@@ -188,7 +188,8 @@ int main()
 	window.setMouseCursorVisible(false);
 	
 
-
+	
+	
 	
 	while(window.isOpen())
 	{
@@ -221,13 +222,13 @@ int main()
 				{
 					playing=true;
 					if(map.name=="")
-						map.loadMap("level0");
+						map.loadMap("level0/level0.txt");
 				}
 			}
 			
 			
 			
-			if(playing)
+			if(playing && map.name!="")
 			{
 			
 			
@@ -358,6 +359,14 @@ int main()
 		
 		if(playing)
 		{
+		
+		
+		
+		
+			
+			
+			
+		
 		
 			if(map.background.getTextureRect().width > 0)	
 				window.draw(map.background);

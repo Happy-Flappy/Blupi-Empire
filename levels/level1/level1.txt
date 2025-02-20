@@ -1,0 +1,9 @@
+background level1/background.png scroll% 100 END
+
+ground level1/ground.png END
+
+atmosphere level1/nature1atmos.ogg END
+
+yellow blupi 100 10 END
+
+
