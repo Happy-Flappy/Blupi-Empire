@@ -32,7 +32,7 @@ class Map
 		
 		
 		
-	void loadMap(std::string levelname)
+	bool loadMap(std::string levelname)
 	{
 		
 		
@@ -79,8 +79,11 @@ class Map
 		else
 		{
 			//fail message
+			return false;
 		} 
 		file.close();
+		
+		return true;
 		
 	}
 	

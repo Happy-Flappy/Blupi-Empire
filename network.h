@@ -12,7 +12,7 @@ class Network {
         std::string hostname = "MAX-PC";
         unsigned short hostport = 12345;
         bool hostknown=false;
-		bool loadingLevel = false;
+		bool allLoaded = false;
 	
 
         struct Client {
@@ -245,7 +245,7 @@ class Network {
 					packet << "noLoadLevel";
 
 
-				
+				packet << allLoaded;
 				packet << playing;
 	            
 	            if(playing) 
@@ -346,7 +346,7 @@ class Network {
 
 
 
-		void getData() 
+		bool getData() 
 		{
 		   
 			if (!hostknown)
@@ -357,9 +357,8 @@ class Network {
 					
 					if(hostip == IpAddress::None)
 					{
-//				    	Message("Failed: Unable to access the PC IP address.");
-						
-						return;
+						std::cout << "Failed: Unable to access the PC IP address.";
+						return false;
 					}
 					
 					
@@ -377,32 +376,30 @@ class Network {
 						
 						
 						
-						std::cout << pcname;
-						std::cout << hostname;
 						if(pcname==hostname)
 						{
-				            std::cerr << "Running in host mode (same computer)" << std::endl;
 				            // Try to bind to host port
 				            if (udpsocket.bind(hostport) != Socket::Done)
 				            {
-				                std::cerr << "Failed to bind host port, falling back to client mode" << std::endl;
+				                std::cout << "\nRunning in client mode (same computer)" << std::endl;
 				                isHost = false;
 				                udpsocket.bind(Socket::AnyPort);
 				            }
 				            else
 				            {
+								std::cout << "\nRunning in host mode (same computer)" << std::endl;
 				                isHost = true;
 				            }							
 						}
 						else
 						{
-						    std::cout << "Running in client mode (different computer)" << std::endl;
+						    std::cout << "\nRunning in client mode (different computer)" << std::endl;
 				            // Client mode - bind to any available port
 				            isHost = false;
 				            if (udpsocket.bind(Socket::AnyPort) != Socket::Done)
 				            {
-				                std::cerr << "Failed to bind client port" << std::endl;
-				                return;
+				                std::cout << "\nFailed to bind client port." << std::endl;
+				                return false;
 				            }	
 						}
 						
@@ -423,7 +420,7 @@ class Network {
 	        	    Socket::Status status = udpsocket.receive(packet, ip, port);
     				if(status == Socket::NotReady)
 	        	    {
-	        	    	return;
+	        	    	return false;
 					}    
 		            
 		            
@@ -527,7 +524,7 @@ class Network {
 	        	    Socket::Status status = udpsocket.receive(packet, ip, port);
     				if(status == Socket::NotReady)
 	        	    {
-	        	    	return;
+	        	    	return false;
 					}
 		        	
 		        	
@@ -543,7 +540,7 @@ class Network {
 					}
 		        	
 		        	
-	        	
+	        		packet >> allLoaded;
 		            packet >> playing;
 		                
 		                
@@ -598,7 +595,7 @@ class Network {
 				
 		        }
 		    }
-		    
+		    return true;
 		}
 		
 		

@@ -176,17 +176,94 @@ int main()
 	
 	float parallax;
 	
-	//,Style::Fullscreen
-	RenderWindow window(VideoMode(960+100,540+100),"");
-	View view;
-	view.reset(FloatRect(0,0,960+100,540+100));
+
 	
 	Time timesincelastupdate = Time::Zero;
 	Time timeperframe = seconds(1.f/60.f);
 	Clock clock;
 	
-	window.setMouseCursorVisible(false);
+	bool settingUp = true;
 	
+	
+	while(settingUp)
+	{
+
+		std::cout << "\nHostPcName:";
+		std::cin >> network.hostname;
+		std::cout << "\nUserColor:";
+		std::cin >> UserColor;
+		
+			
+			
+		if(!network.getData())
+		{
+			if(!network.hostknown)
+			{
+				std::cout << "\nFAILED: Could not find Host Identity.";
+				continue;
+			}
+			else
+			{
+				//normal behavior. There are checks to make sure no attempts are made to load data when a socket fails to receive a packet because the packet was never sent.These checks return false if no data was sent to the clients to be received.
+			}
+		}
+		network.sendData();
+		
+		if(isHost)
+		{
+		
+			network.allLoaded=true;
+			for(int a=0;a<network.clients.size();a++)
+			{
+				if(!network.clients[a].loadedLevel)
+				{
+					network.allLoaded=false;
+				}
+			}
+		}		
+		
+		
+		
+		if(isHost && network.hostknown && map.name=="")
+		{
+			std::cout << "\nLevelScriptFile:";
+			std::cin >> map.name;
+			
+			if(!map.loadMap(map.name))
+			{
+				map.name="";
+				std::cout << "\n FAILED! Level could not be loaded sucessfully.";
+				
+				network.allLoaded=false;
+				settingUp=true;
+				continue;
+			}
+			else
+			{
+				std::cout << "\nPress Enter When You Are Ready To Play";
+				std::string s;
+				std::cin >> s;
+				playing=true;
+			}
+			
+		}
+		
+		
+		if(network.allLoaded)
+		{
+			settingUp=false;
+		}
+	}
+	
+
+
+
+
+	//,Style::Fullscreen
+	RenderWindow window(VideoMode(960+100,540+100),"");
+	View view;
+	view.reset(FloatRect(0,0,960+100,540+100));
+	window.setMouseCursorVisible(false);
 
 	
 	
@@ -227,10 +304,11 @@ int main()
 			}
 			
 			
+
 			
-			if(playing && map.name!="")
+			
+			if(network.allLoaded)
 			{
-			
 			
 				if(Keyboard::isKeyPressed(Keyboard::Left)) 
 				{
@@ -357,7 +435,7 @@ int main()
 		
 		window.clear(Color::Cyan);
 		
-		if(playing)
+		if(network.allLoaded)
 		{
 		
 		
