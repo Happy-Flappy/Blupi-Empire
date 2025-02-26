@@ -1,0 +1,62 @@
+
+
+#ifndef SETUPSCREEN
+#define SETUPSCREEN
+
+
+
+class SetupScreen
+{
+	public:
+	
+	RenderWindow window(VideoMode(960+100,540+100),"");//,Style::Fullscreen);
+	View view;
+	bool quitAll=false;
+	Sprite decor;
+	
+	
+	SetupScreen()
+	{
+		view.reset(FloatRect(0,0,960,540));
+		window.setMouseCursorVisible(false);
+		decor.setTexture(textures.decor016);
+	}
+	
+	
+	void loop()
+	{
+		while(window.isOpen())
+		{
+			Event e;
+			while(window.pollEvent(e))
+			{
+				if(e.type==Event::Closed)
+				{
+					window.close();
+					quitAll=true;
+				}
+			}
+			
+			
+			
+			
+			window.clear();
+			window.draw(decor);
+			
+			
+			window.display();
+			
+			
+		}
+	}
+	
+		
+};
+
+
+#endif
+
+
+
+
+

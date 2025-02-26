@@ -9,11 +9,11 @@ class Network {
         UdpSocket udpsocket;
         IpAddress hostip;
         std::string pcname;
-        std::string hostname = "MAX-PC";
+        std::string hostname = "";
         unsigned short hostport = 12345;
         bool hostknown=false;
 		bool allLoaded = false;
-	
+		int loadPercent=0;
 
         struct Client {
             IpAddress ip;
@@ -56,6 +56,7 @@ class Network {
 		    packet.clear();
 		    packet.append(fileData.data(), fileData.size());
 		    socket.send(packet);
+		    
 		
 		}
 		
@@ -90,13 +91,10 @@ class Network {
 
 
 			std::filesystem::create_directories(folder + path);
-			std::cout <<"Create directory ("<<folder + path + fileName<< ")\n";
 
 						
 				
 
-		    // Save the file to the new folder
-		    std::cout <<"Output file("<< folder + path + fileName << ")\n";
 		    std::ofstream outFile(folder + path + fileName, std::ios::binary);
 		    outFile.write(fileData.data(),fileData.size());
 		    outFile.close();
@@ -119,14 +117,20 @@ class Network {
 			packet << map.filepaths.size();//that number includes the script file since filepath size is more than literal size by 1.
 			socket.send(packet);
 			
+			system("cls");
+			std::cout << "Sending Level Data to clients> ";
+			
+			std::cout << ".";
 			sendFile(socket,map.name);//send script file
 			
 			for(int a=0;a<map.filepaths.size();a++)
 			{
-			
+				std::cout << ".";
 				sendFile(socket,map.filepaths[a]);
 			}
 			
+			
+			system("cls");
 		}
 		
 		
@@ -183,25 +187,49 @@ class Network {
 		    packet.clear();
 		    
 		    
+		    system("cls");
+		    
+		    
+		    int percent;
+		    
+			percent = 100 * static_cast<double>(1) / files;
+		    
+			loadPercent = percent;	
+		    
 		    receiveFile(socket,folder);
 		    
+		   
 		    
 		    std::vector<std::string> filename;
 		    for(int a=0;a<files;a++)
 		    {
-				filename.push_back(receiveFile(socket,folder)); 
-				std::cout << "Received File ("<<filename[filename.size()-1]<<")\n";
+				percent = 100 * static_cast<double>(a + 1) / files;
+		    	
+		    	
+				loadPercent = percent;	
+		    
+				filename.push_back(receiveFile(socket,folder));
+
 			}
 			
-			
+			if(percent==100)
+			{
+				loadPercent=200;
+			}
 			
 			map.folder = folder;
 		    
 		    
+		    if(!map.loadMap(filename[0]))
+		    {
+		    	loadPercent=-1;
+			}
 		    
-		    map.loadMap(filename[0]);
 		    
 			}
+			
+			system("cls");
+
 		}
 		
 		
@@ -272,6 +300,20 @@ class Network {
   
 	            
 	            
+	            //send awareness of other clients.
+	            
+	            
+	            packet << clients.size(); 
+	            
+	            for(int a=0;a<clients.size();a++)
+	            {
+	            	packet << clients[a].color;
+	            	packet << clients[a].loadedLevel;
+				}
+	            
+	            
+	            
+	            
   				for(const auto& client : clients)
 		        {
 		            udpsocket.send(packet, client.ip, client.port);
@@ -300,7 +342,7 @@ class Network {
                     		packet << blupi[a].action;	
 							packet << blupi[a].destination.x;
 							packet << blupi[a].destination.y;	
-						
+							packet << blupi[a].keyinput;
 						}
                     }
  	            } 
@@ -355,11 +397,6 @@ class Network {
 				{
 					hostip = IpAddress(hostname);
 					
-					if(hostip == IpAddress::None)
-					{
-						std::cout << "Failed: Unable to access the PC IP address.";
-						return false;
-					}
 					
 					
 					if(hostip != IpAddress::None)
@@ -381,24 +418,20 @@ class Network {
 				            // Try to bind to host port
 				            if (udpsocket.bind(hostport) != Socket::Done)
 				            {
-				                std::cout << "\nRunning in client mode (same computer)" << std::endl;
 				                isHost = false;
 				                udpsocket.bind(Socket::AnyPort);
 				            }
 				            else
 				            {
-								std::cout << "\nRunning in host mode (same computer)" << std::endl;
-				                isHost = true;
+							   isHost = true;
 				            }							
 						}
 						else
 						{
-						    std::cout << "\nRunning in client mode (different computer)" << std::endl;
-				            // Client mode - bind to any available port
+						    // Client mode - bind to any available port
 				            isHost = false;
 				            if (udpsocket.bind(Socket::AnyPort) != Socket::Done)
 				            {
-				                std::cout << "\nFailed to bind client port." << std::endl;
 				                return false;
 				            }	
 						}
@@ -463,7 +496,7 @@ class Network {
 		                        packet >> blupi[a].action;
 	                        	packet >> blupi[a].destination.x;
 	                        	packet >> blupi[a].destination.y;
-							
+								packet >> blupi[a].keyinput;
 								
 		                    }
 		                }
@@ -476,11 +509,13 @@ class Network {
 		            {
 		
 		                bool known = false;
+						int ID=-1;
 		                for(int a = 0; a < clients.size(); a++) 
 		                {
 		                    if(clients[a].ip == ip) 
 		                    {
 		                        known = true;
+		                        ID=a;
 		                        break;
 		                    }
 		                }
@@ -492,8 +527,14 @@ class Network {
 		                    newclient.port = port;
 		                    newclient.color = color;
 		                    clients.push_back(newclient);
+		                    
+							std::cout << "\nClient "<< clients.size() << " Joined!";
+			
 		                }
-		                
+		                else
+		                {
+		                	clients[ID].color = color;
+						}
 		                
 	
 		                
@@ -577,6 +618,27 @@ class Network {
 			            }
 
 		            }
+		            
+		            
+		            
+		            int clientsize;
+		            packet >> clientsize;
+		            
+		            for(int a=0;a<clientsize;a++)
+		            {
+		            	std::string color;
+		            	bool loaded;
+		            	packet >> color;
+		            	packet >> loaded;
+		            	
+						if(clientsize > clients.size())
+						{
+							Client newc;
+		            		newc.color=color;
+		            		newc.loadedLevel=loaded;
+		            		clients.push_back(newc);
+		            	}
+					}
 		            
 		            
 		            bool clearold=true;

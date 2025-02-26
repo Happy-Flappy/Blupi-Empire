@@ -225,7 +225,6 @@ class Map
 		if(key[1]=="blupi")
 		{
 			
-			std::cout <<"blupi\n";
 			Blupi newblupi;
 			newblupi.ID = blupi.size();
 			newblupi.now=Vector2f(stringToInt(key[2]),stringToInt(key[3]));

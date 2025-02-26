@@ -55,6 +55,7 @@ bool playing;
 
 #include "network.h"
 #include <thread>
+#include "SetupScreen.h"
 
 using namespace sf;
 
@@ -182,85 +183,160 @@ int main()
 	Time timeperframe = seconds(1.f/60.f);
 	Clock clock;
 	
-	bool settingUp = true;
 	
+	SetupScreen setup;
 	
-	while(settingUp)
-	{
-
-		std::cout << "\nHostPcName:";
-		std::cin >> network.hostname;
-		std::cout << "\nUserColor:";
-		std::cin >> UserColor;
-		
-			
-			
-		if(!network.getData())
-		{
-			if(!network.hostknown)
-			{
-				std::cout << "\nFAILED: Could not find Host Identity.";
-				continue;
-			}
-			else
-			{
-				//normal behavior. There are checks to make sure no attempts are made to load data when a socket fails to receive a packet because the packet was never sent.These checks return false if no data was sent to the clients to be received.
-			}
-		}
-		network.sendData();
-		
-		if(isHost)
-		{
-		
-			network.allLoaded=true;
-			for(int a=0;a<network.clients.size();a++)
-			{
-				if(!network.clients[a].loadedLevel)
-				{
-					network.allLoaded=false;
-				}
-			}
-		}		
-		
-		
-		
-		if(isHost && network.hostknown && map.name=="")
-		{
-			std::cout << "\nLevelScriptFile:";
-			std::cin >> map.name;
-			
-			if(!map.loadMap(map.name))
-			{
-				map.name="";
-				std::cout << "\n FAILED! Level could not be loaded sucessfully.";
-				
-				network.allLoaded=false;
-				settingUp=true;
-				continue;
-			}
-			else
-			{
-				std::cout << "\nPress Enter When You Are Ready To Play";
-				std::string s;
-				std::cin >> s;
-				playing=true;
-			}
-			
-		}
-		
-		
-		if(network.allLoaded)
-		{
-			settingUp=false;
-		}
-	}
+	setup.loop();
 	
+	if(setup.quitAll)
+		return 0;
+	
+//	bool settingUp = true;
+//	
+//	RenderWindow setupWindow(VideoMode(960+100,540+100),"");//,Style::Fullscreen);
+//	View setupview;
+//	setupview.reset(FloatRect(0,0,960+100,540+100));
+//	setupWindow.setMouseCursorVisible(false);	
+//	
+//	
+//	
+//	while(settingUp)
+//	{
+//
+//
+//
+//		Event e;
+//		while(setupWindow.pollEvent(e))
+//		{
+//			if(e.type==Event::Closed)
+//				return 0;
+//		}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//		if(!network.hostknown)
+//		{
+//			std::cout << "\nHostPcName:";
+//			std::cin >> network.hostname;
+//		}
+//			
+//		if(UserColor!="yellow" && UserColor!="green" && UserColor!="blue" && UserColor!="orange")
+//		{
+//			std::cout << "\nUserColor:";
+//			std::cin >> UserColor;
+//		}
+//		
+//		if(UserColor!="yellow" && UserColor!="green" && UserColor!="blue" && UserColor!="orange")
+//		{
+//			continue;
+//		}
+//			
+//			
+//			
+//		network.getData();
+//
+//		network.sendData();
+//		
+//		
+//		static bool playcount=true;
+//		if(isHost && playcount)
+//		{
+//			std::cout << "Press (A) when all players are connected.";
+//			playcount=false;
+//		}
+//		
+//		if(isHost && network.hostknown && map.name=="" &&  Keyboard::isKeyPressed(Keyboard::A) && setupWindow.hasFocus())
+//		{
+//			
+//			std::cout << "\nStart Level Script (Only enter if ready to play):";
+//			std::cin >> map.name;
+//			
+//			if(!map.loadMap(map.name))
+//			{
+//				map.name="";
+//				std::cout << "\n FAILED! Level could not be loaded sucessfully.";
+//				
+//				network.allLoaded=false;
+//				settingUp=true;
+//				continue;
+//			}
+//			else
+//			{
+//				if(network.clients.size()==0)
+//				{
+//					system("cls");
+//					network.allLoaded=true;
+//					
+//				}
+//			}
+//		}
+//		
+//		
+//		
+//		
+//		for(int a=0;a<network.clients.size();a++)
+//		{
+//			network.allLoaded=true;
+//			if(!network.clients[a].loadedLevel)
+//			{
+//				network.allLoaded=false;
+//			}
+//			
+//			
+//			
+//		}
+//		
+//		
+//		
+//		
+//		if(isHost && network.hostknown && map.name!="" && network.allLoaded)
+//		{
+//			if(!playing)
+//				system("pause");
+//			playing=true;	
+//			
+//		}
+//		
+//		
+//		
+//		
+//		if(playing)
+//		{
+//			network.allLoaded=true;
+//			settingUp=false;
+//		}
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		setupWindow.setView(setupview);
+//		setupWindow.clear();
+//		
+//		
+//		
+//		setupWindow.display();
+//	}
+//	
+//
+//	setupWindow.close();
 
 
 
 
 	//,Style::Fullscreen
-	RenderWindow window(VideoMode(960+100,540+100),"");
+	RenderWindow window(VideoMode(960+100,540+100),"",Style::Fullscreen);
 	View view;
 	view.reset(FloatRect(0,0,960+100,540+100));
 	window.setMouseCursorVisible(false);
@@ -293,115 +369,102 @@ int main()
 			
 			
 			
-			if(Keyboard::isKeyPressed(Keyboard::Left))
-			{
-				if(isHost)
-				{
-					playing=true;
-					if(map.name=="")
-						map.loadMap("level0/level0.txt");
-				}
-			}
-			
-			
-
-			
-			
-			if(network.allLoaded)
-			{
-			
-				if(Keyboard::isKeyPressed(Keyboard::Left)) 
-				{
-					if(view.getCenter().x > (view.getSize().x/2)) 
-					{ 
-						view.move(-map.viewspeed,0); 
-						parallax-=map.parallaxspeed; 
-					} 
-				} 
-				
-				if(Keyboard::isKeyPressed(Keyboard::Right)) 
-				{
-				
-					if(view.getCenter().x < map.tground.getSize().x - (view.getSize().x/2)-1) 
-					{ 
-						view.move(map.viewspeed,0); 
-						parallax+=map.parallaxspeed; 
-					} 
-				} 
-				
-				if(Mouse::getPosition(window).x < window.getSize().x/32 && Mouse::getPosition(window).x >= 0) 
-				{
-					if(view.getCenter().x > (view.getSize().x/2)) 
-					{ 
-						view.move(-map.viewspeed,0); 
-						parallax-=map.parallaxspeed; 
-					} 
-				} 
-				
-				if(Mouse::getPosition(window).x > window.getSize().x - (window.getSize().x/32) && Mouse::getPosition(window).x <= window.getSize().x) 
-				{ 
-					if(view.getCenter().x < map.tground.getSize().x - (view.getSize().x/2)) 
-					{ 
-						view.move(map.viewspeed,0); 
-						parallax+=map.parallaxspeed; 
-					} 
-				}
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				if(view.getCenter().x < view.getSize().x/2)
-				{
-					view.setCenter(view.getSize().x/2,view.getCenter().y);
-					parallax += map.parallaxspeed;
-				}
-				
-				
-				if(view.getCenter().x > map.iground.getSize().x-(view.getSize().x/2)-1)
-				{
-					view.setCenter(map.iground.getSize().x-(view.getSize().x/2)-1,view.getCenter().y);
-					parallax -= map.parallaxspeed;
-				}
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				map.background.setPosition(view.getCenter().x-(view.getSize().x/2)-int(parallax),0);
-				
-				
-				
-				getTopHoveredLayer();
-				
-				
-				for(auto& b : blupi)
-					b.update(map.iground);
-			
-				
-				for(int a=0;a < element.size();a++)
-				{
-					element[a].ID=a;
-					element[a].update(map.iground,blupi[selected].locomotion);
-				}
-				
-				map.floater.move(0,-1);
 	
-				water.update(map.iground);
-				
+			
 
-				
-				
-					
+			
+		
+			if(Keyboard::isKeyPressed(Keyboard::Left)) 
+			{
+				if(view.getCenter().x > (view.getSize().x/2)) 
+				{ 
+					view.move(-map.viewspeed,0); 
+					parallax-=map.parallaxspeed; 
+				} 
+			} 
+			
+			if(Keyboard::isKeyPressed(Keyboard::Right)) 
+			{
+			
+				if(view.getCenter().x < map.tground.getSize().x - (view.getSize().x/2)-1) 
+				{ 
+					view.move(map.viewspeed,0); 
+					parallax+=map.parallaxspeed; 
+				} 
+			} 
+			
+			if(Mouse::getPosition(window).x < window.getSize().x/32 && Mouse::getPosition(window).x >= 0) 
+			{
+				if(view.getCenter().x > (view.getSize().x/2)) 
+				{ 
+					view.move(-map.viewspeed,0); 
+					parallax-=map.parallaxspeed; 
+				} 
+			} 
+			
+			if(Mouse::getPosition(window).x > window.getSize().x - (window.getSize().x/32) && Mouse::getPosition(window).x <= window.getSize().x) 
+			{ 
+				if(view.getCenter().x < map.tground.getSize().x - (view.getSize().x/2)) 
+				{ 
+					view.move(map.viewspeed,0); 
+					parallax+=map.parallaxspeed; 
+				} 
 			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			if(view.getCenter().x < view.getSize().x/2)
+			{
+				view.setCenter(view.getSize().x/2,view.getCenter().y);
+				parallax += map.parallaxspeed;
+			}
+			
+			
+			if(view.getCenter().x > map.iground.getSize().x-(view.getSize().x/2)-1)
+			{
+				view.setCenter(map.iground.getSize().x-(view.getSize().x/2)-1,view.getCenter().y);
+				parallax -= map.parallaxspeed;
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			map.background.setPosition(view.getCenter().x-(view.getSize().x/2)-int(parallax),0);
+			
+			
+			
+			getTopHoveredLayer();
+			
+			
+			for(auto& b : blupi)
+				b.update(map.iground);
+		
+			
+			for(int a=0;a < element.size();a++)
+			{
+				element[a].ID=a;
+				element[a].update(map.iground,blupi[selected].locomotion);
+			}
+			
+			map.floater.move(0,-1);
+
+			water.update(map.iground);
+			
+
+			
+			
+					
 			
 			
 			
@@ -409,17 +472,6 @@ int main()
 			network.sendData();
 			
 			
-			
-			
-		
-			if(UserColor=="none")
-			{
-				if(Keyboard::isKeyPressed(Keyboard::Y))
-					UserColor = "yellow";
-				if(Keyboard::isKeyPressed(Keyboard::B))
-					UserColor = "blue";
-					
-			}
 			
 		
 			
@@ -435,80 +487,75 @@ int main()
 		
 		window.clear(Color::Cyan);
 		
-		if(network.allLoaded)
+
+		
+		
+			
+			
+		
+	
+	
+		if(map.background.getTextureRect().width > 0)	
+			window.draw(map.background);
+		
+		
+		
+		if(map.floater.getTextureRect().width > 0)
 		{
-		
-		
-		
-		
 			
-			
-			
-		
-		
-			if(map.background.getTextureRect().width > 0)	
-				window.draw(map.background);
-			
-			
-			
-			if(map.floater.getTextureRect().width > 0)
+			if(map.floater.getPosition().y + map.floater.getTextureRect().height + 5 < 0)
 			{
-				
-				if(map.floater.getPosition().y + map.floater.getTextureRect().height + 5 < 0)
-				{
-					map.floater.setPosition(rand() % map.iground.getSize().x,map.iground.getSize().y + 50);
-				}
-				
-				
-				
-				
-				window.draw(map.floater);
+				map.floater.setPosition(rand() % map.iground.getSize().x,map.iground.getSize().y + 50);
 			}
 			
-			for(int a=0;a<element.size();a++){
-				Layer newlayer;
-				newlayer.ID = a;
-				newlayer.layer = layers.size(); 
-				newlayer.type = "element";
-				if(element[a].active)
-				{
-					layers.push_back(newlayer);
-					element[a].draw(window);
-				}
-			}
-	
 			
 			
-			water.draw(window);
 			
-			
-			window.draw(map.ground);
-	
-	
-	
-			for(int a=0;a<blupi.size();a++)
-			{
-				Layer newlayer;
-				newlayer.ID = a;
-				newlayer.layer = layers.size(); 
-				newlayer.type = "blupi";
-				layers.push_back(newlayer);
-				
-				blupi[a].draw(window);
-			}
-			
-				
-			if(map.foreground.getTextureRect().width > 0)	
-				window.draw(map.foreground);
-			
-			if(map.overlay.getFillColor() != Color(0,0,0,0))
-				window.draw(map.overlay);
-			
-					
-			taskbar.update(window,map.iground);
-			
-			
+			window.draw(map.floater);
 		}
+		
+		for(int a=0;a<element.size();a++){
+			Layer newlayer;
+			newlayer.ID = a;
+			newlayer.layer = layers.size(); 
+			newlayer.type = "element";
+			if(element[a].active)
+			{
+				layers.push_back(newlayer);
+				element[a].draw(window);
+			}
+		}
+
+		
+		
+		water.draw(window);
+		
+		
+		window.draw(map.ground);
+
+
+
+		for(int a=0;a<blupi.size();a++)
+		{
+			Layer newlayer;
+			newlayer.ID = a;
+			newlayer.layer = layers.size(); 
+			newlayer.type = "blupi";
+			layers.push_back(newlayer);
+			
+			blupi[a].draw(window);
+		}
+		
+			
+		if(map.foreground.getTextureRect().width > 0)	
+			window.draw(map.foreground);
+		
+		if(map.overlay.getFillColor() != Color(0,0,0,0))
+			window.draw(map.overlay);
+		
+				
+		taskbar.update(window,map.iground);
+		
 		
 		cursor.draw(window);
 		

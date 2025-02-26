@@ -15,6 +15,10 @@ class Textures
 	Texture element;
 	Texture explo;
 	Texture pelement;
+	Texture decor016;
+	Font comic;
+	Font comicbd;
+	Font comicz;
 	
 	
 	void Clean(std::string dir,Texture &t)
@@ -62,10 +66,8 @@ class Textures
 		blupigreen.setSmooth(true);
 		element.setSmooth(true);
 		explo.setSmooth(true);
-		
-		
-		
-		
+		decor016.loadFromFile("ASSETS/DECOR016.PNG");
+		comic.loadFromFile("ASSETS/ComicMono.ttf");
 		
 	}
 }textures;

@@ -186,6 +186,7 @@ class Blupi
 	Element carrying;
 	std::string action="none"; // the action that blupi is currently trying to accomplish
 	std::string laction;
+	std::string keyinput="none";
 	
 	SoundBuffer say;
 	
@@ -958,7 +959,7 @@ class Blupi
 
 			if(ID==selected)
 			{
-				if(Keyboard::isKeyPressed(Keyboard::Up))
+				if(keyinput=="up")
 				{
 					if(checkGroundNow(ground,now))
 					{	
@@ -1076,7 +1077,23 @@ class Blupi
 		
 			sprite.setPosition(now.x,now.y - 35);
 		
-		
+			
+			
+			
+			if(Keyboard::isKeyPressed(Keyboard::Up))
+			{
+				keyinput="up";
+			}
+			else
+			{
+				keyinput="none";
+			}
+			
+			
+			
+			
+			
+			
 		
 			if(isHost)
 			{
