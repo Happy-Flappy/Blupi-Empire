@@ -60,7 +60,7 @@ class Element
 			Gravity(sprite,ground,velocity,now,gravity);
 			
 			
-			sprite.setRotation(getGroundAngle(ground,now, sprite.getRotation() , sprite.getTextureRect().width/2 ));
+			sprite.setRotation(getGroundAngle(ground,now, sprite.getRotation() , 10 ));
 			
 			
 			
@@ -119,15 +119,15 @@ class Element
 			
 			
 		
-			if(sprite.getGlobalBounds().contains(MPosition) && toplayer.type=="element" && toplayer.ID == ID)
+			if(toplayer.type=="element" && toplayer.ID == ID)
 			{
-			
+				std::cout << "Hover over "<< type << "\n";
 				static bool released=true;
 				if(Mouse::isButtonPressed(Mouse::Left))
 				{
 					if(released)
 					{
-						
+						std::cout<< "click element\n";
 						if(type=="bomb")
 						{
 							liveitem = ID;
@@ -144,18 +144,21 @@ class Element
 						
 						if(type=="house")
 						{
+							
 							liveitem = ID;
+							std::cout << "Clicked House\n";
 							
 							buttons.clear();
 							iconrect.clear();
 							if(boolean[0]==true)
 							{
 								buttons.push_back("leave haven");
-								
+								std::cout <<"leave haven\n";
 							}
 							else
 							{
 								buttons.push_back("haven");
+								std::cout << "haven\n";
 							}
 						}
 						

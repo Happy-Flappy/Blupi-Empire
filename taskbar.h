@@ -196,7 +196,6 @@ class Taskbar
 			{
 				if(released)
 				{
-				
 					if(!blupi[selected].busy && blupi[selected].possible(MPosition))
 					{
 						if(blupi[selected].state=="moveleft")

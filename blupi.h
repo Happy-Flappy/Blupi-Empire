@@ -527,11 +527,12 @@ class Blupi
 		if(traveled())
 		{
 		
-		
+			
 			if(action=="haven")
 			{
 				if(locomotion=="walk")
 				{
+					
 					if(!element[itemindex].burning)
 					{
 						haven=itemindex;
@@ -807,7 +808,15 @@ class Blupi
 	void checkSelfClicks(Image &ground)
 	{
 	
-		if(sprite.getGlobalBounds().contains(MPosition))
+		FloatRect bounds = sprite.getGlobalBounds();
+		
+		bounds.left +=20;
+		bounds.width -=40;
+		bounds.top +=20;
+		bounds.height -=20;
+		
+		
+		if(bounds.contains(MPosition))
 		{
 			static bool released=false;
 			

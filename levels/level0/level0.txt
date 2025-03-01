@@ -1,6 +1,6 @@
-ground level0/level0groundshort2.png END
+ground level0/groundrain.png END
 
-background level0/level0sky.png END
+background level0/skydark.png END
 
 foreground level0/level0grass.png END
 

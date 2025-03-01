@@ -4,16 +4,16 @@
 using namespace sf;
 
 Vector2f MPosition;
-int selected=0;
+int selected=-1;
 std::vector <std::string> buttons;
 std::vector <IntRect> iconrect;
 int liveitem=0;
 
 struct Layer
 {
-	int ID;
-	std::string type;
-	int layer;	
+	int ID=0;
+	std::string type="none";
+	int layer=0;	
 	
 	
 };
@@ -69,9 +69,9 @@ using namespace sf;
 void getTopHoveredLayer()
 {
 	
-	int topmost=-1;
-	int topmostID = -1;
-	std::string toptype;
+	int topmost=0;
+	int topmostID = 0;
+	std::string toptype="none";
 	for(int a=0;a<layers.size();a++)
 	{
 		if(layers[a].type=="blupi")
@@ -114,18 +114,11 @@ void getTopHoveredLayer()
 	
 	
 	
-	if(topmostID!=-1)
-	{
-		toplayer.ID = topmostID;
-		toplayer.type = toptype;
-		toplayer.layer = topmost;
-	}
-	else
-	{
-		toplayer.ID=0;
-		toplayer.layer=0;
-		toplayer.type="none";
-	}
+	toplayer.ID = topmostID;
+	toplayer.type = toptype;
+	toplayer.layer = topmost;
+	
+
 }
 
 
@@ -190,148 +183,6 @@ int main()
 	
 	if(setup.quitAll)
 		return 0;
-	
-//	bool settingUp = true;
-//	
-//	RenderWindow setupWindow(VideoMode(960+100,540+100),"");//,Style::Fullscreen);
-//	View setupview;
-//	setupview.reset(FloatRect(0,0,960+100,540+100));
-//	setupWindow.setMouseCursorVisible(false);	
-//	
-//	
-//	
-//	while(settingUp)
-//	{
-//
-//
-//
-//		Event e;
-//		while(setupWindow.pollEvent(e))
-//		{
-//			if(e.type==Event::Closed)
-//				return 0;
-//		}
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//		if(!network.hostknown)
-//		{
-//			std::cout << "\nHostPcName:";
-//			std::cin >> network.hostname;
-//		}
-//			
-//		if(UserColor!="yellow" && UserColor!="green" && UserColor!="blue" && UserColor!="orange")
-//		{
-//			std::cout << "\nUserColor:";
-//			std::cin >> UserColor;
-//		}
-//		
-//		if(UserColor!="yellow" && UserColor!="green" && UserColor!="blue" && UserColor!="orange")
-//		{
-//			continue;
-//		}
-//			
-//			
-//			
-//		network.getData();
-//
-//		network.sendData();
-//		
-//		
-//		static bool playcount=true;
-//		if(isHost && playcount)
-//		{
-//			std::cout << "Press (A) when all players are connected.";
-//			playcount=false;
-//		}
-//		
-//		if(isHost && network.hostknown && map.name=="" &&  Keyboard::isKeyPressed(Keyboard::A) && setupWindow.hasFocus())
-//		{
-//			
-//			std::cout << "\nStart Level Script (Only enter if ready to play):";
-//			std::cin >> map.name;
-//			
-//			if(!map.loadMap(map.name))
-//			{
-//				map.name="";
-//				std::cout << "\n FAILED! Level could not be loaded sucessfully.";
-//				
-//				network.allLoaded=false;
-//				settingUp=true;
-//				continue;
-//			}
-//			else
-//			{
-//				if(network.clients.size()==0)
-//				{
-//					system("cls");
-//					network.allLoaded=true;
-//					
-//				}
-//			}
-//		}
-//		
-//		
-//		
-//		
-//		for(int a=0;a<network.clients.size();a++)
-//		{
-//			network.allLoaded=true;
-//			if(!network.clients[a].loadedLevel)
-//			{
-//				network.allLoaded=false;
-//			}
-//			
-//			
-//			
-//		}
-//		
-//		
-//		
-//		
-//		if(isHost && network.hostknown && map.name!="" && network.allLoaded)
-//		{
-//			if(!playing)
-//				system("pause");
-//			playing=true;	
-//			
-//		}
-//		
-//		
-//		
-//		
-//		if(playing)
-//		{
-//			network.allLoaded=true;
-//			settingUp=false;
-//		}
-//		
-//		
-//		
-//		
-//		
-//		
-//		
-//		setupWindow.setView(setupview);
-//		setupWindow.clear();
-//		
-//		
-//		
-//		setupWindow.display();
-//	}
-//	
-//
-//	setupWindow.close();
-
 
 
 
@@ -378,7 +229,7 @@ int main()
 			{
 				if(view.getCenter().x > (view.getSize().x/2)) 
 				{ 
-					view.move(-map.viewspeed,0); 
+					map.viewvelo=-6; 
 					parallax-=map.parallaxspeed; 
 				} 
 			} 
@@ -388,7 +239,7 @@ int main()
 			
 				if(view.getCenter().x < map.tground.getSize().x - (view.getSize().x/2)-1) 
 				{ 
-					view.move(map.viewspeed,0); 
+					map.viewvelo=6; 
 					parallax+=map.parallaxspeed; 
 				} 
 			} 
@@ -397,7 +248,7 @@ int main()
 			{
 				if(view.getCenter().x > (view.getSize().x/2)) 
 				{ 
-					view.move(-map.viewspeed,0); 
+					map.viewvelo=-6; 
 					parallax-=map.parallaxspeed; 
 				} 
 			} 
@@ -406,7 +257,7 @@ int main()
 			{ 
 				if(view.getCenter().x < map.tground.getSize().x - (view.getSize().x/2)) 
 				{ 
-					view.move(map.viewspeed,0); 
+					map.viewvelo=6;
 					parallax+=map.parallaxspeed; 
 				} 
 			}
@@ -414,9 +265,8 @@ int main()
 			
 			
 			
-			
-			
-			
+			view.move(map.viewvelo,0);
+			map.viewvelo=0;
 			
 			
 			if(view.getCenter().x < view.getSize().x/2)
@@ -446,9 +296,28 @@ int main()
 			
 			getTopHoveredLayer();
 			
+		
+			if(selected==-1)
+			{
+				for(int a=0;a<blupi.size();a++)
+				{
+					if(blupi[a].color==UserColor)
+					{
+						selected = a;
+						break;
+					}
+				}
+				if(selected==-1)
+				{
+					//no blupis of that color exist. This could mean that the player has lost the game because all of his blupis have died.
+				}
+			}
+			
 			
 			for(auto& b : blupi)
 				b.update(map.iground);
+		
+		
 		
 			
 			for(int a=0;a < element.size();a++)
@@ -481,6 +350,7 @@ int main()
 		}
 		
 		//render
+		
 		layers.clear();
 		
 		window.setView(view);

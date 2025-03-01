@@ -24,7 +24,8 @@ class Map
 	std::string folder = "levels/";
 	std::string name;
 	float parallaxspeed = 0.1;
-	float viewspeed = 3;
+	float viewspeed = 0.5;
+	float viewvelo = 0;
 	std::vector<std::string> filepaths;
 		
 		
@@ -149,7 +150,8 @@ class Map
 			
 			filepaths.push_back(key[1]);
 			background.setTexture(tbackground);
-			
+			tbackground.setRepeated(true);
+			background.setTextureRect(IntRect(0,0,iground.getSize().x,iground.getSize().y));
 			
 			if(key.size()>3)
 			{
