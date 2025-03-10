@@ -178,7 +178,7 @@ class Blupi
 	bool busy = false;
 	float idledelay = 0;
 	std::string state = "right"; //direction
-	std::string locomotion="boat"; //form of locomotion such as jeep,boat,walk
+	std::string locomotion="walk"; //form of locomotion such as jeep,boat,walk
 	Element carrying;
 	std::string action="none"; // the action that blupi is currently trying to accomplish
 	std::string keyinput="none";
@@ -425,21 +425,31 @@ class Blupi
 				
 			if(deep > 20)
 			{
+
 				if(locomotion=="walk")
 				{
+				
 					if(destwidth > maxjumpdist)
 					{
-						return false;
+						
+						bool istrue = false;
+						for(int a=0;a<element.size();a++)
+						{
+							if(element[a].type=="boat")
+							{
+								if(element[a].active)
+								{
+									istrue=true;
+								}
+							}
+						}
+						
+						if(!istrue)
+						{
+							return false;
+						}
 					}
 				}
-				else
-				{
-					if(locomotion != "boat")
-					{
-						return false;
-					}
-				}
-				
 			}
 			
 			
@@ -834,7 +844,7 @@ class Blupi
 						else
 						{
 						
-						
+							
 							selected = toplayer.ID;
 					
 							int b = rand()%5;
@@ -934,11 +944,26 @@ class Blupi
 						
 						for(int a=0;a<element.size();a++)
 						{
-						//	if(element[a].type==)
+							if(element[a].type=="boat")
+							{
+								if(element[a].active)
+								{
+								
+									int width = (element[a].sprite.getTextureRect().width * 0.85);
+									
+									if(element[a].now.x==water.puddle[index].left + width)
+									{
+										locomotion = "boat";
+										element[a].active=false;
+										speed = 3;
+										itemref = a;
+										now.x = element[a].now.x;
+										break;
+									}
+								}
+							}
 						}
 						
-//						if(now.x == element)
-//						
 						
 						
 						if(water.puddle[index].left!=-1)
@@ -1034,9 +1059,11 @@ class Blupi
 			{
 				locomotion="walk";
 				//leave boat there
-				//element[itemref].now.x = now.x;
-				//element[itemref].active=true;
-				
+				int width = (element[itemref].sprite.getTextureRect().width * 0.85);
+				element[itemref].now.x = now.x + width;
+				element[itemref].active=true;
+				speed = 2;
+				itemref=-1;
 			}
 			else
 			{

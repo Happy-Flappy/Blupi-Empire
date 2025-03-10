@@ -9,6 +9,7 @@ class Element
 	public:
 	Sprite sprite;
 	std::string type="";
+	std::string color = "any";
 	int ID=-1;
 	int averageHeight;
 	Vector2f velocity;
@@ -16,13 +17,16 @@ class Element
 	float gravity = 0.2;
 	bool burning=false;
 	bool active = true;
-	
 	bool boolean[10];
+	Text numberText;
 	
 	
 	Element()
 	{
-		
+		numberText.setFillColor(Color::Green);
+		numberText.setOutlineThickness(1);
+		numberText.setCharacterSize(20);
+		numberText.setFont(textures.comic);
 	}
 	
 	
@@ -33,6 +37,60 @@ class Element
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	void getNumberOfOverlap(std::vector<Element> &element,Element &e)
+	{
+		
+		
+		
+		std::string type;
+		
+		Vector2f position;
+		type = e.type;
+		position = e.now;
+		
+		int total=0;
+		for(int a=0;a<element.size();a++)
+		{
+			
+			if(element[a].type==type && element[a].active)
+			{
+				
+				for(int b=0;b<element.size();b++)
+				{
+					if(element[b].type==type && element[a].active)
+					{
+						if(element[a].sprite.getGlobalBounds().contains(element[b].now))
+						{
+						
+							if(abs(element[a].now.x) - abs(element[b].now.x) < 10)
+							{
+								if(a!=b)
+								{
+									total++;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		e.numberText.setString(std::to_string(total+1));
+		e.numberText.setPosition(e.now.x,e.now.y - 40);
+		if(total == 0)
+		{
+			e.numberText.setString("");
+		}
+	
+	}
 	
 	
 	
@@ -94,13 +152,13 @@ class Element
 						{
 							now.x = water.puddle[index].right - width;
 							now.y = water.puddle[index].linepos[water.puddle[index].linepos.size()-width].y;
-							//sprite.setScale(-1,1);
+							sprite.setScale(-1.5,1.5);
 						}
 						else
 						{
 							now.x = water.puddle[index].left + width;
 							now.y = water.puddle[index].linepos[width].y;
-							//sprite.setScale(1,1);
+							sprite.setScale(1.5,1.5);
 						}
 					}
 					
@@ -187,7 +245,10 @@ class Element
 	void draw(RenderWindow &window)
 	{
 		if(active)
+		{
 			window.draw(sprite);
+			window.draw(numberText);
+		}	
 	}
 };
 

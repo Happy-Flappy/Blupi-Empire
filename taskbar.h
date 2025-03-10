@@ -236,12 +236,21 @@ class Taskbar
 				{
 					if(!blupi[selected].busy && blupi[selected].possible(MPosition))
 					{
-						if(blupi[selected].state=="moveleft")
-							blupi[selected].state="left";
-						if(blupi[selected].state=="moveright")
-							blupi[selected].state="right";
-						blupi[selected].destination = MPosition;
+						bool skip=false;
+						if(toplayer.ID!=selected && toplayer.type=="blupi")
+						{
+							skip=true;
+						}
 						
+						if(!skip)
+						{
+						
+							if(blupi[selected].state=="moveleft")
+								blupi[selected].state="left";
+							if(blupi[selected].state=="moveright")
+								blupi[selected].state="right";
+							blupi[selected].destination = MPosition;
+						}
 						
 					}
 					else

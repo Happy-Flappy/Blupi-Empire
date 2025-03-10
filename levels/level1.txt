@@ -12,12 +12,15 @@ music level1/MUSIC006.mp3 END
 
 yellow blupi 2068 153 END
 
+yellow blupi 1080 153 END
+
+
+
 blue blupi 1324 200 END
 
 orange blupi 20 208 END
 
 green blupi 100 208 END
-
 
 house 600 208 END
 
@@ -28,6 +31,8 @@ jeep 2500 208 END
 water 1550 225 END
 
 water 2068 225 END
+
+boat 2500 100 END
 
 boat 2500 100 END
 

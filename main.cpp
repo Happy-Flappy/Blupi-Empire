@@ -103,9 +103,13 @@ void getTopHoveredLayer()
 			{
 				if(layers[a].layer > topmost)
 				{
-					topmost = layers[a].layer;
-					topmostID = layers[a].ID;
-					toptype="blupi";
+					if(blupi[layers[a].ID].color==UserColor)
+					{
+					
+						topmost = layers[a].layer;
+						topmostID = layers[a].ID;
+						toptype="blupi";
+					}
 				}
 			}
 		}
@@ -115,9 +119,13 @@ void getTopHoveredLayer()
 			{
 				if(layers[a].layer > topmost)
 				{
-					topmost = layers[a].layer;
-					topmostID = layers[a].ID;
-					toptype = "element";
+					if(element[layers[a].ID].color==UserColor || element[layers[a].ID].color == "any")
+					{
+					
+						topmost = layers[a].layer;
+						topmostID = layers[a].ID;
+						toptype = "element";
+					}
 				}
 			}
 		}
@@ -334,10 +342,14 @@ int main()
 		
 		
 			
+			
+			
 			for(int a=0;a < element.size();a++)
 			{
 				element[a].ID=a;
+				element[a].getNumberOfOverlap(element,element[a]);
 				element[a].update(map.iground,blupi[selected].locomotion);
+			
 			}
 			
 			map.floater.move(0,-1);
