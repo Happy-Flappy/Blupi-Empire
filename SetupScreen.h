@@ -374,6 +374,37 @@ class SetupScreen
 							leveltyping.name="";
 							leveltyping.get=true;
 						}
+						else
+						{
+							
+							player[0].loadedLevel=true;
+							
+							//initialize AI to take place of missing players
+							
+							for(int a=1;a<map.availableColors.size(); a++)
+							{
+								if(!player[a].human)
+								{
+									player[a].known=true;
+									player[a].participating=true;
+									
+									if(a==0)
+										player[a].color = "yellow";
+									if(a==1)
+										player[a].color = "blue";
+									if(a==2)
+										player[a].color = "orange";
+									if(a==3)
+										player[a].color = "green";
+										
+									ai[a].active=true;
+									ai[a].ID = a;
+								}
+							}
+							
+							
+							
+						}
 						
 					}
 				}
@@ -408,9 +439,18 @@ class SetupScreen
 				textCanvas.draw("You are the Host!",33,7);
 			}
 		
-			for(int a=0;a<network.clients.size();a++)
+			for(int a=0;a<4;a++)
 			{
-				textCanvas.draw("Player "+ std::to_string(a+1)+" is Connected!",33,7+a+1);
+				if(player[a].participating && player[a].human)
+				{
+					textCanvas.draw(player[a].name+" is Connected!",33,7+a+1);
+				}
+				if(player[a].participating && !player[a].human)
+				{
+					textCanvas.draw("AI " + player[a].name + " is Connected!",33,7+a+1);
+				}
+				
+				
 			}
 			
 			textCanvas.draw("Players Ready:",33,8+4);
@@ -438,10 +478,10 @@ class SetupScreen
 			
 			
 			
-			for(int a=0;a<network.clients.size();a++)
+			for(int a=0;a<4;a++)
 			{
-				if(network.clients[a].loadedLevel)
-					textCanvas.draw("Player "+std::to_string(a+1)+" is Ready.",33,8+4+a+1+1);
+				if(player[a].loadedLevel)
+					textCanvas.draw(player[a].name + " is Ready.",33,8+4+a+1+1);
 			}
 		
 		
@@ -470,11 +510,11 @@ class SetupScreen
 						textCanvas.draw("No color selected for host!",33,3);
 						nocolor=true;
 					}
-					for(int a=0;a<network.clients.size();a++)
+					for(int a=0;a<map.availableColors.size();a++)
 					{
-						if(network.clients[a].color=="none")
+						if(player[a].color=="none")
 						{
-							textCanvas.draw("No color selected for Player "+ std::to_string(a+1) + "!",33,3);
+							textCanvas.draw("No color selected for " + player[a].name + "!",33,3);
 							nocolor=true;
 						}
 					}
@@ -521,6 +561,9 @@ class SetupScreen
 					else if(UserColor=="green")
 						UserColor = "yellow";
 					btnr1=false;
+					
+					//replace with player[ME].color  = UserColor
+					player[0].color = UserColor;
 				}
 					
 			}

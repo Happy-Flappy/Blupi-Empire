@@ -7,7 +7,7 @@ class Blupi
 	public:
 	
 	Sprite sprite;
-	
+	Sprite carrying;
 	
 	//SHIFT MODES
 	
@@ -68,7 +68,8 @@ class Blupi
 			
 			
 			
-			
+			blowup.delay = 0.15;
+			blowup.rect.push_back()
 			
 			
 			
@@ -179,7 +180,6 @@ class Blupi
 	float idledelay = 0;
 	std::string state = "right"; //direction
 	std::string locomotion="walk"; //form of locomotion such as jeep,boat,walk
-	Element carrying;
 	std::string action="none"; // the action that blupi is currently trying to accomplish
 	std::string keyinput="none";
 	
@@ -611,42 +611,64 @@ class Blupi
 			
 			if(action=="pick up")
 			{
-				if(state=="moveleft")
-					state="left";
-				if(state=="moveright")
-					state="right";
-				
-				
-				busy=true;
-				
-				
-				
-				static bool bounceobject=false;
-				
-				if(state.find("move")!=std::string::npos)
+			
+			
+			
+				if(locomotion == "walk")
 				{
-					
-					if(!bounceobject)
+					static int carryref = -1;
+					if(carryref==-1)
 					{
-						//bounce item up
-						
-						if(checkGroundNow(ground,now))
+						static int first = 0;
+						if(first == 0)
 						{
-							if(velocity.y<=0)
-								velocity.y=-5;
-							else
-							{
-								velocity.y=0;
-								bounceobject=true;
-							}
-							sprite.setTextureRect(IntRect(66,846,33,60));
+							
+							velocity.y = jumpvelo;
+							first++;
 						}
 						else
 						{
-							sprite.setTextureRect(IntRect(108,91,37,43));
-						}
+							if(checkGroundNow(ground,now) && checkGroundNow(ground,element[itemindex].now))
+							{
+								if(element[itemindex].velocity.y >=0)
+								{
+									first++;
+									element[itemindex].velocity.y = jumpvelo;
+								}
+							}
+							
+//							if(first == 2)
+//							{
+//								if(element[itemindex].now.y < sprite.getPosition().y - (sprite.getTextureRect().height - (sprite.getTextureRect().height/16)))
+//								{
+//									first++;
+//								}
+//							}
+//							if(first == 3)
+//							{
+//								if(element[itemindex].now.y >= sprite.getPosition().y - (sprite.getTextureRect().height - (sprite.getTextureRect().height/16)))
+//								{
+//									first = 0;
+//									element[itemindex].active = false;
+//									carryref = itemindex;
+//									carrying = element[itemindex].sprite;
+//									action = "none";
+//									
+//								}
+//							}
+							
+						}	
+						
+						
 					}
+					
 				}
+				
+					
+			
+				
+			
+	
 			
 				
 			}
@@ -845,7 +867,7 @@ class Blupi
 						{
 						
 							
-							selected = toplayer.ID;
+							player[ME].selected = toplayer.ID;
 					
 							int b = rand()%5;
 							
@@ -988,7 +1010,7 @@ class Blupi
 			}
 
 
-			if(ID==selected)
+			if(ID==player[ME].selected)
 			{
 				if(keyinput=="up")
 				{
@@ -1002,7 +1024,6 @@ class Blupi
 			Gravity(sprite,ground,velocity,now,gravity); // apply gravity and resolve collisions.
 			if(checkGroundNow(ground,now))
 				rotation = getGroundAngle(ground,now,sprite.getRotation() ,10);
-			
 
 
 
@@ -1210,7 +1231,7 @@ class Blupi
 	void draw(RenderWindow &window)
 	{
 		
-		if(selected == ID)
+		if(player[ME].selected == ID)
 		{
 			
 		}
@@ -1218,9 +1239,13 @@ class Blupi
 		if(haven==-1)
 		{
 		
-			carrying.sprite.setPosition(sprite.getPosition().x,sprite.getPosition().y - (sprite.getTextureRect().height - (sprite.getTextureRect().height/16)));
+			
+			carrying.setPosition(sprite.getPosition().x,sprite.getPosition().y - (sprite.getTextureRect().height - (sprite.getTextureRect().height/16)));
 			
 			window.draw(sprite);
+			
+			
+			window.draw(carrying);
 		}
 		else
 		{

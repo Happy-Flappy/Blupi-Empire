@@ -15,15 +15,8 @@ class Network {
 		bool allLoaded = false;
 		int loadPercent=0;
 
-        struct Client {
-            IpAddress ip;
-            unsigned short port;
-            std::string color;
-            bool loadedLevel=false;
+        
 
-        };
-
-        std::vector<Client> clients;
 
 
         Network() {
@@ -258,14 +251,13 @@ class Network {
 
 
 				bool found=false;
-  				for(const auto& client : clients)
+  				for(int a=0;a<map.availableColors.size();a++)
 		        {
-		        	if(!client.loadedLevel && map.name!="")
+		        	if(!player[a].loadedLevel && map.name!="" && player[a].participating && player[a].human && player[a].known)
 		        	{
-		        		
 		        		found=true;
 		        		packet << "getLevel";
-		        		sendLevel(client.ip,client.port);
+		        		sendLevel(player[a].ip,player[a].port);
 		        		break;
 					}
 		        }
@@ -300,23 +292,38 @@ class Network {
   
 	            
 	            
-	            //send awareness of other clients.
-	            
-	            
-	            packet << clients.size(); 
-	            
-	            for(int a=0;a<clients.size();a++)
+	        	for(int a=0;a<4;a++)
 	            {
-	            	packet << clients[a].color;
-	            	packet << clients[a].loadedLevel;
+	            	if(player[a].ip != IpAddress::None)
+	            	{
+	            		player[a].human=true;
+	            		player[a].participating=true;
+					}
 				}
 	            
 	            
 	            
 	            
-  				for(const auto& client : clients)
+	            
+	            //send awareness of other clients.
+	            
+	            
+	            for(int a=0;a<4;a++)
+	            {
+	            	packet << player[a].name;
+					packet << player[a].color;
+	            	packet << player[a].loadedLevel;
+	            	packet << player[a].human;
+		            packet << player[a].participating;
+		            
+				}
+	            
+	            
+	            
+	            
+  				for(int a=0;a<4;a++)
 		        {
-		            udpsocket.send(packet, client.ip, client.port);
+		            udpsocket.send(packet, player[a].ip, player[a].port);
 		        }
 	           		
 	        } 
@@ -436,6 +443,8 @@ class Network {
 				            }	
 						}
 						
+						selfIP = IpAddress::getPublicAddress();	
+						
 				        hostknown = true;
 				        udpsocket.setBlocking(false);
 				    }
@@ -462,22 +471,22 @@ class Network {
 				    
 				    if(level=="" && playing && map.name!="")
 					{
-						for(int a = 0; a < clients.size(); a++) 
+						for(int a = 0; a < 4; a++) 
 		                {
-		                    if(clients[a].ip == ip) 
+		                    if(player[a].ip == ip) 
 		                    {
-		                    	clients[a].loadedLevel=false;
+		                    	player[a].loadedLevel=false;
 		                    	break;
 		                    }
 		                }
 					}
 					if(level!="")
 					{
-						for(int a = 0; a < clients.size(); a++) 
+						for(int a = 0; a < 4; a++) 
 		                {
-		                    if(clients[a].ip == ip) 
+		                    if(player[a].ip == ip) 
 		                    {
-		                    	clients[a].loadedLevel=true;
+		                    	player[a].loadedLevel=true;
 		                    	break;
 		                    }
 		                }
@@ -508,32 +517,56 @@ class Network {
 		            else 
 		            {
 		
+		
+						
 		                bool known = false;
 						int ID=-1;
-		                for(int a = 0; a < clients.size(); a++) 
+		                for(int a = 0; a < 4; a++) 
 		                {
-		                    if(clients[a].ip == ip) 
+		                    if(player[a].ip == ip) 
 		                    {
-		                        known = true;
-		                        ID=a;
-		                        break;
+		                    	if(player[a].known)
+		                    	{
+									known = true;
+			                       	ID=a;
+			                       	
+			                       	if(player[a].ip==selfIP)
+			                       		ME=a;	
+									
+			                       	
+			                       	break;
+			                    }
 		                    }
 		                }
 		
+		
+		
+						if(!known)
+						{
+							for(int a=0;a<4;a++)
+							{
+								if(player[a].ip==IpAddress::None)
+								{
+									ID=a;
+									break;
+								}
+							}
+						}
+		
+		
+		
 		                if(!known) 
 		                {
-		                    Client newclient;
-		                    newclient.ip = ip;
-		                    newclient.port = port;
-		                    newclient.color = color;
-		                    clients.push_back(newclient);
-		                    
-							std::cout << "\nClient "<< clients.size() << " Joined!";
-			
+		                	player[ID].participating = true;
+		                	player[ID].human=true;
+		                	player[ID].ip = ip;
+		                	player[ID].port = port;
+		                	player[ID].color = color;
+		                	player[ID].known=true;
 		                }
 		                else
 		                {
-		                	clients[ID].color = color;
+		                	player[ID].color = color;
 						}
 		                
 	
@@ -621,23 +654,29 @@ class Network {
 		            
 		            
 		            
-		            int clientsize;
-		            packet >> clientsize;
 		            
-		            for(int a=0;a<clientsize;a++)
+		            for(int a=0;a<4;a++) // copy list of clients from host to this client
 		            {
 		            	std::string color;
 		            	bool loaded;
+		            	bool human;
+		            	bool participating;
+		            	std::string name;
+		            	packet >> name;
 		            	packet >> color;
 		            	packet >> loaded;
+		            	packet >> human;
+		            	packet >> participating;
 		            	
-						if(clientsize > clients.size())
-						{
-							Client newc;
-		            		newc.color=color;
-		            		newc.loadedLevel=loaded;
-		            		clients.push_back(newc);
-		            	}
+		            	
+		            	player[a].name = name;
+		            	player[a].color = color;
+		            	player[a].loadedLevel = loaded;
+		            	player[a].human = human;
+		            	player[a].participating = participating;
+		            	
+		            	
+		            	
 					}
 		            
 		            

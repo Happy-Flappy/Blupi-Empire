@@ -174,16 +174,16 @@ class Taskbar
 			
 			if(checkbutton() || pressed)
 			{
-				if(!blupi[selected].busy && blupi[selected].possible(element[liveitem].now))
+				if(!blupi[player[ME].selected].busy && blupi[player[ME].selected].possible(element[liveitem].now))
 				{
-					blupi[selected].action = buttons[a];
-					blupi[selected].itemindex = liveitem;
+					blupi[player[ME].selected].action = buttons[a];
+					blupi[player[ME].selected].itemindex = liveitem;
 					if(buttons[a]!="stop drive")
-						blupi[selected].destination = element[liveitem].now;
+						blupi[player[ME].selected].destination = element[liveitem].now;
 				}
 				else
 				{
-					blupi[selected].failed();
+					blupi[player[ME].selected].failed();
 				}
 				buttons.clear();
 				iconrect.clear();
@@ -234,10 +234,10 @@ class Taskbar
 			{
 				if(released)
 				{
-					if(!blupi[selected].busy && blupi[selected].possible(MPosition))
+					if(!blupi[player[ME].selected].busy && blupi[player[ME].selected].possible(MPosition))
 					{
 						bool skip=false;
-						if(toplayer.ID!=selected && toplayer.type=="blupi")
+						if(toplayer.ID!=player[ME].selected && toplayer.type=="blupi")
 						{
 							skip=true;
 						}
@@ -245,17 +245,17 @@ class Taskbar
 						if(!skip)
 						{
 						
-							if(blupi[selected].state=="moveleft")
-								blupi[selected].state="left";
-							if(blupi[selected].state=="moveright")
-								blupi[selected].state="right";
-							blupi[selected].destination = MPosition;
+							if(blupi[player[ME].selected].state=="moveleft")
+								blupi[player[ME].selected].state="left";
+							if(blupi[player[ME].selected].state=="moveright")
+								blupi[player[ME].selected].state="right";
+							blupi[player[ME].selected].destination = MPosition;
 						}
 						
 					}
 					else
 					{
-						blupi[selected].failed();
+						blupi[player[ME].selected].failed();
 					}
 //					buttons.clear();
 //					iconrect.clear();

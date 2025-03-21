@@ -1,4 +1,4 @@
-// Written in SFML 2.6.0 and Brynet v1.12.2
+// Written in SFML 2.6.0
 
 #include <SFML\Graphics.hpp>
 #include <SFML\Audio.hpp>
@@ -6,7 +6,6 @@
 using namespace sf;
 
 Vector2f MPosition;
-int selected=-1;
 std::vector <std::string> buttons;
 std::vector <IntRect> iconrect;
 int liveitem=0;
@@ -32,26 +31,32 @@ Sound sound[16];
 
 bool isHost=false;
 
-std::string UserColor="none";
 bool playing;
 
 
 
+
+
+
+
+
+int ME=0;
+std::string UserColor = "none";
+IpAddress selfIP;
+
 struct Player
 {
 	bool participating=false;
-	bool human=true;
+	bool human=false;
 	bool loadedLevel=false;
-	std::string color;
+	bool known=false;
 	IpAddress ip;
 	unsigned short port;
-	
-	
+	std::string color="none";
+	std::string name;
+	int selected = -1;
 	
 }player[4];
-
-
-
 
 
 #include <cmath>
@@ -69,9 +74,19 @@ struct Player
 #include "taskbar.h"
 #include "map.h"
 
+
+
+
+
+
+
+#include "AI.h"
+AI ai[4];
+
 #include "network.h"
 #include <thread>
 #include "SetupScreen.h"
+
 
 using namespace sf;
 
@@ -187,7 +202,29 @@ void getTopHoveredLayer()
 int main()
 {
 
+	//init self as a player
+	player[0].human = true;
+	player[0].ip = IpAddress::None;
+	player[0].known=true;
+	player[0].participating=true;
+	player[0].port = network.udpsocket.getLocalPort();
+	player[0].selected = 0;
+	player[0].color = "yellow";
+	
 
+
+	//initialize first names until player chooses otherwise.
+	
+	
+	player[0].name = "Player 1";
+	player[1].name = "Player 2";
+	player[2].name = "Player 3";
+	player[3].name = "Player 4";
+	
+	
+	
+	
+	
 	
 	
 	float parallax;
@@ -319,17 +356,17 @@ int main()
 			getTopHoveredLayer();
 			
 		
-			if(selected==-1)
+			if(player[ME].selected==-1)
 			{
 				for(int a=0;a<blupi.size();a++)
 				{
 					if(blupi[a].color==UserColor)
 					{
-						selected = a;
+						player[ME].selected = a;
 						break;
 					}
 				}
-				if(selected==-1)
+				if(player[ME].selected==-1)
 				{
 					//no blupis of that color exist. This could mean that the player has lost the game because all of his blupis have died.
 				}
@@ -348,7 +385,7 @@ int main()
 			{
 				element[a].ID=a;
 				element[a].getNumberOfOverlap(element,element[a]);
-				element[a].update(map.iground,blupi[selected].locomotion);
+				element[a].update(map.iground,blupi[player[ME].selected].locomotion);
 			
 			}
 			
@@ -361,7 +398,7 @@ int main()
 			
 					
 			
-			
+		
 			
 			network.getData();
 			network.sendData();
@@ -373,10 +410,12 @@ int main()
 			
 			cursor.update(window);
 		
-		
-		
-		
-		
+			for(int a=0;a<4;a++)
+			{
+				if(playing && !player[a].human)
+					ai[a].update();
+				
+			}
 		
 		
 		

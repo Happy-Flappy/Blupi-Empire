@@ -27,7 +27,7 @@ class Map
 	float viewspeed = 0.5;
 	float viewvelo = 0;
 	std::vector<std::string> filepaths;
-		
+	std::vector<std::string> availableColors;
 		
 		
 		
@@ -246,6 +246,22 @@ class Map
 			
 			
 			
+			bool exists=false;
+			for(int a=0; a<availableColors.size();a++)
+			{
+				if(availableColors[a]==key[0])
+				{
+					exists=true;
+					break;
+				}
+				
+			}
+			if(!exists)
+			{
+				availableColors.push_back(key[0]);
+			}			
+			
+			
 			blupi.push_back(newblupi);
 		}
 		
@@ -263,7 +279,7 @@ class Map
 			Element newelement;
 			newelement.type = "bomb";
 			newelement.sprite.setTexture(textures.element);
-			newelement.sprite.setTextureRect(IntRect(88,24,48,24));
+			newelement.sprite.setTextureRect(IntRect(88,25,44,23));
 			newelement.now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));
 			newelement.averageHeight = newelement.sprite.getTextureRect().height;
 			element.push_back(newelement);
