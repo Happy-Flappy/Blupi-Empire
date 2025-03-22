@@ -29,6 +29,22 @@ void getTopHoveredLayer();
 
 Sound sound[16];
 
+
+int findChannel()
+{
+	for(int a=0;a<16;a++)
+	{
+		if(sound[a].getStatus()!=Sound::Status::Playing)
+		{
+			return a;
+		}
+	}
+	return -1;
+}
+
+
+
+
 bool isHost=false;
 
 bool playing;
@@ -373,9 +389,12 @@ int main()
 			}
 			
 			
-			for(auto& b : blupi)
-				b.update(map.iground);
-		
+			for(int a=0;a<blupi.size();a++)
+			{
+				blupi[a].update(map.iground);
+				if(blupi[a].deleteBlupi)
+					blupi.erase(blupi.begin() + a);
+			}
 		
 		
 			
@@ -387,6 +406,8 @@ int main()
 				element[a].getNumberOfOverlap(element,element[a]);
 				element[a].update(map.iground,blupi[player[ME].selected].locomotion);
 			
+				if(element[a].deleteThis)
+					element.erase(element.begin()+a);
 			}
 			
 			map.floater.move(0,-1);
@@ -479,6 +500,7 @@ int main()
 
 		for(int a=0;a<blupi.size();a++)
 		{
+			
 			Layer newlayer;
 			newlayer.ID = a;
 			newlayer.layer = layers.size(); 

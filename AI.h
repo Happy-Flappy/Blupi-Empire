@@ -12,6 +12,7 @@ class AI
 	public:
 	bool active=false;
 	int ID=-1;
+	int soundChannel = -1;
 	
 	AI()
 	{
@@ -66,6 +67,16 @@ class AI
         Blupi& current = blupi[blupiIndex];
         current.action = "none";
         current.busy = false;
+
+		int a = findChannel();
+		if(a!=-1 && soundChannel!=-1)
+		{
+			sound[a].stop();
+			current.say.loadFromFile("ASSETS/say/Sound049.wav");
+			sound[a].setBuffer(current.say);
+			sound[a].play();
+		}
+
 
         int delta = dangerX - current.now.x;
         if (delta > 0) // Danger is to the right, move left

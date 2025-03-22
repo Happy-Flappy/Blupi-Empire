@@ -18,8 +18,10 @@ class Element
 	bool burning=false;
 	bool active = true;
 	bool boolean[10];
+	bool deleteThis=false;
 	Text numberText;
-	
+	SoundBuffer buffer;
+	int soundChannel = -1;
 	
 	Element()
 	{
@@ -27,6 +29,11 @@ class Element
 		numberText.setOutlineThickness(1);
 		numberText.setCharacterSize(20);
 		numberText.setFont(textures.comic);
+		
+		for(int a=0;a<10;a++)
+			boolean[a]=false;
+		
+		
 	}
 	
 	
@@ -35,6 +42,28 @@ class Element
 	
 	
 	
+	
+	struct ShiftMode
+	{
+		ShiftData blowup;
+		
+		ShiftMode()
+		{
+			blowup.rect.push_back(IntRect(157,0,32,28));
+			blowup.rect.push_back(IntRect(253,132,58,61));
+			blowup.rect.push_back(IntRect(0,451,107,104));
+			blowup.rect.push_back(IntRect(345,649,113,112));
+			blowup.rect.push_back(IntRect(113,877,117,116));
+			blowup.rect.push_back(IntRect(0,761,116,113));
+			blowup.rect.push_back(IntRect(127,437,110,98));
+			blowup.rect.push_back(IntRect(206,541,113,107));
+			blowup.rect.push_back(IntRect(224,342,111,95));
+			blowup.rect.push_back(IntRect(304,259,115,83));
+			blowup.rect.push_back(IntRect(0,259,123,71));
+			blowup.rect.push_back(IntRect(128,74,112,51));
+		}
+			
+	}shift;
 	
 	
 	
@@ -168,6 +197,41 @@ class Element
 			}
 			
 			
+			
+			
+			
+			
+			if(type=="bomb")
+			{
+				if(boolean[0]==true)
+				{
+					//blowup!
+					sprite.setScale(5,5);
+					sprite.setTexture(textures.explo);
+					sprite.setTextureRect(Shift(shift.blowup));
+					
+					if(soundChannel==-1)
+					{
+						int a = findChannel();
+						if(a!=-1)
+						{
+						
+							soundChannel = a;
+							sound[a].stop();
+							buffer.loadFromFile("ASSETS/miscSound/boom.wav");
+							sound[a].setBuffer(buffer);
+							sound[a].play();
+						}
+				
+					}
+					
+					
+					if(shift.blowup.ended)
+					{	
+						deleteThis=true;
+					}
+				}
+			}
 			
 			
 			

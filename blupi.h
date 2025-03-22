@@ -69,7 +69,13 @@ class Blupi
 			
 			
 			blowup.delay = 0.15;
-			blowup.rect.push_back()
+			blowup.rect.push_back(IntRect(0,1798,130,80));
+			blowup.rect.push_back(IntRect(130,1798,130,80));
+			blowup.rect.push_back(IntRect(130*2,1798,130,80));
+			blowup.rect.push_back(IntRect(130*3,1798,130,80));
+			blowup.rect.push_back(IntRect(130*4,1798,130,80));
+			blowup.rect.push_back(IntRect(130*5,1798,130,80));
+			
 			
 			
 			
@@ -177,6 +183,7 @@ class Blupi
 	int haven=-1;
 	int itemref = -1;
 	bool busy = false;
+	bool deleteBlupi=false;
 	float idledelay = 0;
 	std::string state = "right"; //direction
 	std::string locomotion="walk"; //form of locomotion such as jeep,boat,walk
@@ -677,8 +684,26 @@ class Blupi
 			if(action=="blow up")
 			{
 				//bring out hammer and slam bomb to detonate it.
+				if(now.x != element[itemindex].now.x)
+				{
+					state = "blow up";
+					
+					
+				}
+				else
+				{
+					
+					if(now.x - 40 > 0)
+					{
+						destination.x = now.x-40;
+					}
+					else
+					{
+						destination.y = now.x+40;
+					}
+					return;
+				}
 			}
-			
 			
 			
 			action = "none";
@@ -783,7 +808,28 @@ class Blupi
 
 		if(state == "blow up")
 		{
-			//Shift(shift.blowup);
+			busy=true;
+			
+			bool faceLeft = false;
+			if(element[itemindex].now.x < now.x)
+				faceLeft = true;
+			
+			sprite.setTextureRect(Shift(shift.blowup));
+			
+			
+			if(faceLeft)
+				sprite.setScale(-1.5,1.5);
+			else
+				sprite.setScale(1.5,1.5);
+					
+			
+			if(shift.blowup.ended)
+			{
+				busy=false;
+				element[itemindex].boolean[0]=true;
+				
+				deleteBlupi = true;
+			}
 		}
 		
 		
