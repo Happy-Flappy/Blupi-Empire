@@ -10,6 +10,18 @@ std::vector <std::string> buttons;
 std::vector <IntRect> iconrect;
 int liveitem=0;
 
+
+
+struct Boom
+{
+	int boomSpot=0;
+	bool booming=false;
+};
+
+
+std::vector <Boom> boom;
+
+
 struct Layer
 {
 	int ID=0;
@@ -391,9 +403,9 @@ int main()
 			
 			for(int a=0;a<blupi.size();a++)
 			{
+				if(!blupi[a].alive)
+					continue;
 				blupi[a].update(map.iground);
-				if(blupi[a].deleteBlupi)
-					blupi.erase(blupi.begin() + a);
 			}
 		
 		
@@ -402,12 +414,14 @@ int main()
 			
 			for(int a=0;a < element.size();a++)
 			{
+		
+					
+				if(!element[a].exists)
+					continue;
 				element[a].ID=a;
 				element[a].getNumberOfOverlap(element,element[a]);
 				element[a].update(map.iground,blupi[player[ME].selected].locomotion);
 			
-				if(element[a].deleteThis)
-					element.erase(element.begin()+a);
 			}
 			
 			map.floater.move(0,-1);
@@ -478,6 +492,10 @@ int main()
 		}
 		
 		for(int a=0;a<element.size();a++){
+			
+			if(!element[a].exists)
+				continue;
+			
 			Layer newlayer;
 			newlayer.ID = a;
 			newlayer.layer = layers.size(); 
@@ -500,6 +518,8 @@ int main()
 
 		for(int a=0;a<blupi.size();a++)
 		{
+			if(!blupi[a].alive)
+				continue;	
 			
 			Layer newlayer;
 			newlayer.ID = a;

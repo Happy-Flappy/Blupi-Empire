@@ -183,7 +183,7 @@ class Blupi
 	int haven=-1;
 	int itemref = -1;
 	bool busy = false;
-	bool deleteBlupi=false;
+	bool alive = true;
 	float idledelay = 0;
 	std::string state = "right"; //direction
 	std::string locomotion="walk"; //form of locomotion such as jeep,boat,walk
@@ -294,7 +294,6 @@ class Blupi
 					state = "right";
 					
 				now.x = destination.x; // Ensure exact position
-		        
 		    }
 		}
 
@@ -340,7 +339,7 @@ class Blupi
 	
 	void Stop()
 	{
-		
+		busy=false;
 		action = "none";
 		destination.x = now.x; 
 		destination.y = now.y;
@@ -366,6 +365,17 @@ class Blupi
 	bool possible(Vector2f dest)
 	{
 		//check if path can currently be completed
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		int increment;
 		bool condition;
@@ -487,8 +497,9 @@ class Blupi
 		
 		
 		if(destination.x == now.x)
+		{
 			return true;
-		
+		}
 		return false;
 		
 	}
@@ -542,7 +553,7 @@ class Blupi
 			
 			if(action=="haven")
 			{
-				if(locomotion=="walk")
+				if(locomotion=="walk" && haven==-1 && element[itemindex].boolean[0]!=true)
 				{
 					if(!element[itemindex].burning)
 					{
@@ -550,6 +561,8 @@ class Blupi
 						speed=0;
 						haven=itemindex;
 						element[itemindex].boolean[0]=true;
+						element[itemindex].blupiIndex = ID;
+						sayDone();
 					}
 					else
 						failed();
@@ -557,6 +570,7 @@ class Blupi
 				}
 				else
 					failed();
+				
 			}
 			
 			
@@ -565,8 +579,10 @@ class Blupi
 			{
 				locomotion="walk";
 				speed=2;
+				element[haven].boolean[0]=false;
+				element[haven].blupiIndex=-1;
 				haven=-1;
-				element[itemindex].boolean[0]=false;
+				sayDone();
 			}
 			
 			
@@ -580,10 +596,11 @@ class Blupi
 					element[itemindex].active=false;
 					itemref = itemindex;
 					speed = 5;
+					sayDone();
 				}
 				else
 					failed();
-					
+				
 				action="none";	
 			}
 			
@@ -595,6 +612,7 @@ class Blupi
 				locomotion = "walk";	
 				action="none";
 				speed = 2;
+				sayDone();
 			}
 			
 			
@@ -610,7 +628,8 @@ class Blupi
 				element[itemindex].type="shed";
 				element[itemindex].sprite.setTextureRect(IntRect(0,438,127,95));
 				
-				
+				//for things that take time once blupi is there, have a busy status while working on it.
+				sayDone();
 			}
 			
 			
@@ -688,19 +707,22 @@ class Blupi
 				{
 					state = "blow up";
 					
+					//for things that take time once blupi is there, have a busy status while working on it.
+					
 					
 				}
 				else
 				{
 					
-					if(now.x - 40 > 0)
+					if(now.x - 50 > 0)
 					{
-						destination.x = now.x-40;
+						destination.x = now.x-50;
 					}
 					else
 					{
-						destination.y = now.x+40;
+						destination.y = now.x+50;
 					}
+					busy=true;
 					return;
 				}
 			}
@@ -808,7 +830,6 @@ class Blupi
 
 		if(state == "blow up")
 		{
-			busy=true;
 			
 			bool faceLeft = false;
 			if(element[itemindex].now.x < now.x)
@@ -827,8 +848,10 @@ class Blupi
 			{
 				busy=false;
 				element[itemindex].boolean[0]=true;
-				
-				deleteBlupi = true;
+				alive = false;
+				sayDone();
+				buttons.clear();
+				iconrect.clear();
 			}
 		}
 		
@@ -900,67 +923,62 @@ class Blupi
 				if(released)
 				{
 					
+					
+					if(color!=UserColor)
+					{
+						say.loadFromFile("ASSETS/say/sound075.wav");
+						sound[0].stop();
+						sound[0].setBuffer(say);
+						sound[0].play();
+					}
+					
 					if(toplayer.type=="blupi" && toplayer.ID == ID)
 					{
-						if(color!=UserColor)
-						{
-							say.loadFromFile("ASSETS/say/sound056.wav");
-							sound[0].stop();
-							sound[0].setBuffer(say);
-							sound[0].play();
-						}
-						else
+						
+						if(color==UserColor)
 						{
 						
 							
 							player[ME].selected = toplayer.ID;
 					
-							int b = rand()%5;
+							int b = rand()%3;
 							
 							
 								
 								
-							if(sound[0].getStatus()!=Sound::Status::Playing)
-							{
-								if(b == 0)
-									say.loadFromFile("ASSETS/say/sound002.wav");
-								if(b == 1)
-									say.loadFromFile("ASSETS/say/sound003.wav");
-								if(b == 2)
-									say.loadFromFile("ASSETS/say/sound004.wav");
-								if(b == 3)
-									say.loadFromFile("ASSETS/say/sound005.wav");
-								if(b == 4)
-									say.loadFromFile("ASSETS/say/sound006.wav");
-								sound[0].stop();
-								sound[0].setBuffer(say);
-								sound[0].play();
-							}
-				
+							
+							if(b == 0)
+								say.loadFromFile("ASSETS/say/sound002.wav");
+							if(b == 1)
+								say.loadFromFile("ASSETS/say/sound003.wav");
+							if(b == 2)
+								say.loadFromFile("ASSETS/say/sound004.wav");
+							sound[0].stop();
+							sound[0].setBuffer(say);
+							sound[0].play();
+						
 						
 						
 						
 							
 						
-							if(!busy)
-							{
 							
-								if(locomotion!="walk")
+							if(locomotion!="walk")
+							{
+								if(!checkGroundNow(ground,now))
 								{
-									if(!checkGroundNow(ground,now))
-									{
-										
-									}
-									else
-									{
-										iconrect.clear();
-										buttons.clear();
-										buttons.push_back("stop drive");
-										
-										
-									}
+									
+								}
+								else
+								{
+									iconrect.clear();
+									buttons.clear();
+									buttons.push_back("stop drive");
+									
+									
 								}
 							}
+							
 						}
 					}
 				}
@@ -979,6 +997,62 @@ class Blupi
 	
 	
 	
+	
+	
+	void sayDone()
+	{
+		if(color == UserColor)
+		{
+		
+			int b = rand()%3;
+			
+			
+				
+				
+			if(sound[0].getStatus()!=Sound::Status::Playing)
+			{
+				if(b == 0)
+					say.loadFromFile("ASSETS/say/sound008.wav");
+				if(b == 1)
+					say.loadFromFile("ASSETS/say/sound009.wav");
+				if(b == 2)
+					say.loadFromFile("ASSETS/say/sound010.wav");
+				sound[0].stop();
+				sound[0].setBuffer(say);
+				sound[0].play();
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	
+	void sayObey()
+	{
+		if(color == UserColor)
+		{
+		
+			int b = rand()%3;
+			
+			
+				
+				
+			if(sound[0].getStatus()!=Sound::Status::Playing)
+			{
+				if(b == 0)
+					say.loadFromFile("ASSETS/say/sound005.wav");
+				if(b == 1)
+					say.loadFromFile("ASSETS/say/sound006.wav");
+				if(b == 2)
+					say.loadFromFile("ASSETS/say/sound007.wav");
+				sound[0].stop();
+				sound[0].setBuffer(say);
+				sound[0].play();
+			}
+		}		
+	}
 	
 	
 	
@@ -1220,25 +1294,23 @@ class Blupi
 				
 				
 
-			    if (!busy)
-			    {
-			        // Check if destination is far enough to start moving
-			        if (std::abs(destination.x - now.x) > 5) // Adjust threshold as needed
-			        {
-			            if (destination.x < now.x)
-			            {
-			            	state = "moveleft";
-							velocity.x = -speed;
-						
-			            }
-			            else if (destination.x > now.x)
-			            {
-		            		state = "moveright";
-							velocity.x = speed;
-					    
-			            }
-			        }
-			    }			
+		        // Check if destination is far enough to start moving
+		        if (std::abs(destination.x - now.x) > 5) // Adjust threshold as needed
+		        {
+		            if (destination.x < now.x)
+		            {
+		            	state = "moveleft";
+						velocity.x = -speed;
+					
+		            }
+		            else if (destination.x > now.x)
+		            {
+	            		state = "moveright";
+						velocity.x = speed;
+				    
+		            }
+		        }
+			    			
 				
 			
 			

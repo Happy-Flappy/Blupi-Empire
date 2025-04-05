@@ -49,41 +49,6 @@ class Taskbar
 		}
 		
 		
-		
-		
-		
-		
-		if(Keyboard::isKeyPressed(Keyboard::Num1))
-		{
-			if(buttons.size()>0)
-				return true;
-		}
-		else if(Keyboard::isKeyPressed(Keyboard::Num1))
-		{
-			
-		}
-		else if(Keyboard::isKeyPressed(Keyboard::Num1))
-		{
-			
-		}
-		else if(Keyboard::isKeyPressed(Keyboard::Num1))
-		{
-			
-		}
-		else if(Keyboard::isKeyPressed(Keyboard::Num1))
-		{
-			
-		}
-		else if(Keyboard::isKeyPressed(Keyboard::Num1))
-		{
-			
-		}
-		
-		
-		
-		
-		
-		
 		return false;
 
 	}
@@ -180,6 +145,8 @@ class Taskbar
 					blupi[player[ME].selected].itemindex = liveitem;
 					if(buttons[a]!="stop drive")
 						blupi[player[ME].selected].destination = element[liveitem].now;
+					
+					blupi[player[ME].selected].sayObey();
 				}
 				else
 				{
@@ -229,51 +196,72 @@ class Taskbar
 			gridguide.setPosition(int(MPosition.x/32)*32,int(MPosition.y/32)*32);
 			window.draw(gridguide);
 			
-			static bool released=false;
-			if(Mouse::isButtonPressed(Mouse::Left))
-			{
-				if(released)
-				{
-					if(!blupi[player[ME].selected].busy && blupi[player[ME].selected].possible(MPosition))
-					{
-						bool skip=false;
-						if(toplayer.ID!=player[ME].selected && toplayer.type=="blupi")
-						{
-							skip=true;
-						}
-						
-						if(!skip)
-						{
-						
-							if(blupi[player[ME].selected].state=="moveleft")
-								blupi[player[ME].selected].state="left";
-							if(blupi[player[ME].selected].state=="moveright")
-								blupi[player[ME].selected].state="right";
-							blupi[player[ME].selected].destination = MPosition;
-						}
-						
-					}
-					else
-					{
-						blupi[player[ME].selected].failed();
-					}
-//					buttons.clear();
-//					iconrect.clear();
-//					
-//					buttons.push_back("stop");
-//					iconrect.push_back(IntRect(160,280,40,40));
-					liveitem=-1;
-				
-				}
-				released=false;
-			}
-			else
-				released=true;
 			
+			
+			if(checkGroundNow(ground,MPosition))
+			{
+				
+			
+				static bool released=false;
+				if(Mouse::isButtonPressed(Mouse::Left))
+				{
+					if(released)
+					{
+						if(!blupi[player[ME].selected].busy && blupi[player[ME].selected].possible(MPosition) && blupi[player[ME].selected].haven==-1)
+						{
+							
+							if(toplayer.type!="element")
+							{
+							
+							
+							
+							
+								bool skip=false;
+								if(toplayer.ID!=player[ME].selected && toplayer.type=="blupi")
+								{
+									skip=true;
+								}
+								
+								if(!skip)
+								{
+								
+									if(blupi[player[ME].selected].state=="moveleft")
+										blupi[player[ME].selected].state="left";
+									if(blupi[player[ME].selected].state=="moveright")
+										blupi[player[ME].selected].state="right";
+									blupi[player[ME].selected].destination = MPosition;
+									
+									blupi[player[ME].selected].action="none";
+								}
+							}
+							
+						}
+						else
+						{
+							blupi[player[ME].selected].failed();
+						}
+						buttons.clear();
+						iconrect.clear();
+						liveitem=-1;
+						
+						
+					
+						
+					}
+					released=false;
+				}
+				else
+					released=true;
+			}
 		}
 		
 		
-		
+		if(blupi[player[ME].selected].busy && buttons.size() == 0)
+		{
+			buttons.push_back("stop");
+			iconrect.push_back(IntRect(160,280,40,40));
+						
+		}
 		
 		
 	}

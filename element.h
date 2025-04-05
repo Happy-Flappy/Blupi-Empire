@@ -18,10 +18,12 @@ class Element
 	bool burning=false;
 	bool active = true;
 	bool boolean[10];
-	bool deleteThis=false;
+	bool exists=true;
 	Text numberText;
 	SoundBuffer buffer;
 	int soundChannel = -1;
+	int blupiIndex=-1;
+	int boomID=-1;
 	
 	Element()
 	{
@@ -49,18 +51,19 @@ class Element
 		
 		ShiftMode()
 		{
-			blowup.rect.push_back(IntRect(157,0,32,28));
-			blowup.rect.push_back(IntRect(253,132,58,61));
-			blowup.rect.push_back(IntRect(0,451,107,104));
-			blowup.rect.push_back(IntRect(345,649,113,112));
-			blowup.rect.push_back(IntRect(113,877,117,116));
-			blowup.rect.push_back(IntRect(0,761,116,113));
-			blowup.rect.push_back(IntRect(127,437,110,98));
-			blowup.rect.push_back(IntRect(206,541,113,107));
-			blowup.rect.push_back(IntRect(224,342,111,95));
-			blowup.rect.push_back(IntRect(304,259,115,83));
-			blowup.rect.push_back(IntRect(0,259,123,71));
-			blowup.rect.push_back(IntRect(128,74,112,51));
+			blowup.delay = 0.1;
+			blowup.rect.push_back(IntRect(156,1,31,27));
+			blowup.rect.push_back(IntRect(254,133,57,60));
+			blowup.rect.push_back(IntRect(128,438,109,97));
+			blowup.rect.push_back(IntRect(346,650,112,111));
+			blowup.rect.push_back(IntRect(114,878,116,115));
+			blowup.rect.push_back(IntRect(1,762,115,112));
+			blowup.rect.push_back(IntRect(128,438,109,97));
+			blowup.rect.push_back(IntRect(207,542,112,106));
+			blowup.rect.push_back(IntRect(225,343,110,94));
+			blowup.rect.push_back(IntRect(305,260,114,82));
+			blowup.rect.push_back(IntRect(1,260,122,70));
+			blowup.rect.push_back(IntRect(129,75,111,50));
 		}
 			
 	}shift;
@@ -137,6 +140,23 @@ class Element
 		if(active)
 		{
 		
+		
+			
+		
+			for(int a=0;a<boom.size();a++)
+			{
+				if(!(type=="bomb"))
+				{
+					
+					if(now.x <	boom[a].boomSpot + 50 &&  now.x > boom[a].boomSpot - 50)
+					{
+						if(boom[a].booming)
+							exists=false;
+					}
+				}
+			}
+		
+		
 			sprite.setScale(1.5,1.5);
 			
 			sprite.setOrigin(sprite.getTextureRect().width/2,sprite.getTextureRect().height/2);
@@ -206,9 +226,11 @@ class Element
 				if(boolean[0]==true)
 				{
 					//blowup!
-					sprite.setScale(5,5);
+					sprite.setScale(9,9);
 					sprite.setTexture(textures.explo);
 					sprite.setTextureRect(Shift(shift.blowup));
+					
+					
 					
 					if(soundChannel==-1)
 					{
@@ -225,11 +247,28 @@ class Element
 				
 					}
 					
+					if(boomID==-1)
+					{
+						Boom newboom;
+						newboom.booming=true;
+						newboom.boomSpot=now.x;
+						boom.push_back(newboom);
+						boomID = boom.size()-1;
+					}
 					
 					if(shift.blowup.ended)
 					{	
-						deleteThis=true;
+						if(boomID==-1)
+						{
+						
+							boom[boomID].booming=false;
+							boomID=-1;
+						}
+						exists=false;
 					}
+					
+					
+					
 				}
 			}
 			
@@ -266,14 +305,29 @@ class Element
 							
 							buttons.clear();
 							iconrect.clear();
-							if(boolean[0]==true)
+							
+							if(blupiIndex!=-1)
 							{
-								buttons.push_back("leave haven");
+								player[ME].selected = blupiIndex;
 							}
-							else
+							
+							
+							if(blupiIndex==player[ME].selected || blupiIndex == -1)
+							{
+							
+								if(boolean[0]==true)
+								{
+									buttons.push_back("leave haven");
+								}
+								
+							}
+							
+							if(boolean[0]==false)
 							{
 								buttons.push_back("haven");
 							}
+							
+							
 						}
 						
 						
