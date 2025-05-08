@@ -1,0 +1,44 @@
+ground level1/ground.png END
+
+background level1/skydark.png END
+
+foreground level1/grass.png END
+
+floater level1/floater.png END
+
+atmosphere level1/rain.ogg END
+
+music level1/MUSIC006.mp3 END
+
+yellow blupi 200 153 END
+
+yellow blupi 210 153 END
+
+
+
+
+
+
+blue blupi 1324 200 END
+
+//orange //blupi 20 208 END
+
+//green //blupi 100 208 END
+
+house 600 208 END
+
+shed 1200 208 END
+ 
+jeep 2500 208 END
+
+bomb 1280 200 END
+
+water 1550 225 END
+
+water 2068 225 END
+
+boat 2500 100 END
+
+boat 2500 100 END
+
+overlay 25 54 80 100 END
