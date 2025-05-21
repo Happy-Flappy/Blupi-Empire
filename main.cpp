@@ -161,7 +161,14 @@ void getTopHoveredLayer()
   //          (element[a].color != UserColor && element[a].color != "any"))
   //          continue;
 
-        if (element[a].sprite.getGlobalBounds().contains(MPosition))
+        // Adjusted bounds with 20px padding
+        FloatRect bounds = element[a].sprite.getGlobalBounds();
+        bounds.left += 20;
+        bounds.width -= 40;
+        bounds.top += 20;
+        bounds.height -= 20;
+
+        if (bounds.contains(MPosition))
         {
             topElement.ID = element[a].ID;
             topElement.type = "element";
@@ -409,7 +416,7 @@ int main()
 				if(!element[a].exists)
 					continue;
 				element[a].ID=a;
-				element[a].getNumberOfOverlap(element,element[a]);
+				element[a].getNumberOfOverlap(element);
 				element[a].update(map.iground,blupi[player[ME].selected].locomotion);
 			
 			}

@@ -8,7 +8,7 @@ floater level1/floater.png END
 
 atmosphere level1/rain.ogg END
 
-music level1/MUSIC006.mp3 END
+music level1/music006-5.ogg END
 
 yellow blupi 200 153 END
 

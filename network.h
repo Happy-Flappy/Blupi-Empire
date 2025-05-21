@@ -32,200 +32,200 @@ class Network {
 		
 		
 		
-		void sendFile(sf::TcpSocket& socket, const std::string& filePath) 
-		{
-		    sf::Packet packet;
-		    std::ifstream inFile(map.folder + filePath, std::ios::binary);
-		    std::vector<char> fileData((std::istreambuf_iterator<char>(inFile)), std::istreambuf_iterator<char>());
-		
-		    
-		    // Send the file path
-		    
-		    
-		    packet << filePath;
-		    socket.send(packet);
-		
-		    // Send the file data
-		    packet.clear();
-		    packet.append(fileData.data(), fileData.size());
-		    socket.send(packet);
-		    
-		
-		}
-		
-		
-		
-		
-		std::string receiveFile(sf::TcpSocket& socket, const std::string& folder) {
-		    sf::Packet packet;
-		    std::string filedir;
-		    std::vector<char> fileData;
-		
-		    // Receive the file name
-		    socket.receive(packet);
-		    packet >> filedir;
-		
-		    // Receive the file data
-		    packet.clear();
-		    socket.receive(packet);
-		    fileData.resize(packet.getDataSize());
-		    memcpy(fileData.data(), packet.getData(), packet.getDataSize());
-
-
-
-
-			
-			size_t pos = filedir.find_last_of('/');
-			
-			std::string path = filedir.substr(0,pos+1);
-			
-			std::string fileName =  filedir.substr(pos+1);
-
-
-
-			std::filesystem::create_directories(folder + path);
-
-						
-				
-
-		    std::ofstream outFile(folder + path + fileName, std::ios::binary);
-		    outFile.write(fileData.data(),fileData.size());
-		    outFile.close();
-		    
-		    
-		    return path + fileName;
-		}
-		
-		
-		
-		
-		
-		void sendLevel(const sf::IpAddress& clientIp, unsigned short clientPort)
-		{
-			
-		    sf::TcpSocket socket;
-			socket.connect(clientIp,clientPort);
-			
-			Packet packet;
-			packet << map.filepaths.size();//that number includes the script file since filepath size is more than literal size by 1.
-			socket.send(packet);
-			
-			system("cls");
-			std::cout << "Sending Level Data to clients> ";
-			
-			std::cout << ".";
-			sendFile(socket,map.name);//send script file
-			
-			for(int a=0;a<map.filepaths.size();a++)
-			{
-				std::cout << ".";
-				sendFile(socket,map.filepaths[a]);
-			}
-			
-			
-			system("cls");
-		}
-		
-		
-		
-		
-		
-		void getLevel(unsigned short clientPort)
-		{
-
-			if(map.folder!="ClientData/")
-			{
-			
-			//Empty if existing folder
-			std::string folder = "ClientData";
-			
-			if (std::filesystem::exists(folder)) 
-			{
-		        std::filesystem::remove_all(folder);
-			}
-			else
-				std::filesystem::create_directory(folder);
-		    
-		    folder = "ClientData/";
-		    
-		    
-		    
-
-
-		    sf::TcpListener listener;
-		    if (listener.listen(clientPort) != sf::Socket::Done) {
-		        std::cout << "Error listening on port " << clientPort << std::endl;
-		        return;
-		    }
-		
-		    sf::TcpSocket socket;
-		    if (listener.accept(socket) != sf::Socket::Done) {
-		        std::cout << "Error accepting connection on port " << clientPort << std::endl;
-		        return;
-		    }
-		    
-
-
-		    
-		    
-		    
-		    Packet packet;
-		    socket.receive(packet);
-		    
-		    
-		    
-		    
-		    int files;
-		    packet >> files;
-		    packet.clear();
-		    
-		    
-		    system("cls");
-		    
-		    
-		    int percent;
-		    
-			percent = 100 * static_cast<double>(1) / files;
-		    
-			loadPercent = percent;	
-		    
-		    receiveFile(socket,folder);
-		    
-		   
-		    
-		    std::vector<std::string> filename;
-		    for(int a=0;a<files;a++)
-		    {
-				percent = 100 * static_cast<double>(a + 1) / files;
-		    	
-		    	
-				loadPercent = percent;	
-		    
-				filename.push_back(receiveFile(socket,folder));
-
-			}
-			
-			if(percent==100)
-			{
-				loadPercent=200;
-			}
-			
-			map.folder = folder;
-		    
-		    
-		    if(!map.loadMap(filename[0]))
-		    {
-		    	loadPercent=-1;
-			}
-		    
-		    
-			}
-			
-			system("cls");
-
-		}
-		
-		
+//		void sendFile(sf::TcpSocket& socket, const std::string& filePath) 
+//		{
+//		    sf::Packet packet;
+//		    std::ifstream inFile(map.folder + filePath, std::ios::binary);
+//		    std::vector<char> fileData((std::istreambuf_iterator<char>(inFile)), std::istreambuf_iterator<char>());
+//		
+//		    
+//		    // Send the file path
+//		    
+//		    
+//		    packet << filePath;
+//		    socket.send(packet);
+//		
+//		    // Send the file data
+//		    packet.clear();
+//		    packet.append(fileData.data(), fileData.size());
+//		    socket.send(packet);
+//		    
+//		
+//		}
+//		
+//		
+//		
+//		
+//		std::string receiveFile(sf::TcpSocket& socket, const std::string& folder) {
+//		    sf::Packet packet;
+//		    std::string filedir;
+//		    std::vector<char> fileData;
+//		
+//		    // Receive the file name
+//		    socket.receive(packet);
+//		    packet >> filedir;
+//		
+//		    // Receive the file data
+//		    packet.clear();
+//		    socket.receive(packet);
+//		    fileData.resize(packet.getDataSize());
+//		    memcpy(fileData.data(), packet.getData(), packet.getDataSize());
+//
+//
+//
+//
+//			
+//			size_t pos = filedir.find_last_of('/');
+//			
+//			std::string path = filedir.substr(0,pos+1);
+//			
+//			std::string fileName =  filedir.substr(pos+1);
+//
+//
+//
+//			std::filesystem::create_directories(folder + path);
+//
+//						
+//				
+//
+//		    std::ofstream outFile(folder + path + fileName, std::ios::binary);
+//		    outFile.write(fileData.data(),fileData.size());
+//		    outFile.close();
+//		    
+//		    
+//		    return path + fileName;
+//		}
+//		
+//		
+//		
+//		
+//		
+//		void sendLevel(const sf::IpAddress& clientIp, unsigned short clientPort)
+//		{
+//			
+//		    sf::TcpSocket socket;
+//			socket.connect(clientIp,clientPort);
+//			
+//			Packet packet;
+//			packet << map.filepaths.size();//that number includes the script file since filepath size is more than literal size by 1.
+//			socket.send(packet);
+//			
+//			system("cls");
+//			std::cout << "Sending Level Data to clients> ";
+//			
+//			std::cout << ".";
+//			sendFile(socket,map.name);//send script file
+//			
+//			for(int a=0;a<map.filepaths.size();a++)
+//			{
+//				std::cout << ".";
+//				sendFile(socket,map.filepaths[a]);
+//			}
+//			
+//			
+//			system("cls");
+//		}
+//		
+//		
+//		
+//		
+//		
+//		void getLevel(unsigned short clientPort)
+//		{
+//
+//			if(map.folder!="ClientData/")
+//			{
+//			
+//			//Empty if existing folder
+//			std::string folder = "ClientData";
+//			
+//			if (std::filesystem::exists(folder)) 
+//			{
+//		        std::filesystem::remove_all(folder);
+//			}
+//			else
+//				std::filesystem::create_directory(folder);
+//		    
+//		    folder = "ClientData/";
+//		    
+//		    
+//		    
+//
+//
+//		    sf::TcpListener listener;
+//		    if (listener.listen(clientPort) != sf::Socket::Done) {
+//		        std::cout << "Error listening on port " << clientPort << std::endl;
+//		        return;
+//		    }
+//		
+//		    sf::TcpSocket socket;
+//		    if (listener.accept(socket) != sf::Socket::Done) {
+//		        std::cout << "Error accepting connection on port " << clientPort << std::endl;
+//		        return;
+//		    }
+//		    
+//
+//
+//		    
+//		    
+//		    
+//		    Packet packet;
+//		    socket.receive(packet);
+//		    
+//		    
+//		    
+//		    
+//		    int files;
+//		    packet >> files;
+//		    packet.clear();
+//		    
+//		    
+//		    system("cls");
+//		    
+//		    
+//		    int percent;
+//		    
+//			percent = 100 * static_cast<double>(1) / files;
+//		    
+//			loadPercent = percent;	
+//		    
+//		    receiveFile(socket,folder);
+//		    
+//		   
+//		    
+//		    std::vector<std::string> filename;
+//		    for(int a=0;a<files;a++)
+//		    {
+//				percent = 100 * static_cast<double>(a + 1) / files;
+//		    	
+//		    	
+//				loadPercent = percent;	
+//		    
+//				filename.push_back(receiveFile(socket,folder));
+//
+//			}
+//			
+//			if(percent==100)
+//			{
+//				loadPercent=200;
+//			}
+//			
+//			map.folder = folder;
+//		    
+//		    
+//		    if(!map.loadMap(filename[0]))
+//		    {
+//		    	loadPercent=-1;
+//			}
+//		    
+//		    
+//			}
+//			
+//			system("cls");
+//
+//		}
+//		
+//		
 
 
 
@@ -249,22 +249,10 @@ class Network {
 	            Packet packet;
 	            
 
-
-				bool found=false;
-  				for(int a=0;a<map.availableColors.size();a++)
-		        {
-		        	if(!player[a].loadedLevel && map.name!="" && player[a].participating && player[a].human && player[a].known)
-		        	{
-		        		found=true;
-		        		packet << "getLevel";
-		        		sendLevel(player[a].ip,player[a].port);
-		        		break;
-					}
-		        }
-		        if(!found)
-					packet << "noLoadLevel";
-
-
+				
+				
+				packet << map.name; 
+    	
 				packet << allLoaded;
 				packet << playing;
 	            
@@ -272,7 +260,6 @@ class Network {
 	            {
 	            	
 	        	
-	                packet << blupi.size();
 	                
 					
 		            for (const auto& b : blupi) {
@@ -284,7 +271,41 @@ class Network {
 		                packet << b.state;
 		                packet << b.rotation;
 		                packet << b.locomotion;	
+		                
+		                packet << b.alive;
+						packet << b.haven;
+						sf::IntRect r = b.carrying.getTextureRect();
+			            packet << r.left << r.top << r.width << r.height;
+			                
+			                
+		                packet << b.itemref;
+		                
+		               		
+							
 		            }
+		            
+		            
+	            
+					for(int a=0;a<element.size();a++)
+					{
+						packet << element[a].exists;
+						packet << element[a].burning;
+						packet << element[a].active;
+						packet << element[a].blupiIndex;
+						packet << element[a].boomID;
+						for(int b=0;b<10;b++)
+						{
+							packet << element[a].boolean[b];
+						}
+						packet << element[a].now.x;
+						packet << element[a].now.y;
+						packet << element[a].type;
+						packet << element[a].color;
+						
+					}		            
+		            
+		            
+		            
 	            }
 	            
 	            
@@ -603,17 +624,14 @@ class Network {
 		        	
 		        	
 		        	
-					std::string loadID;
-					packet >> loadID;
-					if(loadID=="getLevel" && !isHost)
+					std::string mapname;
+					packet >> mapname;
+		        	
+		        	if(mapname!="" && map.name=="")
 		        	{
-		        		//load the level
-		        		unsigned short cport;
-		        		cport = udpsocket.getLocalPort();
-		        		getLevel(cport);
+		        		map.loadMap(mapname);
 					}
-		        	
-		        	
+					
 	        		packet >> allLoaded;
 		            packet >> playing;
 		                
@@ -629,11 +647,7 @@ class Network {
 						
 						
 		
-		                int size;
-		                packet >> size;
-		                if(size!=blupi.size())
-		                	blupi.resize(size);
-
+		            
 			            for (auto& b : blupi) {
 			                
 							
@@ -647,8 +661,41 @@ class Network {
 				            packet >> b.rotation;
 				            packet >> b.locomotion;
 			                
+			                packet >> b.alive;
+							packet >> b.haven;
+							int left,top,width,height;
+			                packet >> left >> top >> width >> height;
 			                
+			                
+			                packet >> b.itemref;
+			                
+			                if(sf::IntRect(left,top,width,height) != b.carrying.getTextureRect())
+			                {
+			                	b.carrying = element[b.itemref].sprite;
+							}
+							
+							
+							
 			            }
+
+						for(int a=0;a<element.size();a++)
+						{
+							packet >> element[a].exists;
+							packet >> element[a].burning;
+							packet >> element[a].active;
+							packet >> element[a].blupiIndex;
+							packet >> element[a].boomID;
+							for(int b=0;b<10;b++)
+							{
+								packet >> element[a].boolean[b];
+							}
+							packet >> element[a].now.x;
+							packet >> element[a].now.y;
+							packet >> element[a].type;
+							packet >> element[a].color;
+							
+						}
+
 
 		            }
 		            

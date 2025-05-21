@@ -246,7 +246,7 @@ class Taskbar
 									blupi[player[ME].selected].destination = MPosition;
 									
 									blupi[player[ME].selected].action="none";
-									blupi[player[ME].selected].pickup=false;
+									blupi[player[ME].selected].liveAction = "none";
 									
 								}
 							}

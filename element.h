@@ -19,11 +19,13 @@ class Element
 	bool active = true;
 	bool boolean[10];
 	bool exists=true;
+	bool displayNumber=false;
 	Text numberText;
 	SoundBuffer buffer;
 	int soundChannel = -1;
 	int blupiIndex=-1;
 	int boomID=-1;
+	
 	
 	Element()
 	{
@@ -31,6 +33,9 @@ class Element
 		numberText.setOutlineThickness(1);
 		numberText.setCharacterSize(20);
 		numberText.setFont(textures.comic);
+		
+		FloatRect textBounds = numberText.getLocalBounds();
+    	numberText.setOrigin(textBounds.width/2, textBounds.height/2);
 		
 		for(int a=0;a<10;a++)
 			boolean[a]=false;
@@ -77,51 +82,66 @@ class Element
 	
 	
 	
-	
-	void getNumberOfOverlap(std::vector<Element> &element,Element &e)
+		
+	void getNumberOfOverlap(std::vector<Element> &element)
 	{
-		
-		
-		
-		std::string type;
-		
-		Vector2f position;
-		type = e.type;
-		position = e.now;
-		
-		int total=0;
-		for(int a=0;a<element.size();a++)
-		{
-			
-			if(element[a].type==type && element[a].active)
-			{
-				
-				for(int b=0;b<element.size();b++)
-				{
-					if(element[b].type==type && element[a].active)
-					{
-						if(element[a].sprite.getGlobalBounds().contains(element[b].now))
-						{
-						
-							if(abs(element[a].now.x) - abs(element[b].now.x) < 10)
-							{
-								if(a!=b)
-								{
-									total++;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		e.numberText.setString(std::to_string(total));
-		e.numberText.setPosition(e.now.x,e.now.y - 40);
-		if(total == 0)
-		{
-			e.numberText.setString("");
-		}
+	    int total = 1;
+	    displayNumber = false; // Reset every frame
 	
+	    for (int a = 0; a < element.size(); a++)
+	    {
+	        if (element[a].ID == ID || 
+	            !element[a].exists || 
+	            !element[a].active || 
+	            element[a].type != type) 
+	            continue;
+	
+	        // Adjusted bounds with 20px padding
+	        FloatRect bounds = sprite.getGlobalBounds();
+	        bounds.left += 20;
+	        bounds.width -= 40;
+	        bounds.top += 20;
+	        bounds.height -= 20;
+	        
+	        // Adjusted bounds with 20px padding
+	        FloatRect bounds2 = element[a].sprite.getGlobalBounds();
+	        bounds2.left += 20;
+	        bounds2.width -= 40;
+	        bounds2.top += 20;
+	        bounds2.height -= 20;
+	        
+	        
+	
+	        if (bounds.intersects(bounds2))
+	        {
+	        	
+	            total++;
+	            element[a].displayNumber = false; // Disable others
+	            displayNumber = true; // Enable for this element
+	        }
+	    }
+	
+	    // Update text only when needed
+	    if (displayNumber && total > 1 && exists && active)
+	    {
+	        // Get final position first
+	        float textY = now.y - (averageHeight - (averageHeight/3)) - 40;
+	        
+	        // Set string once with final value
+	        numberText.setString(std::to_string(total));
+	        
+	        // Update origin AFTER string is set
+	        FloatRect textBounds = numberText.getLocalBounds();
+	        numberText.setOrigin(textBounds.width/2, textBounds.height/2);
+	        
+	        // Set final position
+	        numberText.setPosition(now.x, textY);
+	    }
+	    else
+	    {
+	        numberText.setString("");
+	        displayNumber = false;
+	    }
 	}
 	
 	
@@ -175,7 +195,8 @@ class Element
 				{
 					if(water.puddle[index].linepos.size()>now.x)
 					{
-						now.y = water.puddle[index].linepos[50].y;
+						if(water.puddle[index].linepos.size()>50)
+							now.y = water.puddle[index].linepos[50].y;
 					}
 					if(water.puddle[index].left!=-1)
 					{
@@ -266,7 +287,8 @@ class Element
 				{
 					if(released)
 					{
-						if(type=="bomb")
+
+						if(type=="bomb" || type=="wood"||type=="tomato")
 						{
 							liveitem = ID;
 							
@@ -275,6 +297,11 @@ class Element
 							
 							buttons.push_back("pick up");
 							iconrect.push_back(IntRect(1,239,40,40));
+						}
+
+						if(type=="bomb")
+						{
+
 							buttons.push_back("blow up");
 							iconrect.push_back(IntRect(200,280,40,40));
 							
@@ -314,6 +341,21 @@ class Element
 						
 						
 						
+						
+						if(type=="shed")
+						{
+							liveitem = ID;
+							
+							buttons.clear();
+							iconrect.clear();
+							
+							buttons.push_back("grow");
+							iconrect.push_back(IntRect(161,200,40,40));	
+						}
+						
+						
+						
+						
 						if(type=="jeep")
 						{
 							liveitem = ID;
@@ -347,7 +389,8 @@ class Element
 		if(active)
 		{
 			window.draw(sprite);
-			window.draw(numberText);
+			if(displayNumber)
+				window.draw(numberText);
 		}	
 	}
 };

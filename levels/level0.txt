@@ -1,6 +1,6 @@
 ground level0/ground.png END
 
-background level0/skyorange.png END
+background level0/sky(2).png END
 
 foreground level0/grass.png END
 
@@ -21,15 +21,12 @@ orange blupi 20 208 END
 
 green blupi 100 208 END
 
-yellow blupi 2068 153 END
-
 blue blupi 1324 200 END
 
 orange blupi 20 208 END
 
 green blupi 100 208 END
 
-yellow blupi 2068 153 END
 
 blue blupi 1324 200 END
 
@@ -55,6 +52,9 @@ water 1550 225 END
 water 2068 225 END
 
 boat 2500 100 END
+
+boat 2500 100 END
+
 
 bomb 400 100 END
 

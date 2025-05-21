@@ -525,7 +525,7 @@ class Blupi
 	
 	
 	int itemindex = -1;
-	
+	std::string liveAction="none";
 	
 	void doAction(Image &ground)
 	{
@@ -547,6 +547,44 @@ class Blupi
 		if(traveled())
 		{
 		
+			
+			
+			if(action == "grow")
+			{
+				busy=true;
+				
+				
+				
+				//steps in growing tomatoes
+				
+				//1: blupi is busy
+				//2: goto position
+				//3: choose position slightly beside blupi on a random side.
+				//4: create "plant" element
+				//5: itemIndex becomes reference to the newly created element. 
+				//6: use growing tomato Shift Mode for blupi (digging,then watering)
+				//7: use growing tomato Shift Mode for element (stages of growth(includes preparing ground))
+				//8: both blupi and tomato animate using Shift Modes at the same time
+				//9: When tomato reaches last frame, blupi is no longer busy and tomato is of type "tomato"
+				
+				
+				
+				Element newelement;
+				
+				newelement.type = "plant";
+				newelement.sprite.setTexture(textures.element);
+				
+				
+				newelement.now = Vector2f(now.x,now.y);
+				newelement.averageHeight = newelement.sprite.getTextureRect().height;
+				element.push_back(newelement);
+				
+				itemindex = element.size()-1;
+				
+				liveAction = action;
+
+			}
+			
 			
 			if(action=="haven")
 			{
@@ -634,7 +672,7 @@ class Blupi
 			
 			if(action=="pick up")
 			{
-				pickup = true;				
+				liveAction = action;			
 			}
 			
 			if(action == "drop")
@@ -674,7 +712,6 @@ class Blupi
 				}
 			}
 			
-			
 			action = "none";
 		}
 			
@@ -687,19 +724,33 @@ class Blupi
 	
 	
 	
-	bool pickup = false;
+
+	
+
+	
+	
+	
 	int firstGrab = 0;
 	int carryref = 0;
+		
 	
-	
-	
-	void updatePickup(sf::Image &ground)
+	void UpdateActions(sf::Image &ground)
 	{
-			
-			
-		if(locomotion == "walk")
+		if(liveAction == "grow")
 		{
-			if(pickup)
+			
+			
+			
+			
+			//element[itemindex].type = "tomato"; 
+			//element[itemindex].sprite.setTextureRect(IntRect(67,153,51,39)); //tomato rect
+				
+		}
+		
+		
+		if(liveAction == "pick up")
+		{
+			if(locomotion == "walk")
 			{
 				if(firstGrab == 0)
 				{
@@ -733,7 +784,7 @@ class Blupi
 							element[itemindex].active = false;
 							carrying = element[itemindex].sprite;
 							action = "none";
-							pickup = false;
+							liveAction = "none";
 							carryref = itemindex;
 				
 						}
@@ -751,18 +802,6 @@ class Blupi
 			
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
@@ -1378,7 +1417,7 @@ class Blupi
 		checkSelfClicks(ground);	
 			
 	
-		updatePickup(ground);
+		UpdateActions(ground);
 		
 		
 		
