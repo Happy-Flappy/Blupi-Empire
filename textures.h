@@ -58,7 +58,7 @@ class Textures
 		buttons.loadFromFile("ASSETS/buttons.png");
 		taskbox.loadFromFile("ASSETS/taskbox.png");
 		Clean("ASSETS/pblupi.png",pblupi);
-		Clean("ASSETS/element.bmp",element);
+		Clean("ASSETS/element.png",element);
 		Clean("ASSETS/explo.bmp",explo);
 		blupiblue.setSmooth(true);
 		blupiyellow.setSmooth(true);

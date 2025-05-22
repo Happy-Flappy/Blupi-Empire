@@ -53,6 +53,7 @@ class Element
 	struct ShiftMode
 	{
 		ShiftData blowup;
+		ShiftData grow;
 		
 		ShiftMode()
 		{
@@ -69,7 +70,20 @@ class Element
 			blowup.rect.push_back(IntRect(305,260,114,82));
 			blowup.rect.push_back(IntRect(1,260,122,70));
 			blowup.rect.push_back(IntRect(129,75,111,50));
+			
+			
+			grow.delay = 2;
+			int offset=10;
+			grow.rect.push_back(sf::IntRect(59,644,45,56+offset));
+			grow.rect.push_back(sf::IntRect(59+45,644,45,56+offset));
+			grow.rect.push_back(sf::IntRect(59+45+45,644,45,56+offset));
+			grow.rect.push_back(sf::IntRect(59+45+45+45,644,45,56+offset));
+			grow.rect.push_back(sf::IntRect(59+45+45+45+45,644,45,56+offset));
+			
 		}
+		
+		
+		
 			
 	}shift;
 	
@@ -168,6 +182,7 @@ class Element
 			sprite.setScale(1.5,1.5);
 			
 			sprite.setOrigin(sprite.getTextureRect().width/2,sprite.getTextureRect().height/2);
+			
 			
 			sprite.setPosition(now.x,now.y - (averageHeight - (averageHeight/3)));
 			

@@ -568,19 +568,9 @@ class Blupi
 				//9: When tomato reaches last frame, blupi is no longer busy and tomato is of type "tomato"
 				
 				
-				
-				Element newelement;
-				
-				newelement.type = "plant";
-				newelement.sprite.setTexture(textures.element);
-				
-				
-				newelement.now = Vector2f(now.x,now.y);
-				newelement.averageHeight = newelement.sprite.getTextureRect().height;
-				element.push_back(newelement);
-				
-				itemindex = element.size()-1;
-				
+				growDirect = 0;
+				growLeftPath=true;
+				growRightPath=true;
 				liveAction = action;
 
 			}
@@ -732,21 +722,146 @@ class Blupi
 	
 	int firstGrab = 0;
 	int carryref = 0;
-		
+	int setupGrowth = 0;
+	int growDirect = -1;
+	bool growLeftPath = true;
+	bool growRightPath = true;
 	
 	void UpdateActions(sf::Image &ground)
 	{
 		if(liveAction == "grow")
 		{
+		
+		
+		
+			if(traveled() || destination.x == now.x)
+			{
+	
+				if(setupGrowth == 0)
+				{
+					
+					if(growDirect == 0)
+					{
+					
+						int direct = rand()%100;
+						
+						if(direct < 50)
+						{
+							growDirect = -1;
+						}
+						else
+						{
+							growDirect = 1;
+						}
+					}
+	
+					destination.x = now.x + (growDirect * 50);
+
+
+					setupGrowth = 1;
+					
+					return;
+				}	
+				
+				if(setupGrowth == 1)
+				{
+					
+					int x=now.x;
+					
+					x = now.x + (element[itemindex].sprite.getTextureRect().width * growDirect);
+					
+					if(x < 0)
+					{
+						growDirect = !growDirect;
+						growLeftPath=false;
+						return;
+					}
+					if(x >= ground.getSize().x)
+					{
+						growRightPath=false;
+						growDirect = !growDirect;
+						return;
+					}
+					
+					int index = water.getPuddleIndex(x);
+					if(index!=-1)
+					{
+						if(growDirect == -1)
+							growLeftPath = false;
+						else
+							growRightPath = false;
+						growDirect = !growDirect;
+						
+						return;
+					}
+					
+					
+					if(!growLeftPath && !growRightPath)
+					{
+						failed();
+						Stop();
+						return;
+					}
+
+
+
+
+
+
+
+					
+
+
+					
+					
+					for(int a=0;a<element.size();a++)
+					{
+						if(element[a].type == "tomato" || element[a].type == "bomb" || element[a].type == "wood")
+						{
+						
+							if(element[a].sprite.getGlobalBounds().contains(x,element[a].sprite.getPosition().y))
+							{
+								destination.x = now.x - (50 * growDirect);	
+								return;
+							}
+						}
+					}
+					
+					Element newelement;
+					
+					newelement.type = "plant";
+					newelement.sprite.setTexture(textures.element);
+					
+					newelement.sprite.setTextureRect(newelement.shift.grow.rect[0]);
+					newelement.averageHeight = newelement.sprite.getTextureRect().height;
+
+					element.push_back(newelement);
+					
+					itemindex = element.size()-1;
+					
+					element[itemindex].now = sf::Vector2f(x + (growDirect * 50),now.y);
+					if(element[itemindex].now.x > now.x)
+						state = "right";
+					else
+						state = "left";	
+					setupGrowth = 2;
+				}
+
+				element[itemindex].sprite.setTextureRect(Shift(element[itemindex].shift.grow));
+				int size = element[itemindex].shift.grow.rect.size();
+				if(element[itemindex].sprite.getTextureRect() == element[itemindex].shift.grow.rect[size-1])
+				{
+					element[itemindex].type = "tomato"; 
+					element[itemindex].sprite.setTextureRect(IntRect(67,153,51,39)); //tomato rect
+					element[itemindex].averageHeight = element[itemindex].sprite.getTextureRect().height;
+					itemindex=-1;					
+					setupGrowth = 0;
+				}
+			}
 			
-			
-			
-			
-			//element[itemindex].type = "tomato"; 
-			//element[itemindex].sprite.setTextureRect(IntRect(67,153,51,39)); //tomato rect
+
 				
 		}
-		
 		
 		if(liveAction == "pick up")
 		{
