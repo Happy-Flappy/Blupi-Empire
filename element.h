@@ -19,12 +19,15 @@ class Element
 	bool active = true;
 	bool boolean[10];
 	bool exists=true;
-	bool displayNumber=false;
+	int displayNumber=0;
 	Text numberText;
+	
 	SoundBuffer buffer;
 	int soundChannel = -1;
 	int blupiIndex=-1;
 	int boomID=-1;
+	int textX=0;
+	sf::FloatRect bounds;
 	
 	
 	Element()
@@ -74,11 +77,12 @@ class Element
 			
 			grow.delay = 2;
 			int offset=10;
-			grow.rect.push_back(sf::IntRect(59,644,45,56+offset));
-			grow.rect.push_back(sf::IntRect(59+45,644,45,56+offset));
-			grow.rect.push_back(sf::IntRect(59+45+45,644,45,56+offset));
-			grow.rect.push_back(sf::IntRect(59+45+45+45,644,45,56+offset));
-			grow.rect.push_back(sf::IntRect(59+45+45+45+45,644,45,56+offset));
+			
+			grow.rect.push_back(sf::IntRect(59,644 + 1,45 - 1,56+offset - 1));
+			grow.rect.push_back(sf::IntRect(59+45,644 + 1,45 - 1,56+offset - 1));
+			grow.rect.push_back(sf::IntRect(59+45+45,644 + 1,45 - 1,56+offset - 1));
+			grow.rect.push_back(sf::IntRect(59+45+45+45,644 + 1,45 - 1,56+offset - 1));
+			grow.rect.push_back(sf::IntRect(59+45+45+45+45,644 + 1,45 - 1,56+offset - 1));
 			
 		}
 		
@@ -99,63 +103,63 @@ class Element
 		
 	void getNumberOfOverlap(std::vector<Element> &element)
 	{
-	    int total = 1;
-	    displayNumber = false; // Reset every frame
-	
-	    for (int a = 0; a < element.size(); a++)
-	    {
-	        if (element[a].ID == ID || 
-	            !element[a].exists || 
-	            !element[a].active || 
-	            element[a].type != type) 
-	            continue;
-	
-	        // Adjusted bounds with 20px padding
-	        FloatRect bounds = sprite.getGlobalBounds();
-	        bounds.left += 20;
-	        bounds.width -= 40;
-	        bounds.top += 20;
-	        bounds.height -= 20;
-	        
-	        // Adjusted bounds with 20px padding
-	        FloatRect bounds2 = element[a].sprite.getGlobalBounds();
-	        bounds2.left += 20;
-	        bounds2.width -= 40;
-	        bounds2.top += 20;
-	        bounds2.height -= 20;
-	        
-	        
-	
-	        if (bounds.intersects(bounds2))
-	        {
-	        	
-	            total++;
-	            element[a].displayNumber = false; // Disable others
-	            displayNumber = true; // Enable for this element
-	        }
-	    }
-	
-	    // Update text only when needed
-	    if (displayNumber && total > 1 && exists && active)
-	    {
-	        // Get final position first
-	        float textY = now.y - (averageHeight - (averageHeight/3)) - 40;
-	        
-	        // Set string once with final value
-	        numberText.setString(std::to_string(total));
-	        
-	        // Update origin AFTER string is set
-	        FloatRect textBounds = numberText.getLocalBounds();
-	        numberText.setOrigin(textBounds.width/2, textBounds.height/2);
-	        
-	        // Set final position
-	        numberText.setPosition(now.x, textY);
-	    }
-	    else
-	    {
-	        numberText.setString("");
-	        displayNumber = false;
-	    }
+//	    int total = 1;
+//	    displayNumber = false; // Reset every frame
+//	
+//	    for (int a = 0; a < element.size(); a++)
+//	    {
+//	        if (element[a].ID == ID || 
+//	            !element[a].exists || 
+//	            !element[a].active || 
+//	            element[a].type != type) 
+//	            continue;
+//	
+//	        // Adjusted bounds with 20px padding
+//	        FloatRect bounds = sprite.getGlobalBounds();
+//	        bounds.left += 30;
+//	        bounds.width -= 50;
+//	        bounds.top += 30;
+//	        bounds.height -= 30;
+//	        
+//	        // Adjusted bounds with 20px padding
+//	        FloatRect bounds2 = element[a].sprite.getGlobalBounds();
+//	        bounds2.left += 30;
+//	        bounds2.width -= 50;
+//	        bounds2.top += 30;
+//	        bounds2.height -= 30;
+//	        
+//	        
+//	
+//	        if (bounds.intersects(bounds2))
+//	        {
+//	        	
+//	            total++;
+//	            element[a].displayNumber = false; // Disable others
+//	            displayNumber = true; // Enable for this element
+//	        }
+//	    }
+//	
+//	    // Update text only when needed
+//	    if (displayNumber && total > 1 && exists && active)
+//	    {
+//	        // Get final position first
+//	        float textY = now.y - (averageHeight - (averageHeight/3)) - 40;
+//	        
+//	        // Set string once with final value
+//	        numberText.setString(std::to_string(total));
+//	        
+//	        // Update origin AFTER string is set
+//	        FloatRect textBounds = numberText.getLocalBounds();
+//	        numberText.setOrigin(textBounds.width/2, textBounds.height/2);
+//	        
+//	        // Set final position
+//	        numberText.setPosition(now.x, textY);
+//	    }
+//	    else
+//	    {
+//	        numberText.setString("");
+//	        displayNumber = false;
+//	    }
 	}
 	
 	
@@ -170,7 +174,15 @@ class Element
 	void update(Image &ground,std::string locomotion)
 	{
 		
-		
+		bounds = sprite.getGlobalBounds();
+        bounds.left += 20;
+        bounds.width -= 40;
+        bounds.top += 20;
+        bounds.height -= 20;
+        
+        
+        
+        
 		if(active)
 		{
 		
@@ -258,14 +270,15 @@ class Element
 					
 					if(soundChannel==-1)
 					{
-						int a = findChannel();
+						int a = wav.findChannel();
 						if(a!=-1)
 						{
 						
 							soundChannel = a;
+							if(a==-1)
+								a=0;
 							sound[a].stop();
-							buffer.loadFromFile("ASSETS/miscSound/boom.wav");
-							sound[a].setBuffer(buffer);
+							sound[a].setBuffer(wav.buffer[100]);
 							sound[a].play();
 						}
 				
@@ -404,8 +417,22 @@ class Element
 		if(active)
 		{
 			window.draw(sprite);
-			if(displayNumber)
+			if(displayNumber > 1)
+			{
+	
+		        // Get final position first
+		        float textY = now.y - (averageHeight - (averageHeight/3)) - 40;
+		        
+		        // Set string once with final value
+		        numberText.setString(std::to_string(displayNumber));
+
+				FloatRect textBounds = numberText.getLocalBounds();
+	    	    numberText.setOrigin(textBounds.width/2, textBounds.height/2);
+	        
+	    	    // Set final position
+	    	    numberText.setPosition(textX, textY);
 				window.draw(numberText);
+			}
 		}	
 	}
 };

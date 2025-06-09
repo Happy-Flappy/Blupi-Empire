@@ -3,6 +3,7 @@
 #include <SFML\Graphics.hpp>
 #include <SFML\Audio.hpp>
 #include <SFML\Network.hpp>
+#include "wav.h"
 using namespace sf;
 
 Vector2f MPosition;
@@ -214,7 +215,14 @@ void getTopHoveredLayer()
 
 
 
-
+struct GridComparator {
+    int gridX;  // The grid coordinate we're searching for
+    GridComparator(int x) : gridX(x) {}
+    
+    bool operator()(const Element& el) const {
+        return static_cast<int>(el.now.x) / 32 == gridX;
+    }
+};
 
 
 
@@ -408,18 +416,139 @@ int main()
 		
 			
 			
+
 			
 			for(int a=0;a < element.size();a++)
 			{
+				
+				
 		
+			
 					
 				if(!element[a].exists)
 					continue;
 				element[a].ID=a;
 				element[a].getNumberOfOverlap(element);
 				element[a].update(map.iground,blupi[player[ME].selected].locomotion);
+				element[a].displayNumber=0;
+			
+			
+				
+			
 			
 			}
+				
+			
+			
+			
+			
+			std::vector<std::vector<int>> group;
+			std::vector<int> processed;
+			
+			
+			
+			
+			
+			
+			
+			std::map<std::pair<std::string, int>, std::vector<int>> gridGroups;
+			
+			
+			
+			// Build grid groups
+			for (int a = 0; a < element.size(); a++) {
+			    if (!element[a].exists || !element[a].active) continue;
+			    
+			    int gridX = static_cast<int>(element[a].now.x) / 32;
+			    auto key = std::make_pair(element[a].type, gridX);
+			    gridGroups[key].push_back(a);
+			}
+			
+			// Process groups
+			for (auto& group : gridGroups) {
+			    if (group.second.size() <= 1) continue;
+			
+			    // Find leftmost element
+			    auto leftIt = std::min_element(group.second.begin(), group.second.end(),
+			        [&](int a, int b) { return element[a].now.x < element[b].now.x; });
+			    
+			    // Find rightmost element
+			    auto rightIt = std::max_element(group.second.begin(), group.second.end(),
+			        [&](int a, int b) { return element[a].now.x < element[b].now.x; });
+			
+			    float diff = element[*rightIt].now.x - element[*leftIt].now.x;
+			    element[*rightIt].displayNumber = group.second.size();
+			    element[*rightIt].textX = element[*rightIt].now.x - diff / 2;
+			}			
+			
+			
+			
+//			for(int a=0;a<element.size();a++)
+//			{
+//			
+//	
+//				
+//				bool firstFound=true;
+//				for(int b=0;b<element.size();b++)
+//				{
+//					if(element[a].type != element[b].type)
+//						continue;
+//				
+//					if((element[a].now.x/32) == (element[b].now.x/32))
+//					{
+//						bool pro=false;
+//						for(int z=0;z<processed.size();z++)
+//						{
+//							if(b == processed[z])
+//							{
+//								pro=true;
+//								break;
+//							}
+//						}
+//						
+//						
+//						if(pro)
+//							continue;
+//						
+//						
+//						if(firstFound)
+//						{
+//							group.resize(group.size()+1);
+//							firstFound=false;
+//						}
+//						
+//						group[group.size()-1].push_back(b);
+//						processed.push_back(b);
+//					}
+//				}
+//			}
+//			
+			
+			
+			for(int a=0;a<group.size();a++)
+			{
+				if(group[a].size() <= 0)
+					continue;
+					
+					
+					
+				int IDmin = group[a][0];
+				int IDmax = group[a][group[a].size()-1];
+				
+				
+				int diff = 	IDmin < IDmax	?	element[IDmax].now.x - element[IDmin].now.x : element[IDmin].now.x - element[IDmax].now.x;
+				
+				int left = IDmin < IDmax ? IDmin : IDmax;
+				
+				element[left].displayNumber = group[a].size();
+				element[left].textX = element[left].now.x + diff/2;
+			}
+			
+						
+			
+			
+
+			
 			
 			map.floater.move(0,-1);
 
@@ -531,8 +660,28 @@ int main()
 		for(int a=0;a<element.size();a++)
 		{
 			
+			
+			
+			
 			if(!element[a].exists)
 				continue;
+			
+			
+			
+			if (element[a].active && element[a].exists) {
+		        RectangleShape rect;
+		        sf::Vector2f size = sf::Vector2f(element[a].sprite.getTextureRect().width*element[a].sprite.getScale().x,element[a].sprite.getTextureRect().height*element[a].sprite.getScale().y);
+		        
+		        rect.setSize(size);
+		        rect.setPosition(element[a].sprite.getPosition().x - (size.x/2),element[a].sprite.getPosition().y - (size.y/2));
+		        rect.setFillColor(Color(0, 0, 0, 0));
+		        rect.setOutlineColor(Color::Red);
+		        rect.setOutlineThickness(1);
+		        window.draw(rect);
+		    }
+			
+			
+			
 			
 			for(int b=0;b<boom.size();b++)
 			{
@@ -543,17 +692,7 @@ int main()
 				}
 			}
 			
-//			if (element[a].active && element[a].exists) {
-//		        RectangleShape rect;
-//		        sf::Vector2f size = sf::Vector2f(element[a].sprite.getTextureRect().width*element[a].sprite.getScale().x,element[a].sprite.getTextureRect().height*element[a].sprite.getScale().y);
-//		        
-//		        rect.setSize(size);
-//		        rect.setPosition(element[a].sprite.getPosition().x - (size.x/2),element[a].sprite.getPosition().y - (size.y/2));
-//		        rect.setFillColor(Color(0, 0, 0, 0));
-//		        rect.setOutlineColor(Color::Red);
-//		        rect.setOutlineThickness(1);
-//		        window.draw(rect);
-//		    }
+			
 			
 		}
 

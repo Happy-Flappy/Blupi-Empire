@@ -68,13 +68,12 @@ class AI
         current.action = "none";
         current.busy = false;
 
-		int a = findChannel();
+		int a = wav.findChannel();
 		if(a!=-1 && soundChannel!=-1)
 		{
-			sound[a].stop();
-			current.say.loadFromFile("ASSETS/say/Sound049.wav");
-			sound[a].setBuffer(current.say);
-			sound[a].play();
+			wav.sound[a].stop();
+			wav.sound[a].setBuffer(wav.buffer[11]);
+			wav.sound[a].play();
 		}
 
 

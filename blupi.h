@@ -22,7 +22,7 @@ class Blupi
 		ShiftData blinkleft;
 		ShiftData blinkright;
 		ShiftData blowup; 
-		
+		ShiftData water;
 		
 		
 		ShiftModes()
@@ -77,8 +77,9 @@ class Blupi
 			blowup.rect.push_back(IntRect(130*5,1798,130,80));
 			
 			
-			
-			
+			water.rect.push_back(IntRect(-4,1868,67,61));
+			water.rect.push_back(IntRect(75,1871,62,61));
+
 				
 		}
 		
@@ -190,7 +191,6 @@ class Blupi
 	std::string action="none"; // the action that blupi is currently trying to accomplish
 	std::string keyinput="none";
 	
-	SoundBuffer say;
 	
 	
 	
@@ -207,21 +207,12 @@ class Blupi
 		int a = rand()%3;
 		
 		
-		sound[0].stop();
+		wav.sound[0].stop();
 		
 		
-		if(a==0)
-			say.loadFromFile("ASSETS/say/sound056.wav");
+		wav.sound[0].setBuffer(wav.buffer[a]);//0,1,2
 		
-		if(a==1)
-			say.loadFromFile("ASSETS/say/sound057.wav");
-		
-		if(a==2)
-			say.loadFromFile("ASSETS/say/sound058.wav");
-	
-		
-		sound[0].setBuffer(say);
-		sound[0].play();
+		wav.sound[0].play();
 		
 	}
 	
@@ -568,11 +559,26 @@ class Blupi
 				//9: When tomato reaches last frame, blupi is no longer busy and tomato is of type "tomato"
 				
 				
-				growDirect = 0;
-				growLeftPath=true;
-				growRightPath=true;
+				//growDirect = 0;
+				//growLeftPath=true;
+				//growRightPath=true;
+				//setupGrowth = 0;
 				liveAction = action;
+				destination.x = element[itemindex].sprite.getPosition().x - 25;
 
+
+				for(int a=0;a<200;a++)
+				{
+				
+					Element telement;
+					telement.sprite.setTexture(textures.element);				
+					telement.type = "tomato"; 
+					telement.sprite.setTextureRect(IntRect(67,153,51,39)); //tomato rect
+					telement.averageHeight = telement.sprite.getTextureRect().height;
+					telement.now = sf::Vector2f(destination.x + 50,now.y);
+					
+					element.push_back(telement);
+				}
 			}
 			
 			
@@ -722,110 +728,39 @@ class Blupi
 	
 	int firstGrab = 0;
 	int carryref = 0;
-	int setupGrowth = 0;
-	int growDirect = -1;
-	bool growLeftPath = true;
-	bool growRightPath = true;
+	int plantindex = -1;
 	
 	void UpdateActions(sf::Image &ground)
 	{
 		if(liveAction == "grow")
 		{
-		
-		
-		
-			if(traveled() || destination.x == now.x)
+			
+			
+			if(plantindex!=-1)
 			{
-	
-				if(setupGrowth == 0)
-				{
-					
-					if(growDirect == 0)
-					{
-					
-						int direct = rand()%100;
-						
-						if(direct < 50)
-						{
-							growDirect = -1;
-						}
-						else
-						{
-							growDirect = 1;
-						}
-					}
-	
-					destination.x = now.x + (growDirect * 50);
-
-
-					setupGrowth = 1;
-					
-					return;
-				}	
 				
-				if(setupGrowth == 1)
+				
+				
+				
+				
+		
+		
+				sprite.setTextureRect(Shift(shift.water));
+				element[plantindex].sprite.setTextureRect(Shift(element[plantindex].shift.grow));
+				int size = element[plantindex].shift.grow.rect.size();
+				if(element[plantindex].sprite.getTextureRect() == element[plantindex].shift.grow.rect[size-1])
 				{
-					
-					int x=now.x;
-					
-					x = now.x + (element[itemindex].sprite.getTextureRect().width * growDirect);
-					
-					if(x < 0)
-					{
-						growDirect = !growDirect;
-						growLeftPath=false;
-						return;
-					}
-					if(x >= ground.getSize().x)
-					{
-						growRightPath=false;
-						growDirect = !growDirect;
-						return;
-					}
-					
-					int index = water.getPuddleIndex(x);
-					if(index!=-1)
-					{
-						if(growDirect == -1)
-							growLeftPath = false;
-						else
-							growRightPath = false;
-						growDirect = !growDirect;
-						
-						return;
-					}
-					
-					
-					if(!growLeftPath && !growRightPath)
-					{
-						failed();
-						Stop();
-						return;
-					}
-
-
-
-
-
-
-
-					
-
-
-					
-					
-					for(int a=0;a<element.size();a++)
-					{
-						if(element[a].type == "tomato" || element[a].type == "bomb" || element[a].type == "wood")
-						{
-						
-							if(element[a].sprite.getGlobalBounds().contains(x,element[a].sprite.getPosition().y))
-							{
-								destination.x = now.x - (50 * growDirect);	
-								return;
-							}
-						}
-					}
+					element[plantindex].type = "tomato"; 
+					element[plantindex].sprite.setTextureRect(IntRect(67,153,51,39)); //tomato rect
+					element[plantindex].averageHeight = element[plantindex].sprite.getTextureRect().height;
+					plantindex=-1;	
+				}
+			}			
+			else
+			{
+				if(traveled() || destination.x == now.x)
+				{
+					state = "right";
 					
 					Element newelement;
 					
@@ -834,31 +769,183 @@ class Blupi
 					
 					newelement.sprite.setTextureRect(newelement.shift.grow.rect[0]);
 					newelement.averageHeight = newelement.sprite.getTextureRect().height;
-
+	
 					element.push_back(newelement);
 					
-					itemindex = element.size()-1;
+					plantindex = element.size()-1;
 					
-					element[itemindex].now = sf::Vector2f(x + (growDirect * 50),now.y);
-					if(element[itemindex].now.x > now.x)
-						state = "right";
-					else
-						state = "left";	
-					setupGrowth = 2;
+					element[plantindex].now = sf::Vector2f(now.x + 60,now.y);
+	
+					
+					wav.sound[0].stop();
+					wav.sound[0].setBuffer(wav.buffer[101]);
+					wav.sound[0].play();				
 				}
-
-				element[itemindex].sprite.setTextureRect(Shift(element[itemindex].shift.grow));
-				int size = element[itemindex].shift.grow.rect.size();
-				if(element[itemindex].sprite.getTextureRect() == element[itemindex].shift.grow.rect[size-1])
-				{
-					element[itemindex].type = "tomato"; 
-					element[itemindex].sprite.setTextureRect(IntRect(67,153,51,39)); //tomato rect
-					element[itemindex].averageHeight = element[itemindex].sprite.getTextureRect().height;
-					itemindex=-1;					
-					setupGrowth = 0;
-				}
+		
 			}
-			
+		
+//			if(traveled() || destination.x == now.x)
+//			{
+//	
+//				if(setupGrowth == 0)
+//				{
+//					if(growDirect == 0)
+//					{
+//					
+//						int direct = rand()%100;
+//						
+//						if(direct < 50)
+//						{
+//							growDirect = -1;
+//						}
+//						else
+//						{
+//							growDirect = 1;
+//						}
+//					}
+//	
+//					destination.x = now.x + (growDirect * 50);
+//
+//
+//					setupGrowth = 1;
+//					
+//					return;
+//				}	
+//				
+//				if(setupGrowth == 1)
+//				{
+//
+//					int growx = now.x + (80 * growDirect);
+//					
+//					if(growx < 0)
+//					{
+//						growDirect = !growDirect;
+//						growLeftPath=false;
+//						return;
+//					}
+//					if(growx >= ground.getSize().x)
+//					{
+//						growRightPath=false;
+//						growDirect = !growDirect;
+//						return;
+//					}
+//					
+//					int index = water.getPuddleIndex(growx);
+//					if(index!=-1)
+//					{
+//						if(growDirect == -1)
+//							growLeftPath = false;
+//						else
+//							growRightPath = false;
+//						growDirect = !growDirect;
+//						
+//						return;
+//					}
+//					
+//					
+//					
+//					
+//					
+//					if(!growLeftPath)
+//					{
+//						growDirect = 1;
+//					}
+//					if(!growRightPath)
+//					{
+//						growDirect = -1;
+//					}
+//					
+//					
+//					
+//					if(!growLeftPath && !growRightPath)
+//					{
+//						failed();
+//						Stop();
+//						return;
+//					}
+//
+//
+//
+//
+//
+//
+//
+//					
+//
+//
+//					
+//					
+//					for(int a=0;a<element.size();a++)
+//					{
+//						if(element[a].type == "tomato" || element[a].type == "bomb" || element[a].type == "wood")
+//						{
+//
+//					        
+//							if(element[a].bounds.contains(growx,element[a].sprite.getPosition().y))
+//							{
+//								//setupGrowth = 2;
+//								//itemindex = -1;
+//								destination.x = growx;	
+//								return;
+//							}
+//						}
+//					}
+//					
+//					Element newelement;
+//					
+//					newelement.type = "plant";
+//					newelement.sprite.setTexture(textures.element);
+//					
+//					newelement.sprite.setTextureRect(newelement.shift.grow.rect[0]);
+//					newelement.averageHeight = newelement.sprite.getTextureRect().height;
+//
+//					element.push_back(newelement);
+//					
+//					itemindex = element.size()-1;
+//					
+//					element[itemindex].now = sf::Vector2f(growx,now.y);
+//	
+//					setupGrowth = 2;
+//					
+//					wav.sound[0].stop();
+//					say.loadFromFile("ASSETS/miscSound/en/sound050.wav");
+//					wav.sound[0].setBuffer(say);
+//					wav.sound[0].play();
+//					
+//				}
+//				if(itemindex!=-1)
+//				{
+//					
+//					
+//					
+//					
+//					
+//			
+//			
+//					sprite.setTextureRect(Shift(shift.water));
+//					if(growDirect == -1)
+//						sprite.setScale(-1.5,1.5);
+//					else
+//						sprite.setScale(1.5,1.5);	
+//					element[itemindex].sprite.setTextureRect(Shift(element[itemindex].shift.grow));
+//					int size = element[itemindex].shift.grow.rect.size();
+//					if(element[itemindex].sprite.getTextureRect() == element[itemindex].shift.grow.rect[size-1])
+//					{
+//						element[itemindex].type = "tomato"; 
+//						element[itemindex].sprite.setTextureRect(IntRect(67,153,51,39)); //tomato rect
+//						element[itemindex].averageHeight = element[itemindex].sprite.getTextureRect().height;
+//						itemindex=-1;					
+//						setupGrowth = 0;
+//					}
+//				}
+//			}
+//			else
+//			{
+//				
+//				sprite.setScale(1.5,1.5);
+//				
+//				
+//			}
 
 				
 		}
@@ -1114,10 +1201,10 @@ class Blupi
 					
 					if(color!=UserColor)
 					{
-						say.loadFromFile("ASSETS/say/sound075.wav");
-						sound[0].stop();
-						sound[0].setBuffer(say);
-						sound[0].play();
+						
+						wav.sound[0].stop();
+						wav.sound[0].setBuffer(wav.buffer[4]);
+						wav.sound[0].play();
 					}
 					
 					if(topBlupi.ID == ID)
@@ -1132,18 +1219,10 @@ class Blupi
 							int b = rand()%3;
 							
 							
-								
-								
 							
-							if(b == 0)
-								say.loadFromFile("ASSETS/say/sound002.wav");
-							if(b == 1)
-								say.loadFromFile("ASSETS/say/sound003.wav");
-							if(b == 2)
-								say.loadFromFile("ASSETS/say/sound004.wav");
-							sound[0].stop();
-							sound[0].setBuffer(say);
-							sound[0].play();
+							wav.sound[0].stop();	
+							wav.sound[0].setBuffer(wav.buffer[b+5]);//5,6,7	
+							wav.sound[0].play();
 						
 						
 						
@@ -1197,17 +1276,11 @@ class Blupi
 			
 				
 				
-			if(sound[0].getStatus()!=Sound::Status::Playing)
+			if(wav.sound[0].getStatus()!=Sound::Status::Playing)
 			{
-				if(b == 0)
-					say.loadFromFile("ASSETS/say/sound008.wav");
-				if(b == 1)
-					say.loadFromFile("ASSETS/say/sound009.wav");
-				if(b == 2)
-					say.loadFromFile("ASSETS/say/sound010.wav");
-				sound[0].stop();
-				sound[0].setBuffer(say);
-				sound[0].play();
+				wav.sound[0].stop();
+				wav.sound[0].setBuffer(wav.buffer[b+8]);//8,9,10
+				wav.sound[0].play();
 			}
 		}
 	}
@@ -1227,17 +1300,11 @@ class Blupi
 			
 				
 				
-			if(sound[0].getStatus()!=Sound::Status::Playing)
+			if(wav.sound[0].getStatus()!=Sound::Status::Playing)
 			{
-				if(b == 0)
-					say.loadFromFile("ASSETS/say/sound005.wav");
-				if(b == 1)
-					say.loadFromFile("ASSETS/say/sound006.wav");
-				if(b == 2)
-					say.loadFromFile("ASSETS/say/sound007.wav");
-				sound[0].stop();
-				sound[0].setBuffer(say);
-				sound[0].play();
+				wav.sound[0].stop();
+				wav.sound[0].setBuffer(wav.buffer[b+5]);//5,6,7
+				wav.sound[0].play();
 			}
 		}		
 	}

@@ -26,6 +26,7 @@ class Map
 	float parallaxspeed = 0.1;
 	float viewspeed = 0.5;
 	float viewvelo = 0;
+	sf::Vector2i size;
 	std::vector<std::string> filepaths;
 	std::vector<std::string> availableColors;
 		
@@ -142,6 +143,8 @@ class Map
 			ground.setTexture(tground);
 			
 			getGroundEdges(iground);
+			
+			size = sf::Vector2i(iground.getSize().x,iground.getSize().y);
 		}
 		
 		
