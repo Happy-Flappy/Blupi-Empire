@@ -100,6 +100,12 @@ struct Player
 #include "shift.h"
 #include "element.h"
 #include "blupi.h"
+struct BlupiByPos
+{
+	int ID;
+	int position;	
+};
+std::vector<BlupiByPos> blupiByPos;
 #include "cursor.h"
 #include "taskbar.h"
 #include "map.h"
@@ -412,11 +418,24 @@ int main()
 				blupi[a].ID=a;
 				blupi[a].update(map.iground);
 			}
-		
-		
 			
 			
-
+			blupiByPos.resize(blupi.size());
+			
+			
+			for(int a=0;a<blupi.size();a++)
+			{
+				blupiByPos[a].ID = a;
+				blupiByPos[a].position = blupi[a].now.x;
+			}
+		
+			
+			std::sort(blupiByPos.begin(),blupiByPos.end(),[](BlupiByPos &a,BlupiByPos &b){
+				
+				return a.position < b.position;
+				
+			});
+		
 			
 			for(int a=0;a < element.size();a++)
 			{
@@ -442,8 +461,6 @@ int main()
 			
 			
 			
-			std::vector<std::vector<int>> group;
-			std::vector<int> processed;
 			
 			
 			
@@ -481,70 +498,6 @@ int main()
 			    element[*rightIt].textX = element[*rightIt].now.x - diff / 2;
 			}			
 			
-			
-			
-//			for(int a=0;a<element.size();a++)
-//			{
-//			
-//	
-//				
-//				bool firstFound=true;
-//				for(int b=0;b<element.size();b++)
-//				{
-//					if(element[a].type != element[b].type)
-//						continue;
-//				
-//					if((element[a].now.x/32) == (element[b].now.x/32))
-//					{
-//						bool pro=false;
-//						for(int z=0;z<processed.size();z++)
-//						{
-//							if(b == processed[z])
-//							{
-//								pro=true;
-//								break;
-//							}
-//						}
-//						
-//						
-//						if(pro)
-//							continue;
-//						
-//						
-//						if(firstFound)
-//						{
-//							group.resize(group.size()+1);
-//							firstFound=false;
-//						}
-//						
-//						group[group.size()-1].push_back(b);
-//						processed.push_back(b);
-//					}
-//				}
-//			}
-//			
-			
-			
-			for(int a=0;a<group.size();a++)
-			{
-				if(group[a].size() <= 0)
-					continue;
-					
-					
-					
-				int IDmin = group[a][0];
-				int IDmax = group[a][group[a].size()-1];
-				
-				
-				int diff = 	IDmin < IDmax	?	element[IDmax].now.x - element[IDmin].now.x : element[IDmin].now.x - element[IDmax].now.x;
-				
-				int left = IDmin < IDmax ? IDmin : IDmax;
-				
-				element[left].displayNumber = group[a].size();
-				element[left].textX = element[left].now.x + diff/2;
-			}
-			
-						
 			
 			
 
@@ -668,17 +621,17 @@ int main()
 			
 			
 			
-			if (element[a].active && element[a].exists) {
-		        RectangleShape rect;
-		        sf::Vector2f size = sf::Vector2f(element[a].sprite.getTextureRect().width*element[a].sprite.getScale().x,element[a].sprite.getTextureRect().height*element[a].sprite.getScale().y);
-		        
-		        rect.setSize(size);
-		        rect.setPosition(element[a].sprite.getPosition().x - (size.x/2),element[a].sprite.getPosition().y - (size.y/2));
-		        rect.setFillColor(Color(0, 0, 0, 0));
-		        rect.setOutlineColor(Color::Red);
-		        rect.setOutlineThickness(1);
-		        window.draw(rect);
-		    }
+//			if (element[a].active && element[a].exists) {
+//		        RectangleShape rect;
+//		        sf::Vector2f size = sf::Vector2f(element[a].sprite.getTextureRect().width*element[a].sprite.getScale().x,element[a].sprite.getTextureRect().height*element[a].sprite.getScale().y);
+//		        
+//		        rect.setSize(size);
+//		        rect.setPosition(element[a].sprite.getPosition().x - (size.x/2),element[a].sprite.getPosition().y - (size.y/2));
+//		        rect.setFillColor(Color(0, 0, 0, 0));
+//		        rect.setOutlineColor(Color::Red);
+//		        rect.setOutlineThickness(1);
+//		        window.draw(rect);
+//		    }
 			
 			
 			
@@ -734,6 +687,9 @@ int main()
 		
 		
 		window.display();
+		
+		
+		
 	}
 	
 }

@@ -185,7 +185,9 @@ class Blupi
 	int itemref = -1;
 	bool busy = false;
 	bool alive = true;
+	bool running = true;
 	float idledelay = 0;
+	float scale = 1.5;//1.5
 	std::string state = "right"; //direction
 	std::string locomotion="walk"; //form of locomotion such as jeep,boat,walk
 	std::string action="none"; // the action that blupi is currently trying to accomplish
@@ -232,7 +234,7 @@ class Blupi
 		sprite.setTexture(textures.blupiblue);
 		sprite.setTextureRect(IntRect(202+1,185+1,32,49));
 		destination = sprite.getPosition();
-		sprite.setScale(1.5,1.5);
+		sprite.setScale(scale,scale);
 		sprite.setOrigin(sprite.getTextureRect().width/2,sprite.getTextureRect().height);
 		
 		speed=2;
@@ -1114,9 +1116,9 @@ class Blupi
 			
 			
 			if(faceLeft)
-				sprite.setScale(-1.5,1.5);
+				sprite.setScale(-scale,scale);
 			else
-				sprite.setScale(1.5,1.5);
+				sprite.setScale(scale,scale);
 					
 			
 			if(shift.blowup.ended)

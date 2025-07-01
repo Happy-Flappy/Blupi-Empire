@@ -279,7 +279,7 @@ class Network {
 			                
 			                
 		                packet << b.itemref;
-		                
+		                packet << b.running;
 		               		
 							
 		            }
@@ -371,6 +371,7 @@ class Network {
 							packet << blupi[a].destination.x;
 							packet << blupi[a].destination.y;	
 							packet << blupi[a].keyinput;
+							packet << blupi[a].running;
 						}
                     }
  	            } 
@@ -527,7 +528,6 @@ class Network {
 	                        	packet >> blupi[a].destination.x;
 	                        	packet >> blupi[a].destination.y;
 								packet >> blupi[a].keyinput;
-								
 		                    }
 		                }
 		                
@@ -673,7 +673,7 @@ class Network {
 			                {
 			                	b.carrying = element[b.itemref].sprite;
 							}
-							
+							packet >> b.running;
 							
 							
 			            }

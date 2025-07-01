@@ -27,41 +27,13 @@ class AI
 	
 	
 	
-	int dangerousBlupiNear(int b)
-	{
-		for(int a=0;a<blupi.size();a++)
-		{
-			if(blupi[a].action == "blow up")
-			{
-				if(b!=a)
-				{
-					
-					
-	                int distance = abs(blupi[b].now.x - blupi[a].now.x);
-	                if (distance < 300)
-	                {
-	                    return a;
-	                }
-					
-				}
-			}
-			
-			
-			
-		}
-		return -1;
-	}
 	
 	
 	
 	
 	
 	
-	
-	
-	
-	
-    void runAwayFrom(int dangerX,int blupiIndex)
+    void runAwayFrom(float dangerX,int blupiIndex)
     {
     	assert(blupiIndex < blupi.size());
         Blupi& current = blupi[blupiIndex];
@@ -77,12 +49,80 @@ class AI
 		}
 
 
-        int delta = dangerX - current.now.x;
-        if (delta > 0) // Danger is to the right, move left
+        if (dangerX > current.now.x) {
+            // Danger is to the right, move left
             current.destination.x = current.now.x - 300;
-        else // Danger is to the left, move right
+        } else {
+            // Danger is to the left, move right
             current.destination.x = current.now.x + 300;
+        }
+        
+        current.running = true;
     }
+	
+	
+	
+	
+	
+	
+	
+	
+	bool dangerousBlupiNear(int a)
+	{
+		Blupi &b = blupi[blupiByPos[a].ID];
+		if(b.color!=player[ID].color) return false; //only control AI blupis
+    	
+    	
+    	Blupi *leftb = nullptr;
+    	Blupi *rightb = nullptr;
+    	
+    	if(a - 1 >= 0)
+    	{
+    		leftb = &blupi[blupiByPos[a-1].ID];
+		}
+		
+    	if(a + 1 < blupiByPos.size())
+    	{
+    		rightb = &blupi[blupiByPos[a+1].ID];
+		}
+		
+		
+		
+		
+		
+		if(leftb != nullptr)
+		{
+			
+			
+			
+			if(leftb->action == "blow up")
+			{
+			
+	        	if(b.now.x - leftb->now.x < 300)
+	        	{
+	        		if(!b.running)
+	        			runAwayFrom(leftb->now.x, b.ID);
+	        		return true;
+				}
+			}
+		}
+		if(rightb != nullptr)
+		{
+			if(rightb->action == "blow up")
+			{
+			
+	        	if(rightb->now.x - b.now.x < 300)
+	        	{
+	        		
+	        		if(!b.running)
+	        			runAwayFrom(rightb->now.x, b.ID);
+					return true;
+				}
+			}
+		}
+    	return false;
+    	
+	}
 	
 	
 	
@@ -92,28 +132,22 @@ class AI
 	
 	void update()
 	{
-		if(active && ID!=-1)
-		{
+		if(!isHost || !active || ID == -1 || blupiByPos.empty()) return;
 		
-			//get Conditions for all blupis
-			
-	        for (int a = 0; a < blupi.size(); a++)
-	        {
+		
+		//get Conditions for all blupis
+		
+        for (int a = 0; a < blupiByPos.size(); a++)
+        {
+        
+        	
+        	Blupi &b = blupi[blupiByPos[a].ID];
+        	if(b.color!=player[ID].color) continue;	
+        	
+        	if(!dangerousBlupiNear(a))		
+	        	b.running = false;
 	        
-	        	
-	            int currentBlupi = a;
-				if (blupi[a].color == player[ID].color)
-	            {
-	            	
-	                int danger = dangerousBlupiNear(a);
-	                if (danger != -1)
-	                {
-	                	assert(danger < blupi.size());
-	                    runAwayFrom(blupi[danger].now.x, currentBlupi);
-	                }
-	            }
-	        }
-	    }
+        }
 		
 		
 		

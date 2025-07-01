@@ -15,11 +15,13 @@ class Element
 	Vector2f velocity;
 	Vector2f now;
 	float gravity = 0.2;
+	float scale = 1.5;//1.5
 	bool burning=false;
 	bool active = true;
 	bool boolean[10];
 	bool exists=true;
 	int displayNumber=0;
+	
 	Text numberText;
 	
 	SoundBuffer buffer;
@@ -191,7 +193,7 @@ class Element
 		
 		
 		
-			sprite.setScale(1.5,1.5);
+			sprite.setScale(scale,scale);
 			
 			sprite.setOrigin(sprite.getTextureRect().width/2,sprite.getTextureRect().height/2);
 			
@@ -237,13 +239,13 @@ class Element
 						{
 							now.x = water.puddle[index].right - width;
 							now.y = water.puddle[index].linepos[water.puddle[index].linepos.size()-width].y;
-							sprite.setScale(-1.5,1.5);
+							sprite.setScale(-scale,scale);
 						}
 						else
 						{
 							now.x = water.puddle[index].left + width;
 							now.y = water.puddle[index].linepos[width].y;
-							sprite.setScale(1.5,1.5);
+							sprite.setScale(scale,scale);
 						}
 					}
 					
