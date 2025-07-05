@@ -23,6 +23,7 @@ class Blupi
 		ShiftData blinkright;
 		ShiftData blowup; 
 		ShiftData water;
+		ShiftData eatL,eatR;
 		
 		
 		ShiftModes()
@@ -77,8 +78,37 @@ class Blupi
 			blowup.rect.push_back(IntRect(130*5,1798,130,80));
 			
 			
-			water.rect.push_back(IntRect(-4,1868,67,61));
-			water.rect.push_back(IntRect(75,1871,62,61));
+			water.rect.push_back(IntRect(0,1870,62,62));
+			water.rect.push_back(IntRect(62,1870,62,62));
+
+
+
+
+
+			eatR.delay = 0.15;
+			eatR.rect.push_back({62*1,62*2,62,62});
+			eatR.rect.push_back({62*2,62*2,62,62});
+			eatR.rect.push_back({62*3,62*2,62,62});
+			eatR.rect.push_back({62*2,62*2,62,62});
+			eatR.rect.push_back({62*3,62*2,62,62});
+			eatR.rect.push_back({62*2,62*2,62,62});
+			eatR.rect.push_back({62*3,62*2,62,62});
+			eatR.rect.push_back({62*2,62*2,62,62});
+			eatR.rect.push_back({62*3,62*2,62,62});
+			
+
+
+			eatL.delay = 0.15;
+			eatL.rect.push_back({62*4,62*2,62,62});
+			eatL.rect.push_back({62*5,62*2,62,62});
+			eatL.rect.push_back({62*6,62*2,62,62});
+			eatL.rect.push_back({62*5,62*2,62,62});
+			eatL.rect.push_back({62*6,62*2,62,62});
+			eatL.rect.push_back({62*5,62*2,62,62});
+			eatL.rect.push_back({62*6,62*2,62,62});
+			eatL.rect.push_back({62*5,62*2,62,62});
+			eatL.rect.push_back({62*6,62*2,62,62});
+			
 
 				
 		}
@@ -203,8 +233,7 @@ class Blupi
 	
 	void failed()
 	{
-		action="none";
-		StartToStop();
+		Stop();
 		//say "I can't do it!"
 		
 		if(complainQue < 2)
@@ -351,13 +380,6 @@ class Blupi
 		action="none";
 		destination.x = now.x; 
 		destination.y = now.y;
-	}
-	
-	void StartToStop()
-	{
-		startstop=true;
-		destination.x = now.x; 
-		destination.y = now.y;		
 	}
 	
 	
@@ -556,15 +578,6 @@ class Blupi
 		
 		
 		
-		if(action == "stop")
-		{
-			if(initAction)
-			{
-				StartToStop();
-				initAction=false;
-			}
-			
-		}
 		
 		
 		
@@ -573,7 +586,7 @@ class Blupi
 		
 		
 		
-		if(action!="stop drive"&&action!="drop"&&action!="eat" && itemindex!=-1)
+		if(action!="stop drive"&&action!="drop" && action!="eat"&&itemindex!=-1)
 		{
 			if(initAction)
 			{
@@ -590,6 +603,29 @@ class Blupi
 			}
 		}
 		
+		if(action == "eat")
+		{
+			if(initAction)
+			{
+				
+				
+				int right = element[itemindex].now.x - ((element[itemindex].sprite.getTextureRect().width/2) * element[itemindex].scale);
+				int left = element[itemindex].now.x - ((element[itemindex].sprite.getTextureRect().width/2) * element[itemindex].scale);
+				
+				
+				destination = element[itemindex].now;
+				if(now.x < element[itemindex].now.x)
+				{
+					state = "moveright";
+					destination.x = left;
+				}
+				if(now.x >= element[itemindex].now.x)
+				{
+					state = "moveleft";
+					destination.x = right;
+				}				
+			}
+		}
 		
 		
 		
@@ -653,17 +689,16 @@ class Blupi
 					
 					state = "right";
 					
-					Element newelement;
 					
-					newelement.type = "plant";
-					newelement.sprite.setTexture(textures.element);
+					plantindex = CreateElement();
 					
-					newelement.sprite.setTextureRect(newelement.shift.grow.rect[0]);
-					newelement.averageHeight = newelement.sprite.getTextureRect().height;
+					element[plantindex].type = "plant";
+					element[plantindex].sprite.setTexture(textures.element);
+					
+					element[plantindex].sprite.setTextureRect(element[plantindex].shift.grow.rect[0]);
+					element[plantindex].averageHeight = element[plantindex].sprite.getTextureRect().height;
 	
-					element.push_back(newelement);
 					
-					plantindex = element.size()-1;
 					
 					element[plantindex].now = sf::Vector2f(now.x + 60,now.y);
 	
@@ -818,8 +853,31 @@ class Blupi
 
 
 
-
-
+			if(action == "eat")
+			{
+				if(initAction)
+				{
+				
+					if(state=="left" || state == "moveleft")
+						state = "eatleft";
+					if(state=="right"|| state == "moveright")
+						state = "eatright";
+					
+					
+					initAction = false;
+				}
+				
+				float energy = 0;
+				if(energy < 100)
+				{
+					energy+=0.01;
+				}
+				else
+				{
+					element[itemindex].exists = false;
+					action="none";
+				}
+			}
 
 
 	
@@ -1053,6 +1111,26 @@ class Blupi
 				iconrect.clear();
 			}
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		if(state == "eatleft")
+		{
+			sprite.setTextureRect(Shift(shift.eatL));
+		}
+		if(state == "eatright")
+		{
+			sprite.setTextureRect(Shift(shift.eatR));
+		}
+		
 		
 		
 		
@@ -1306,7 +1384,7 @@ class Blupi
 				}
 			}
 			
-			Gravity(sprite,ground,velocity,now,gravity); // apply gravity and resolve collisions.
+			Gravity(ground,velocity,now,gravity); // apply gravity and resolve collisions.
 			if(checkGroundNow(ground,now))
 				rotation = getGroundAngle(ground,now,sprite.getRotation() ,10);
 
@@ -1414,7 +1492,7 @@ class Blupi
 		if(haven==-1)
 		{
 		
-			sprite.setPosition(now.x,now.y - 35);
+			sprite.setPosition(now.x,now.y - 40);//35
 		
 			
 			

@@ -89,6 +89,7 @@ struct Player
 }player[4];
 
 
+
 #include <cmath>
 #include <fstream> 
 #include <sstream>
@@ -99,7 +100,79 @@ struct Player
 #include "textures.h"
 #include "shift.h"
 #include "element.h"
+
+
+int CreateElement()
+{
+	int index=-1;
+	for(int a=0;a<element.size();a++)
+	{
+		if(!element[a].exists)
+		{
+			index=a;
+			break;
+		}
+	}
+	
+	
+	if(index!=-1)
+	{
+		element[index] = Element();
+	}
+	else
+	{
+		element.push_back(Element());
+		index = element.size()-1;
+	}
+	element[index].ID = index;
+	
+	return index;
+	
+}
+
+
+
+
+
 #include "blupi.h"
+
+
+
+
+
+
+int CreateBlupi()
+{
+	int index=-1;
+	for(int a=0;a<blupi.size();a++)
+	{
+		if(!blupi[a].alive)
+		{
+			index=a;
+			break;
+		}
+	}
+	
+	
+	if(index!=-1)
+	{
+		blupi[index] = Blupi();
+	}
+	else
+	{
+		blupi.push_back(Blupi());
+		index = blupi.size()-1;
+	}
+	blupi[index].ID = index;
+	
+	return index;
+	
+}
+
+
+
+
+
 struct BlupiByPos
 {
 	int ID;
@@ -572,6 +645,21 @@ int main()
 			window.draw(map.floater);
 		}
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		for(int a=0;a<element.size();a++){
 			
 			if(!element[a].exists)
@@ -584,12 +672,15 @@ int main()
 			}
 		}
 
+
+
+
 		
 		
 		water.draw(window);
 		
-		
-		window.draw(map.ground);
+
+		window.draw(map.ground);		
 
 
 
@@ -692,7 +783,7 @@ int main()
 		
 		
 		
-		wav.listen.setPosition(view.getCenter().x,0,0);
+		//wav.listen.setPosition(view.getCenter().x,0,0);
 		
 	}
 	

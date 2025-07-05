@@ -146,14 +146,16 @@ class Taskbar
 					blupi[player[ME].selected].itemindex = liveitem;
 					blupi[player[ME].selected].initAction = true;
 					
+					
 					blupi[player[ME].selected].sayObey();
 				}
 				else
 				{
 					if(buttons[a] == "stop")
 					{
-						blupi[player[ME].selected].action = "stop";
-						blupi[player[ME].selected].itemindex = liveitem;
+						blupi[player[ME].selected].startstop=true;
+						blupi[player[ME].selected].sayObey();
+						
 					}
 					else
 						blupi[player[ME].selected].failed();
@@ -265,7 +267,7 @@ class Taskbar
 		}
 		
 		
-		if(blupi[player[ME].selected].busy && buttons.size() == 0)
+		if(blupi[player[ME].selected].busy && buttons.size() == 0 && !blupi[player[ME].selected].startstop)
 		{
 			buttons.push_back("stop");
 			iconrect.push_back(IntRect(160,280,40,40));

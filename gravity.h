@@ -57,7 +57,7 @@ bool checkGroundNow(Image &ground,Vector2f now)
 
 
 
-void Gravity(Sprite &sprite,Image &ground,Vector2f &velocity,Vector2f &now,float gravity)
+void Gravity(Image &ground,Vector2f &velocity,Vector2f &now,float gravity)
 {
 	
 	

@@ -25,13 +25,13 @@ blue blupi 1324 200 END
 
 //green //blupi 100 208 END
 
-house 600 208 END
+//house 600 208 END
 
-shed 1200 208 END
+shed 600 208 END
  
 jeep 2500 208 END
 
-bomb 1280 200 END
+bomb 1000 200 END
 
 water 1550 225 END
 

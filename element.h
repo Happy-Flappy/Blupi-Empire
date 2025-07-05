@@ -141,7 +141,7 @@ class Element
 			sprite.setPosition(now.x,now.y - (averageHeight - (averageHeight/3)));
 			
 			
-			Gravity(sprite,ground,velocity,now,gravity);
+			Gravity(ground,velocity,now,gravity);
 			
 			
 			sprite.setRotation(getGroundAngle(ground,now, sprite.getRotation() , 10 ));
@@ -374,7 +374,7 @@ class Element
 			{
 	
 		        // Get final position first
-		        float textY = now.y - (averageHeight - (averageHeight/3)) - 40;
+		        float textY = now.y - (averageHeight - (averageHeight/3)) - 70;
 		        
 		        // Set string once with final value
 		        numberText.setString(std::to_string(displayNumber));

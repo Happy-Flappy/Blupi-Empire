@@ -232,18 +232,19 @@ class Map
 		if(key[1]=="blupi")
 		{
 			
-			Blupi newblupi;
-			newblupi.now=Vector2f(stringToInt(key[2]),stringToInt(key[3]));
-			newblupi.Stop();
-			newblupi.color = key[0];
+			int index = CreateBlupi();
+			
+			blupi[index].now=Vector2f(stringToInt(key[2]),stringToInt(key[3]));
+			blupi[index].Stop();
+			blupi[index].color = key[0];
 			if(key[0]=="yellow")
-				newblupi.sprite.setTexture(textures.blupiyellow);
+				blupi[index].sprite.setTexture(textures.blupiyellow);
 			if(key[0]=="blue")
-				newblupi.sprite.setTexture(textures.blupiblue);
+				blupi[index].sprite.setTexture(textures.blupiblue);
 			if(key[0]=="orange")
-				newblupi.sprite.setTexture(textures.blupiorange);
+				blupi[index].sprite.setTexture(textures.blupiorange);
 			if(key[0]=="green")
-				newblupi.sprite.setTexture(textures.blupigreen);
+				blupi[index].sprite.setTexture(textures.blupigreen);
 			
 			
 			
@@ -264,74 +265,74 @@ class Map
 			}			
 			
 			
-			blupi.push_back(newblupi);
 		}
 		
 		
 		
 		if(key[0]=="wood")
 		{
-			Element newelement;
-			newelement.type = "wood";
-			//newelement.sprite.setTexture(textures.)
+			int index = CreateElement();
+			element[index].type = "wood";
+			//element[index].sprite.setTexture(textures.)
 		}
 		
 		if(key[0]=="bomb")
 		{
-			Element newelement;
-			newelement.type = "bomb";
-			newelement.sprite.setTexture(textures.element);
-			newelement.sprite.setTextureRect(IntRect(88,25,44,22));
-			newelement.now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));
-			newelement.averageHeight = newelement.sprite.getTextureRect().height;
-			element.push_back(newelement);
+			int index = CreateElement();
+			
+			element[index].type = "bomb";
+			element[index].sprite.setTexture(textures.element);
+			element[index].sprite.setTextureRect(IntRect(88,25,44,22));
+			element[index].now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));
+			element[index].averageHeight = element[index].sprite.getTextureRect().height;
+			
 		}
 		
 		if(key[0]=="house")
 		{
 			//a house is a haven where any blupi can be protected from some enemies such as dozers but is not protected from things that can destroy the house such as fire and bombs.
-			Element newelement;
-			newelement.type = "house";
-			newelement.sprite.setTexture(textures.explo);
-			newelement.sprite.setTextureRect(IntRect(0,650,127,107));
-			newelement.now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));
-			newelement.averageHeight = newelement.sprite.getTextureRect().height;
-			element.push_back(newelement);
+			int index = CreateElement();
+			element[index].type = "house";
+			element[index].sprite.setTexture(textures.explo);
+			element[index].sprite.setTextureRect(IntRect(0,650,127,107));
+			element[index].now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));
+			element[index].averageHeight = element[index].sprite.getTextureRect().height;
+			
 		}
 		
 		
 		if(key[0]=="shed")
 		{
-			Element newelement;
-			newelement.type = "shed";
-			newelement.sprite.setTexture(textures.explo);
-			newelement.sprite.setTextureRect(IntRect(0,438,127,95));
-			newelement.now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));
-			newelement.averageHeight = newelement.sprite.getTextureRect().height;	
-			element.push_back(newelement);
+			int index = CreateElement();
+			element[index].type = "shed";
+			element[index].sprite.setTexture(textures.explo);
+			element[index].sprite.setTextureRect(IntRect(0,438,127,95));
+			element[index].now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));
+			element[index].averageHeight = element[index].sprite.getTextureRect().height;	
+			
 		}
 		
 		if(key[0]=="jeep")
 		{
-			Element newelement;
-			newelement.type = "jeep";
-			newelement.sprite.setTexture(textures.element);
-			newelement.sprite.setTextureRect(IntRect(363,50,59,29));
-			newelement.now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));
-			newelement.averageHeight = newelement.sprite.getTextureRect().height;	
-			element.push_back(newelement);			
+			int index = CreateElement();
+			element[index].type = "jeep";
+			element[index].sprite.setTexture(textures.element);
+			element[index].sprite.setTextureRect(IntRect(363,50,59,29));
+			element[index].now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));
+			element[index].averageHeight = element[index].sprite.getTextureRect().height;	
+						
 		}
 		
 		
 		if(key[0]=="boat")
 		{
-			Element newelement;
-			newelement.type = "boat";
-			newelement.sprite.setTexture(textures.element);
-			newelement.sprite.setTextureRect(IntRect(0,645,58,27));
-			newelement.now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));
-			newelement.averageHeight = newelement.sprite.getTextureRect().height;	
-			element.push_back(newelement);			
+			int index = CreateElement();
+			element[index].type = "boat";
+			element[index].sprite.setTexture(textures.element);
+			element[index].sprite.setTextureRect(IntRect(0,645,58,27));
+			element[index].now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));
+			element[index].averageHeight = element[index].sprite.getTextureRect().height;	
+						
 			
 		}
 		
