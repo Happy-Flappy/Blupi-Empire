@@ -144,27 +144,19 @@ class Taskbar
 					
 					blupi[player[ME].selected].action = buttons[a];
 					blupi[player[ME].selected].itemindex = liveitem;
-					
-					
-					
-					if(buttons[a]!="stop drive" && buttons[a]!="drop")
-					{
-						blupi[player[ME].selected].destination = element[liveitem].now;
-						if(blupi[player[ME].selected].now.x < element[liveitem].now.x)
-						{
-							blupi[player[ME].selected].state = "moveright";
-						}
-						if(blupi[player[ME].selected].now.x > element[liveitem].now.x)
-						{
-							blupi[player[ME].selected].state = "moveleft";
-						}
-					}
+					blupi[player[ME].selected].initAction = true;
 					
 					blupi[player[ME].selected].sayObey();
 				}
 				else
 				{
-					blupi[player[ME].selected].failed();
+					if(buttons[a] == "stop")
+					{
+						blupi[player[ME].selected].action = "stop";
+						blupi[player[ME].selected].itemindex = liveitem;
+					}
+					else
+						blupi[player[ME].selected].failed();
 				}
 				buttons.clear();
 				iconrect.clear();
@@ -246,7 +238,6 @@ class Taskbar
 									blupi[player[ME].selected].destination = MPosition;
 									
 									blupi[player[ME].selected].action="none";
-									blupi[player[ME].selected].liveAction = "none";
 									
 								}
 							}

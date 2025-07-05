@@ -271,6 +271,7 @@ class Network {
 		                packet << b.state;
 		                packet << b.rotation;
 		                packet << b.locomotion;	
+		                packet << b.startstop;
 		                
 		                packet << b.alive;
 						packet << b.haven;
@@ -660,6 +661,7 @@ class Network {
 			                packet >> b.state;
 				            packet >> b.rotation;
 				            packet >> b.locomotion;
+			                packet >> b.startstop;
 			                
 			                packet >> b.alive;
 							packet >> b.haven;

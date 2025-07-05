@@ -102,67 +102,7 @@ class Element
 	
 	
 	
-		
-	void getNumberOfOverlap(std::vector<Element> &element)
-	{
-//	    int total = 1;
-//	    displayNumber = false; // Reset every frame
-//	
-//	    for (int a = 0; a < element.size(); a++)
-//	    {
-//	        if (element[a].ID == ID || 
-//	            !element[a].exists || 
-//	            !element[a].active || 
-//	            element[a].type != type) 
-//	            continue;
-//	
-//	        // Adjusted bounds with 20px padding
-//	        FloatRect bounds = sprite.getGlobalBounds();
-//	        bounds.left += 30;
-//	        bounds.width -= 50;
-//	        bounds.top += 30;
-//	        bounds.height -= 30;
-//	        
-//	        // Adjusted bounds with 20px padding
-//	        FloatRect bounds2 = element[a].sprite.getGlobalBounds();
-//	        bounds2.left += 30;
-//	        bounds2.width -= 50;
-//	        bounds2.top += 30;
-//	        bounds2.height -= 30;
-//	        
-//	        
-//	
-//	        if (bounds.intersects(bounds2))
-//	        {
-//	        	
-//	            total++;
-//	            element[a].displayNumber = false; // Disable others
-//	            displayNumber = true; // Enable for this element
-//	        }
-//	    }
-//	
-//	    // Update text only when needed
-//	    if (displayNumber && total > 1 && exists && active)
-//	    {
-//	        // Get final position first
-//	        float textY = now.y - (averageHeight - (averageHeight/3)) - 40;
-//	        
-//	        // Set string once with final value
-//	        numberText.setString(std::to_string(total));
-//	        
-//	        // Update origin AFTER string is set
-//	        FloatRect textBounds = numberText.getLocalBounds();
-//	        numberText.setOrigin(textBounds.width/2, textBounds.height/2);
-//	        
-//	        // Set final position
-//	        numberText.setPosition(now.x, textY);
-//	    }
-//	    else
-//	    {
-//	        numberText.setString("");
-//	        displayNumber = false;
-//	    }
-	}
+	
 	
 	
 	
@@ -279,9 +219,7 @@ class Element
 							soundChannel = a;
 							if(a==-1)
 								a=0;
-							sound[a].stop();
-							sound[a].setBuffer(wav.buffer[100]);
-							sound[a].play();
+							wav.playSound(100,now.x);
 						}
 				
 					}
@@ -309,6 +247,7 @@ class Element
 			
 			
 			
+			
 		
 			if((toplayer.type=="element" && toplayer.ID == ID) || (toplayer.type=="blupi" && player[ME].selected == toplayer.ID && topElement.ID == ID))
 			{
@@ -318,7 +257,7 @@ class Element
 					if(released)
 					{
 
-						if(type=="bomb" || type=="wood"||type=="tomato")
+						if(type=="bomb" || type=="wood"||type=="tomato") //pickup
 						{
 							liveitem = ID;
 							
@@ -328,6 +267,17 @@ class Element
 							buttons.push_back("pick up");
 							iconrect.push_back(IntRect(1,239,40,40));
 						}
+
+						if(type=="tomato")
+						{
+							liveitem = ID;
+							buttons.clear();
+							iconrect.clear();
+							
+							buttons.push_back("eat");
+							iconrect.push_back(IntRect(80,241,40,40));
+						}
+
 
 						if(type=="bomb")
 						{
@@ -402,6 +352,7 @@ class Element
 								buttons.push_back("drive");
 							}
 						}
+						
 						
 			
 						

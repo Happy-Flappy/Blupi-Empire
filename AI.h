@@ -35,19 +35,18 @@ class AI
 	
     void runAwayFrom(float dangerX,int blupiIndex)
     {
+    	
     	assert(blupiIndex < blupi.size());
         Blupi& current = blupi[blupiIndex];
         current.action = "none";
         current.busy = false;
 
-		int a = wav.findChannel();
-		if(a!=-1 && soundChannel!=-1)
-		{
-			wav.sound[a].stop();
-			wav.sound[a].setBuffer(wav.buffer[11]);
-			wav.sound[a].play();
+		
+		if(!current.running)
+    	{
+			soundChannel = wav.playSound(11,current.now.x);
+			
 		}
-
 
         if (dangerX > current.now.x) {
             // Danger is to the right, move left

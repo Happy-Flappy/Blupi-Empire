@@ -447,7 +447,6 @@ int main()
 				if(!element[a].exists)
 					continue;
 				element[a].ID=a;
-				element[a].getNumberOfOverlap(element);
 				element[a].update(map.iground,blupi[player[ME].selected].locomotion);
 				element[a].displayNumber=0;
 			
@@ -689,6 +688,11 @@ int main()
 		window.display();
 		
 		
+		
+		
+		
+		
+		wav.listen.setPosition(view.getCenter().x,0,0);
 		
 	}
 	

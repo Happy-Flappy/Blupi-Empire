@@ -184,6 +184,7 @@ class Blupi
 	int haven=-1;
 	int itemref = -1;
 	bool busy = false;
+	bool startstop = false;
 	bool alive = true;
 	bool running = true;
 	float idledelay = 0;
@@ -198,23 +199,40 @@ class Blupi
 	
 	
 	
-	
+	int complainQue;
 	
 	void failed()
 	{
 		action="none";
-		Stop();
+		StartToStop();
 		//say "I can't do it!"
 		
-		int a = rand()%3;
+		if(complainQue < 2)
+		{
+			complainQue++;
+		}
+		else
+		{
+			complainQue=-1;
+		}
 		
 		
-		wav.sound[0].stop();
+		int a = rand()%4;
 		
 		
-		wav.sound[0].setBuffer(wav.buffer[a]);//0,1,2
 		
-		wav.sound[0].play();
+		
+		int index=0;
+		
+		
+		
+		
+		
+		
+		a+=18;//so that it will find the correct index
+		
+		
+		wav.playSound(a,now.x);
 		
 	}
 	
@@ -330,11 +348,17 @@ class Blupi
 	void Stop()
 	{
 		busy=false;
-		action = "none";
+		action="none";
 		destination.x = now.x; 
 		destination.y = now.y;
 	}
 	
+	void StartToStop()
+	{
+		startstop=true;
+		destination.x = now.x; 
+		destination.y = now.y;		
+	}
 	
 	
 	
@@ -518,9 +542,12 @@ class Blupi
 	
 	
 	int itemindex = -1;
-	std::string liveAction="none";
-	
-	void doAction(Image &ground)
+	int plantindex = -1;
+	bool initAction=true;
+	int firstGrab = 0;
+	int carryref = 0;
+		
+	void doAction(Image &ground) //the initialization function for starting actions
 	{
 		if(action=="none")
 			return;
@@ -530,7 +557,39 @@ class Blupi
 		
 		
 		if(action == "stop")
-			Stop();
+		{
+			if(initAction)
+			{
+				StartToStop();
+				initAction=false;
+			}
+			
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		if(action!="stop drive"&&action!="drop"&&action!="eat" && itemindex!=-1)
+		{
+			if(initAction)
+			{
+			
+				destination = element[itemindex].now;
+				if(now.x < element[itemindex].now.x)
+				{
+					state = "moveright";
+				}
+				if(now.x > element[itemindex].now.x)
+				{
+					state = "moveleft";
+				}
+			}
+		}
+		
 		
 		
 		
@@ -540,48 +599,97 @@ class Blupi
 		if(traveled())
 		{
 		
-			
-			
+		
+		
+		
+		
+		
+		
+		
+		
+		
 			if(action == "grow")
 			{
-				busy=true;
-				
-				
-				
-				//steps in growing tomatoes
-				
-				//1: blupi is busy
-				//2: goto position
-				//3: choose position slightly beside blupi on a random side.
-				//4: create "plant" element
-				//5: itemIndex becomes reference to the newly created element. 
-				//6: use growing tomato Shift Mode for blupi (digging,then watering)
-				//7: use growing tomato Shift Mode for element (stages of growth(includes preparing ground))
-				//8: both blupi and tomato animate using Shift Modes at the same time
-				//9: When tomato reaches last frame, blupi is no longer busy and tomato is of type "tomato"
-				
-				
-				//growDirect = 0;
-				//growLeftPath=true;
-				//growRightPath=true;
-				//setupGrowth = 0;
-				liveAction = action;
-				destination.x = element[itemindex].sprite.getPosition().x - 25;
-
-
-				for(int a=0;a<200;a++)
+				if(initAction)
 				{
-				
-					Element telement;
-					telement.sprite.setTexture(textures.element);				
-					telement.type = "tomato"; 
-					telement.sprite.setTextureRect(IntRect(67,153,51,39)); //tomato rect
-					telement.averageHeight = telement.sprite.getTextureRect().height;
-					telement.now = sf::Vector2f(destination.x + 50,now.y);
-					
-					element.push_back(telement);
+					busy=true;
+					initAction=false;	
 				}
+				
+				
+				if(plantindex!=-1)
+				{
+					
+					
+					
+					
+					
+			
+			
+					sprite.setTextureRect(Shift(shift.water));
+					element[plantindex].sprite.setTextureRect(Shift(element[plantindex].shift.grow));
+					int size = element[plantindex].shift.grow.rect.size();
+					
+				
+					
+					if(element[plantindex].sprite.getTextureRect() == element[plantindex].shift.grow.rect[size-1])
+					{
+						element[plantindex].type = "tomato"; 
+						element[plantindex].sprite.setTextureRect(IntRect(67,153,51,39)); //tomato rect
+						element[plantindex].averageHeight = element[plantindex].sprite.getTextureRect().height;
+						plantindex=-1;	
+						if(startstop)
+						{
+							action="none";
+							busy=false;
+							startstop=false;
+						}
+					}
+					
+					
+				}			
+				else
+				{
+					
+					state = "right";
+					
+					Element newelement;
+					
+					newelement.type = "plant";
+					newelement.sprite.setTexture(textures.element);
+					
+					newelement.sprite.setTextureRect(newelement.shift.grow.rect[0]);
+					newelement.averageHeight = newelement.sprite.getTextureRect().height;
+	
+					element.push_back(newelement);
+					
+					plantindex = element.size()-1;
+					
+					element[plantindex].now = sf::Vector2f(now.x + 60,now.y);
+	
+					
+					wav.playSound(101,now.x);			
+				
+				}				
+				
 			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			
 			
 			if(action=="haven")
@@ -602,27 +710,24 @@ class Blupi
 					action="none";
 				}
 				else
-					failed();
-				
+					failed();				
 			}
 			
 			
 			
-			if(action=="leave haven")
-			{
-				locomotion="walk";
-				speed=2;
-				element[haven].boolean[0]=false;
-				element[haven].blupiIndex=-1;
-				haven=-1;
-				sayDone();
-			}
+			
+			
+			
+			
+			
+			
 			
 			
 			
 			
 			if(action=="drive")
 			{
+				
 				if(!element[itemindex].burning)
 				{
 					locomotion = element[itemindex].type;
@@ -635,67 +740,143 @@ class Blupi
 					failed();
 				
 				action="none";	
-			}
-			
-			
-			if(action=="stop drive")
-			{
-				element[itemref].now = now;
-				element[itemref].active=true;
-				locomotion = "walk";	
-				action="none";
-				speed = 2;
-				sayDone();
-			}
+			}			
 			
 			
 			
 			
 			
-			if(action=="make shed")
-			{
-				Element newelement;
-				element[itemindex] = newelement;
-				
-				element[itemindex].ID = itemindex;
-				element[itemindex].type="shed";
-				element[itemindex].sprite.setTextureRect(IntRect(0,438,127,95));
-				
-				//for things that take time once blupi is there, have a busy status while working on it.
-				sayDone();
-			}
+			
+			
 			
 			
 			
 			
 			if(action=="pick up")
 			{
-				liveAction = action;			
-			}
-			
-			if(action == "drop")
-			{
-				element[carryref].active=true;
-				element[carryref].now = carrying.getPosition();
-				element[carryref].velocity.y = jumpvelo/(jumpvelo*0.90);
-				Sprite newsprite;
-				carrying = newsprite;
-				action = "none";
-			}
-			
-			if(action=="blow up")
-			{
-				//bring out hammer and slam bomb to detonate it.
-				if(now.x != element[itemindex].now.x)
+				if(locomotion == "walk")
 				{
-					state = "blow up";
-					
-					//for things that take time once blupi is there, have a busy status while working on it.
+					if(firstGrab == 0)
+					{
+						
+						velocity.y = jumpvelo/2;
+						firstGrab++;
+					}
+					else
+					{
+						if(checkGroundNow(ground,now) && checkGroundNow(ground,element[itemindex].now))
+						{
+							if(element[itemindex].velocity.y >=0)
+							{
+								firstGrab++;
+								element[itemindex].velocity.y = jumpvelo/1.2;
+							}
+						}
+				
+						if(firstGrab == 2)
+						{
+							if(element[itemindex].now.y < now.y - sprite.getTextureRect().height)
+							{
+								firstGrab++;
+							}
+						}
+						if(firstGrab == 3)
+						{
+							if(element[itemindex].now.y >= now.y - sprite.getTextureRect().height)
+							{
+								firstGrab = 0;
+								element[itemindex].active = false;
+								carrying = element[itemindex].sprite;
+								carryref = itemindex;
+								action = "none";
+								
+							}
+						}
+				
+					}	
 					
 					
 				}
-				else
+				else if(carrying.getTextureRect().width==0)
 				{
+					firstGrab = 0;
+					carryref = 0;
+					action="none";
+				}						
+			}
+			
+			
+			
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+			
+			
+		}
+		
+		
+		if(action=="leave haven")
+		{
+			locomotion="walk";
+			speed=2;
+			element[haven].boolean[0]=false;
+			element[haven].blupiIndex=-1;
+			haven=-1;
+			sayDone();
+			action="none";
+		}
+		
+		
+		
+		
+
+		
+		
+		if(action=="stop drive")
+		{
+			element[itemref].now = now;
+			element[itemref].active=true;
+			locomotion = "walk";	
+			speed = 2;
+			sayDone();
+			action="none";
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		if(action=="blow up")
+		{
+			if(traveled())
+			{
+				
+				if(initAction)
+				{
+				
+					busy=true;
 					
 					if(now.x - 50 > 0)
 					{
@@ -703,313 +884,53 @@ class Blupi
 					}
 					else
 					{
-						destination.y = now.x+50;
+						destination.x = now.x+50;
 					}
-					busy=true;
-					return;
-				}
-			}
-			
-			action = "none";
-		}
-			
-		
-		
-	}
-	
-	
-	
-	
-	
-	
-
-	
-
-	
-	
-	
-	int firstGrab = 0;
-	int carryref = 0;
-	int plantindex = -1;
-	
-	void UpdateActions(sf::Image &ground)
-	{
-		if(liveAction == "grow")
-		{
-			
-			
-			if(plantindex!=-1)
-			{
-				
-				
-				
-				
-				
-		
-		
-				sprite.setTextureRect(Shift(shift.water));
-				element[plantindex].sprite.setTextureRect(Shift(element[plantindex].shift.grow));
-				int size = element[plantindex].shift.grow.rect.size();
-				if(element[plantindex].sprite.getTextureRect() == element[plantindex].shift.grow.rect[size-1])
-				{
-					element[plantindex].type = "tomato"; 
-					element[plantindex].sprite.setTextureRect(IntRect(67,153,51,39)); //tomato rect
-					element[plantindex].averageHeight = element[plantindex].sprite.getTextureRect().height;
-					plantindex=-1;	
-				}
-			}			
-			else
-			{
-				if(traveled() || destination.x == now.x)
-				{
-					state = "right";
-					
-					Element newelement;
-					
-					newelement.type = "plant";
-					newelement.sprite.setTexture(textures.element);
-					
-					newelement.sprite.setTextureRect(newelement.shift.grow.rect[0]);
-					newelement.averageHeight = newelement.sprite.getTextureRect().height;
-	
-					element.push_back(newelement);
-					
-					plantindex = element.size()-1;
-					
-					element[plantindex].now = sf::Vector2f(now.x + 60,now.y);
-	
-					
-					wav.sound[0].stop();
-					wav.sound[0].setBuffer(wav.buffer[101]);
-					wav.sound[0].play();				
-				}
-		
-			}
-		
-//			if(traveled() || destination.x == now.x)
-//			{
-//	
-//				if(setupGrowth == 0)
-//				{
-//					if(growDirect == 0)
-//					{
-//					
-//						int direct = rand()%100;
-//						
-//						if(direct < 50)
-//						{
-//							growDirect = -1;
-//						}
-//						else
-//						{
-//							growDirect = 1;
-//						}
-//					}
-//	
-//					destination.x = now.x + (growDirect * 50);
-//
-//
-//					setupGrowth = 1;
-//					
-//					return;
-//				}	
-//				
-//				if(setupGrowth == 1)
-//				{
-//
-//					int growx = now.x + (80 * growDirect);
-//					
-//					if(growx < 0)
-//					{
-//						growDirect = !growDirect;
-//						growLeftPath=false;
-//						return;
-//					}
-//					if(growx >= ground.getSize().x)
-//					{
-//						growRightPath=false;
-//						growDirect = !growDirect;
-//						return;
-//					}
-//					
-//					int index = water.getPuddleIndex(growx);
-//					if(index!=-1)
-//					{
-//						if(growDirect == -1)
-//							growLeftPath = false;
-//						else
-//							growRightPath = false;
-//						growDirect = !growDirect;
-//						
-//						return;
-//					}
-//					
-//					
-//					
-//					
-//					
-//					if(!growLeftPath)
-//					{
-//						growDirect = 1;
-//					}
-//					if(!growRightPath)
-//					{
-//						growDirect = -1;
-//					}
-//					
-//					
-//					
-//					if(!growLeftPath && !growRightPath)
-//					{
-//						failed();
-//						Stop();
-//						return;
-//					}
-//
-//
-//
-//
-//
-//
-//
-//					
-//
-//
-//					
-//					
-//					for(int a=0;a<element.size();a++)
-//					{
-//						if(element[a].type == "tomato" || element[a].type == "bomb" || element[a].type == "wood")
-//						{
-//
-//					        
-//							if(element[a].bounds.contains(growx,element[a].sprite.getPosition().y))
-//							{
-//								//setupGrowth = 2;
-//								//itemindex = -1;
-//								destination.x = growx;	
-//								return;
-//							}
-//						}
-//					}
-//					
-//					Element newelement;
-//					
-//					newelement.type = "plant";
-//					newelement.sprite.setTexture(textures.element);
-//					
-//					newelement.sprite.setTextureRect(newelement.shift.grow.rect[0]);
-//					newelement.averageHeight = newelement.sprite.getTextureRect().height;
-//
-//					element.push_back(newelement);
-//					
-//					itemindex = element.size()-1;
-//					
-//					element[itemindex].now = sf::Vector2f(growx,now.y);
-//	
-//					setupGrowth = 2;
-//					
-//					wav.sound[0].stop();
-//					say.loadFromFile("ASSETS/miscSound/en/sound050.wav");
-//					wav.sound[0].setBuffer(say);
-//					wav.sound[0].play();
-//					
-//				}
-//				if(itemindex!=-1)
-//				{
-//					
-//					
-//					
-//					
-//					
-//			
-//			
-//					sprite.setTextureRect(Shift(shift.water));
-//					if(growDirect == -1)
-//						sprite.setScale(-1.5,1.5);
-//					else
-//						sprite.setScale(1.5,1.5);	
-//					element[itemindex].sprite.setTextureRect(Shift(element[itemindex].shift.grow));
-//					int size = element[itemindex].shift.grow.rect.size();
-//					if(element[itemindex].sprite.getTextureRect() == element[itemindex].shift.grow.rect[size-1])
-//					{
-//						element[itemindex].type = "tomato"; 
-//						element[itemindex].sprite.setTextureRect(IntRect(67,153,51,39)); //tomato rect
-//						element[itemindex].averageHeight = element[itemindex].sprite.getTextureRect().height;
-//						itemindex=-1;					
-//						setupGrowth = 0;
-//					}
-//				}
-//			}
-//			else
-//			{
-//				
-//				sprite.setScale(1.5,1.5);
-//				
-//				
-//			}
-
-				
-		}
-		
-		if(liveAction == "pick up")
-		{
-			if(locomotion == "walk")
-			{
-				if(firstGrab == 0)
-				{
-					
-					velocity.y = jumpvelo/2;
-					firstGrab++;
+					initAction=false;
 				}
 				else
 				{
-					if(checkGroundNow(ground,now) && checkGroundNow(ground,element[itemindex].now))
-					{
-						if(element[itemindex].velocity.y >=0)
-						{
-							firstGrab++;
-							element[itemindex].velocity.y = jumpvelo/1.2;
-						}
-					}
-			
-					if(firstGrab == 2)
-					{
-						if(element[itemindex].now.y < now.y - sprite.getTextureRect().height)
-						{
-							firstGrab++;
-						}
-					}
-					if(firstGrab == 3)
-					{
-						if(element[itemindex].now.y >= now.y - sprite.getTextureRect().height)
-						{
-							firstGrab = 0;
-							element[itemindex].active = false;
-							carrying = element[itemindex].sprite;
-							action = "none";
-							liveAction = "none";
-							carryref = itemindex;
-				
-						}
-					}
-			
-				}	
-				
-				
+					state = "blow up";
+					
+				}
 			}
-			else if(carrying.getTextureRect().width==0)
-			{
-				firstGrab = 0;
-				carryref = 0;
-			}
+			
 			
 		}
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		if(action == "drop")
+		{
+			element[carryref].active=true;
+			element[carryref].now = carrying.getPosition();
+			element[carryref].velocity.y = jumpvelo/(jumpvelo*0.90);
+			Sprite newsprite;
+			carrying = newsprite;
+			action = "none";
+		}
+		
+
+			
+		
+		
 	}
 	
 	
 	
 	
+	
+	
+
+	
+
 	
 	
 	
@@ -1124,6 +1045,7 @@ class Blupi
 			if(shift.blowup.ended)
 			{
 				busy=false;
+				action="none";
 				element[itemindex].boolean[0]=true;
 				alive = false;
 				sayDone();
@@ -1204,9 +1126,7 @@ class Blupi
 					if(color!=UserColor)
 					{
 						
-						wav.sound[0].stop();
-						wav.sound[0].setBuffer(wav.buffer[4]);
-						wav.sound[0].play();
+						wav.playSound(37,now.x);
 					}
 					
 					if(topBlupi.ID == ID)
@@ -1222,9 +1142,7 @@ class Blupi
 							
 							
 							
-							wav.sound[0].stop();	
-							wav.sound[0].setBuffer(wav.buffer[b+5]);//5,6,7	
-							wav.sound[0].play();
+							wav.playSound(b+1,now.x);
 						
 						
 						
@@ -1280,9 +1198,7 @@ class Blupi
 				
 			if(wav.sound[0].getStatus()!=Sound::Status::Playing)
 			{
-				wav.sound[0].stop();
-				wav.sound[0].setBuffer(wav.buffer[b+8]);//8,9,10
-				wav.sound[0].play();
+				wav.playSound(b+7,now.x);
 			}
 		}
 	}
@@ -1299,16 +1215,8 @@ class Blupi
 		
 			int b = rand()%3;
 			
-			
-				
-				
-			if(wav.sound[0].getStatus()!=Sound::Status::Playing)
-			{
-				wav.sound[0].stop();
-				wav.sound[0].setBuffer(wav.buffer[b+5]);//5,6,7
-				wav.sound[0].play();
-			}
-		}		
+			wav.playSound(b+4,now.x);
+		}
 	}
 	
 	
@@ -1601,8 +1509,6 @@ class Blupi
 		checkSelfClicks(ground);	
 			
 	
-		UpdateActions(ground);
-		
 		
 		
 		bool dropfound=false;
