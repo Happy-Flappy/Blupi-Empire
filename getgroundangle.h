@@ -1,18 +1,13 @@
 
 
-std::vector<std::vector <bool>> groundmap;//map out pixels
+
+std::vector<int> groundEdge;
+
 
 void getGroundEdges(Image &ground)
 {
 	
-	groundmap.resize(ground.getSize().x);
-	
-	
-	for(int a=0;a<groundmap.size();a++)
-	{
-		groundmap[a].resize(ground.getSize().y);
-	}
-	
+	groundEdge.resize(ground.getSize().x);
 	
 	for(int x=0;x<ground.getSize().x;x++)
 	{
@@ -21,72 +16,14 @@ void getGroundEdges(Image &ground)
 		{
 			if(ground.getPixel(x,y)!=Color::Transparent)
 			{
-				groundmap[x][y]=true;
-			}
-			else
-			{
-				groundmap[x][y]=false;
+				groundEdge[x] = y;				
+				break;	
 			}
 		}
 	}
 	
 	
 }
-
-
-
-
-
-
-
-
-
-
-int groundedge(int x,int y)
-{
-	
-	for(int y2 = y-5; y2 < groundmap[x].size(); y2++)
-	{
-		if(groundmap[x][y2])
-		{
-			return y2;
-		}
-	}		
-	
-	return groundmap[x].size() + 500;
-	
-}
-
-
-int getRoof(int x,int y)
-{
-	
-	for(int y2 = y+5; y2 > 0; y2--)
-	{
-		if(y2 < groundmap[x].size())
-		{
-	
-			if(groundmap[x][y2])
-			{
-				std::cout << "top:" << y2 << "\n"; 
-				return y2;
-			
-			}
-		}
-	}		
-	
-	return 0;	
-}
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -111,8 +48,8 @@ int getGroundAngle(Image &ground, Vector2f now, float lastangle, int range = 10,
     center.x = now.x;
     right.x = now.x + (range / 2);
 
-    center.y = groundedge(now.x,now.y);
-    right.y = groundedge(now.x + (range / 2),now.y);
+    center.y = groundEdge[now.x];
+    right.y = groundEdge[now.x + (range / 2)];
 
     int opp = right.y - center.y;
     int adj = right.x - center.x;

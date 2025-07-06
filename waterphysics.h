@@ -63,122 +63,41 @@ class Water
 	
 	void getClamp(Image &ground,Puddle &group)
 	{
-		if(groundmap.size()!=0)
+	
+		
+		Vector2i pos = group.pos;
+	
+	
+		int mostleft=pos.x;
+		int mostright=pos.x;
+		
+	
+		
+		int left=0;
+		for(int x = pos.x; x > 0; x--)
 		{
-		
 			
-			Vector2i pos = group.pos;
-		
-		
-			int mostleft=pos.x;
-			int mostright=pos.x;
-			
-		
-			
-			for(int z=pos.y; z < ground.getSize().y-1;z++)
+			if(groundEdge[x] == pos.y)
 			{
-				int left=0;
-				for(int x = pos.x; x > 0; x--)
-				{
-					
-					if(groundmap[x][z])
-					{
-						left = x;
-						break;
-					}
-				}
-				
-				int right = ground.getSize().x-1;
-				for(int x = pos.x; x < ground.getSize().x-1; x++)
-				{
-					
-					if(groundmap[x][z])
-					{
-						right = x;
-						break;
-					}
-				}
-				
-				if(right - left > 0)
-				{
-					if(mostleft > left)
-					{
-						mostleft = left;
-					}
-					if(mostright < right)
-					{
-						mostright = right;
-					}
-					group.lefty = z;
-					
-					
-				}
-				
+				left = x;
+				break;
 			}
-			
-			
-			
-			
-			//Right side
-			for(int z=pos.y; z < ground.getSize().y-1;z++)
-			{
-				
-				int right = ground.getSize().x-1;
-				for(int x = mostright; x < ground.getSize().x-1; x++)
-				{
-					
-					if(groundmap[x][z])
-					{
-						right = x;
-						break;
-					}
-				}
-				
-				if(right - mostleft > 0)
-				{
-					if(mostright < right)
-					{
-						mostright = right;
-					}
-					
-				}
-				
-			}
-			
-			
-			
-			
-			
-			for(int z=pos.y; z < ground.getSize().y-1;z++)
-			{
-				int left=0;
-				for(int x = mostleft; x > 0; x--)
-				{
-					
-					if(groundmap[x][z])
-					{
-						left = x;
-						break;
-					}
-				}
-				
-				if(mostright - left > 0)
-				{
-					if(mostleft > left)
-					{
-						mostleft = left;
-					}
-					
-				}
-				
-			}
-			
-			
-			
-			
-			group.left = mostleft;
-			group.right = mostright;
 		}
+		
+		int right = ground.getSize().x-1;
+		for(int x = pos.x; x < ground.getSize().x-1; x++)
+		{
+			
+			if(groundEdge[x] == pos.y)
+			{
+				right = x;
+				break;
+			}
+		}
+		
+	
+		group.left = left;
+		group.right = right;
 		
 		
 		
@@ -224,7 +143,7 @@ class Water
 
 
 
-		if(image.getSize().x==0) //create line
+		if(image.getSize().x==0) //create line once when the image is empty
 		{
 			image.create(1,ground.getSize().y,Color::Transparent);
 			int hue=0;
@@ -354,7 +273,7 @@ class Water
 			for(int b=0;b<puddle[a].linepos.size();b++)
 			{
 				
-				int height = groundedge(puddle[a].linepos[b].x,puddle[a].lefty+5) - puddle[a].linepos[b].y;
+				int height = groundEdge[puddle[a].linepos[b].x] - puddle[a].linepos[b].y;
 				if(height > 0)
 				{	
 					sprite.setTextureRect(IntRect(0,0,1,height+1));

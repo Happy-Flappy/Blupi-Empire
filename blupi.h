@@ -468,7 +468,7 @@ class Blupi
 			
 			int deep=0;
 			if(x >= 0 && x < water.width)
-				deep = groundedge(x,water.puddle[index].pos.y) - water.puddle[index].pos.y;
+				deep = groundEdge[x] - water.puddle[index].pos.y;
 			
 				
 				
@@ -1317,7 +1317,7 @@ class Blupi
 				
 				int deep=0;
 				if(x >= 0 && x < water.width)
-					deep = groundedge(x,now.y) - water.puddle[index].pos.y;
+					deep = groundEdge[x] - water.puddle[index].pos.y;
 				
 				
 				if(deep > water.depthlimit)
@@ -1454,7 +1454,7 @@ class Blupi
 				
 				int deep=0;
 				if(x >= 0 && x < water.width)
-					deep = groundedge(x,water.puddle[index].pos.y) - water.puddle[index].pos.y;
+					deep = groundEdge[x] - water.puddle[index].pos.y;
 			
 				int x2 = now.x - water.puddle[index].left;
 				

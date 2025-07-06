@@ -783,7 +783,7 @@ int main()
 		
 		
 		
-		//wav.listen.setPosition(view.getCenter().x,0,0);
+		wav.listen.setPosition(view.getCenter().x,0,0);
 		
 	}
 	
