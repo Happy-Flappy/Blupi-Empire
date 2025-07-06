@@ -257,12 +257,13 @@ class Element
 					if(released)
 					{
 
+						buttons.clear();
+						iconrect.clear();
+
+
 						if(type=="bomb" || type=="wood"||type=="tomato") //pickup
 						{
 							liveitem = ID;
-							
-							buttons.clear();
-							iconrect.clear();
 							
 							buttons.push_back("pick up");
 							iconrect.push_back(IntRect(1,239,40,40));
@@ -271,8 +272,6 @@ class Element
 						if(type=="tomato")
 						{
 							liveitem = ID;
-							buttons.clear();
-							iconrect.clear();
 							
 							buttons.push_back("eat");
 							iconrect.push_back(IntRect(80,241,40,40));
@@ -291,9 +290,6 @@ class Element
 						{
 							
 							liveitem = ID;
-							
-							buttons.clear();
-							iconrect.clear();
 							
 							if(blupiIndex!=-1)
 							{
@@ -326,8 +322,6 @@ class Element
 						{
 							liveitem = ID;
 							
-							buttons.clear();
-							iconrect.clear();
 							
 							buttons.push_back("grow");
 							iconrect.push_back(IntRect(161,200,40,40));	
@@ -345,8 +339,6 @@ class Element
 							
 							
 							
-							buttons.clear();
-							iconrect.clear();
 							if(locomotion=="walk")
 							{
 								buttons.push_back("drive");

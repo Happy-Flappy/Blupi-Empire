@@ -1388,7 +1388,7 @@ class Blupi
 			if(checkGroundNow(ground,now))
 				rotation = getGroundAngle(ground,now,sprite.getRotation() ,10);
 
-
+			
 
 
 
@@ -1530,13 +1530,51 @@ class Blupi
 			
 			
 			
+				float damper = 0;
 			
 			
+				//get the opposing angle to the current direction.
 				
+				if(state == "moveleft")
+				{
+					if(sprite.getRotation() > 180+90)//uphill
+					{
+						damper = (360-sprite.getRotation())/20;
+					}
+					if(sprite.getRotation() < 180+90)//downhill
+					{
+						if(sprite.getRotation() > 180)
+						{
+							damper = (sprite.getRotation() - 180)/20;
+							damper = -damper;
+						}
+						else
+						{
+							damper = 0;
+						}
+					}
+				}
 				
-				
-				
-				
+				if(state == "moveright")
+				{
+					if(sprite.getRotation() < 90)//uphill
+					{
+						damper = sprite.getRotation()/20;
+					}
+					if(sprite.getRotation() > 90)//downhill
+					{
+						if(sprite.getRotation() < 180)
+						{
+						
+							damper = (sprite.getRotation() - 90)/20;
+							damper = -damper;
+						}
+						else
+						{
+							damper = 0;
+						}
+					}
+				}				
 				
 				
 				
@@ -1548,13 +1586,13 @@ class Blupi
 		            if (destination.x < now.x)
 		            {
 		            	state = "moveleft";
-						velocity.x = -speed;
+						velocity.x = -speed - damper;
 					
 		            }
 		            else if (destination.x > now.x)
 		            {
 	            		state = "moveright";
-						velocity.x = speed;
+						velocity.x = speed + damper;
 				    
 		            }
 		        }

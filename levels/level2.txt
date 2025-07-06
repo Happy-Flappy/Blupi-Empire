@@ -1,0 +1,16 @@
+ground level2/ground.png END
+
+sky level2/sky.png END
+
+floater level2/floater.png END
+
+
+shed 3746 109 END
+
+yellow blupi 3746 109 END
+
+shed 4286 427 END
+
+blue blupi 4286 427 END
+
+tomato 4712 389 END

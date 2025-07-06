@@ -287,6 +287,21 @@ class Map
 			element[index].averageHeight = element[index].sprite.getTextureRect().height;
 			
 		}
+
+		if(key[0]=="tomato")
+		{
+			int index = CreateElement();
+			
+			element[index].type = "tomato";
+			element[index].sprite.setTexture(textures.element);
+			element[index].sprite.setTextureRect(sf::IntRect(67,153,51,39));
+			element[index].now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));
+			element[index].averageHeight = element[index].sprite.getTextureRect().height;
+			
+		}
+
+
+
 		
 		if(key[0]=="house")
 		{
