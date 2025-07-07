@@ -60,12 +60,14 @@ class Textures
 		Clean("ASSETS/pblupi.png",pblupi);
 		Clean("ASSETS/element.png",element);
 		Clean("ASSETS/explo.bmp",explo);
-		blupiblue.setSmooth(true);
-		blupiyellow.setSmooth(true);
-		blupiorange.setSmooth(true);
-		blupigreen.setSmooth(true);
-		element.setSmooth(true);
-		explo.setSmooth(true);
+	
+//		blupiblue.setSmooth(true);
+//		blupiyellow.setSmooth(true);
+//		blupiorange.setSmooth(true);
+//		blupigreen.setSmooth(true);
+//		element.setSmooth(true);
+//		explo.setSmooth(true);
+//	
 		decor016.loadFromFile("ASSETS/DECOR016.PNG");
 		comic.loadFromFile("ASSETS/ComicMono.ttf");
 		

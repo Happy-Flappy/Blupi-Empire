@@ -26,23 +26,17 @@ class Taskbar
 		icon.setTexture(textures.buttons);
 	}
 	
-
-
+	
+	
 	bool checkbutton()
 	{
 		if(sprite.getGlobalBounds().contains(MPosition))
 		{
-			if(Mouse::isButtonPressed(Mouse::Left))
+			if(Input::Mouse(Mouse::Left,true))
 			{
 				sprite.setTextureRect(IntRect(121,1,39,39));
+				return true;
 				
-				if(cursor.released)
-				{
-					return true;
-
-				}
-				
-				cursor.released=false;
 			}
 			else
 				sprite.setTextureRect(IntRect(81,1,39,39));
@@ -119,7 +113,6 @@ class Taskbar
 		
 		
 		
-		
 	
 		for(int a=0;a<buttons.size();a++)
 		{
@@ -130,38 +123,67 @@ class Taskbar
 			
 			
 			bool pressed=false;
-			if((Keyboard::isKeyPressed(Keyboard::Num1) && a == 0)||(Keyboard::isKeyPressed(Keyboard::Num2) && a == 1)||(Keyboard::isKeyPressed(Keyboard::Num3) && a == 3)||(Keyboard::isKeyPressed(Keyboard::Num4) && a == 4)||(Keyboard::isKeyPressed(Keyboard::Num5) && a == 5))
+			if((Input::Key(Keyboard::Num1,true) && a == 0)||(Input::Key(Keyboard::Num2,true) && a == 1)||(Input::Key(Keyboard::Num3,true) && a == 3)||(Input::Key(Keyboard::Num4,true) && a == 4)||(Input::Key(Keyboard::Num5,true) && a == 5))
 			{
 				pressed=true;
-			}
-			
+			}			
 			
 			
 			if(checkbutton() || pressed)
 			{
-				if(!blupi[player[ME].selected].busy && blupi[player[ME].selected].possible(element[liveitem].now))
+				
+				
+				if(buttons[a] == "stop")
 				{
-					
+					blupi[player[ME].selected].startstop=true;
+					blupi[player[ME].selected].sayObey();
+						
+					buttons.clear();
+					iconrect.clear();
+					break;	
+				}
+
+
+
+
+				if(buttons[a].find("exit") != std::string::npos)
+				{
 					blupi[player[ME].selected].action = buttons[a];
 					blupi[player[ME].selected].itemindex = liveitem;
 					blupi[player[ME].selected].initAction = true;
-					
-					
 					blupi[player[ME].selected].sayObey();
+					buttons.clear();
+					iconrect.clear();			
+					break;		
+				}
+
+			
+				
+				if(!blupi[player[ME].selected].busy)
+				{
+					if(!blupi[player[ME].selected].possible(element[liveitem].now))
+					{
+						blupi[player[ME].selected].sayFailed();
+						buttons.clear();
+						iconrect.clear();						
+						break;
+					}
+					blupi[player[ME].selected].action = buttons[a];
+					blupi[player[ME].selected].itemindex = liveitem;
+					blupi[player[ME].selected].initAction = true;
+					blupi[player[ME].selected].sayObey();
+					buttons.clear();
+					iconrect.clear();
+					break;
 				}
 				else
 				{
-					if(buttons[a] == "stop")
-					{
-						blupi[player[ME].selected].startstop=true;
-						blupi[player[ME].selected].sayObey();
-						
-					}
-					else
-						blupi[player[ME].selected].failed();
+					
+					blupi[player[ME].selected].sayFailed();
+					buttons.clear();
+					iconrect.clear();
+					break;
 				}
-				buttons.clear();
-				iconrect.clear();
 
 			}
 		
@@ -211,58 +233,63 @@ class Taskbar
 				
 			
 				static bool released=false;
-				if(Mouse::isButtonPressed(Mouse::Left))
+				if(Input::Mouse(Mouse::Left,true))
 				{
-					if(released)
+					if(!blupi[player[ME].selected].busy && blupi[player[ME].selected].possible(MPosition) && blupi[player[ME].selected].haven==-1)
 					{
-						if(!blupi[player[ME].selected].busy && blupi[player[ME].selected].possible(MPosition) && blupi[player[ME].selected].haven==-1)
+						
+						if(toplayer.type!="element")
 						{
+						
+						
+						
+						
+							bool skip=false;
+							if(toplayer.ID!=player[ME].selected && toplayer.type=="blupi")
+							{
+								skip=true;
+							}
 							
-							if(toplayer.type!="element")
+							if(!skip)
 							{
 							
-							
-							
-							
-								bool skip=false;
-								if(toplayer.ID!=player[ME].selected && toplayer.type=="blupi")
-								{
-									skip=true;
-								}
+								if(blupi[player[ME].selected].state=="moveleft")
+									blupi[player[ME].selected].state="left";
+								if(blupi[player[ME].selected].state=="moveright")
+									blupi[player[ME].selected].state="right";
 								
-								if(!skip)
-								{
 								
-									if(blupi[player[ME].selected].state=="moveleft")
-										blupi[player[ME].selected].state="left";
-									if(blupi[player[ME].selected].state=="moveright")
-										blupi[player[ME].selected].state="right";
-									blupi[player[ME].selected].destination = MPosition;
-									
-									blupi[player[ME].selected].action="none";
-									
-								}
+								blupi[player[ME].selected].destination = MPosition;
+								
+								blupi[player[ME].selected].action="none";
+								
 							}
+						}
+						
+					}
+					else
+					{
+						
+						if(blupi[player[ME].selected].busy||blupi[player[ME].selected].haven!=-1)
+						{
+							blupi[player[ME].selected].sayFailed();
 							
 						}
 						else
 						{
-							blupi[player[ME].selected].failed();
+							if(!blupi[player[ME].selected].possible(MPosition))
+								blupi[player[ME].selected].sayFailed();
+								
 						}
 						
-						buttons.clear();
-						iconrect.clear();
-						liveitem=-1;
-						
-						
-						
-					
-						
 					}
-					released=false;
+					
+					buttons.clear();
+					iconrect.clear();
+					liveitem=-1;
+			
+			
 				}
-				else
-					released=true;
 			}
 		}
 		

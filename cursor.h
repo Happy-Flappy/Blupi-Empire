@@ -23,7 +23,7 @@ class Cursor
 		sprite.setPosition(MPosition);
 		
 		
-		if(!Mouse::isButtonPressed(Mouse::Left))
+		if(!Input::Mouse(Mouse::Left))
 		{
 			released=true;
 		}

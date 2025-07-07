@@ -22,22 +22,30 @@ class Wav
 		return -1;
 	}
 	
-	
+	sf::Clock cooldown;
 	int playSound(int bufferID,int x)
 	{
 		
-		int a = findChannel();
-		if(a!=-1)
-		{
-			sound[a].stop();
-			sound[a].setBuffer(buffer[bufferID]);
-			sound[a].setPosition(x,0,0);
-			sound[a].setMinDistance(400.f);
-        	sound[a].setAttenuation(5);
-			sound[a].play();
-		}
+        if(cooldown.getElapsedTime().asMilliseconds() > 500) // 500ms cooldown
+        {
+	        	
+			int a = findChannel();
+			if(a!=-1)
+			{
+				sound[a].stop();
+				sound[a].setBuffer(buffer[bufferID]);
+				sound[a].setPosition(x,0,0);
+				sound[a].setMinDistance(400.f);
+	        	sound[a].setAttenuation(5);
+				sound[a].play();
+			}			
+			cooldown.restart();
+			
+			return a;
+        }
+
 		
-		return a;
+		return -1;
 	}
 	
 	

@@ -4,6 +4,7 @@
 #include <SFML\Audio.hpp>
 #include <SFML\Network.hpp>
 #include "wav.h"
+#include "input.h"
 using namespace sf;
 
 Vector2f MPosition;
@@ -369,7 +370,23 @@ int main()
 	while(window.isOpen())
 	{
 	
+		Input::beginFrame();
 
+		Event e;
+		while(window.pollEvent(e))
+		{
+			if(e.type==Event::Closed)
+				window.close();
+				
+			Input::update(e);
+		}		
+		
+		
+		
+		
+		MPosition = window.mapPixelToCoords(Input::getPosition());
+		
+		
 		
 		timesincelastupdate += clock.restart();
 		
@@ -379,12 +396,7 @@ int main()
 		
 			timesincelastupdate -= timeperframe;
 		
-			Event e;
-			while(window.pollEvent(e))
-			{
-				if(e.type==Event::Closed)
-					window.close();
-			}
+
 		
 			//game stuff
 			
@@ -396,7 +408,7 @@ int main()
 
 			
 		
-			if(Keyboard::isKeyPressed(Keyboard::Left)) 
+			if(Input::Key(Keyboard::Left)) 
 			{
 				if(view.getCenter().x > (view.getSize().x/2)) 
 				{ 
@@ -405,7 +417,7 @@ int main()
 				} 
 			} 
 			
-			if(Keyboard::isKeyPressed(Keyboard::Right)) 
+			if(Input::Key(Keyboard::Right)) 
 			{
 			
 				if(view.getCenter().x < map.tground.getSize().x - (view.getSize().x/2)-1) 
@@ -415,7 +427,7 @@ int main()
 				} 
 			} 
 			
-			if(Mouse::getPosition(window).x < window.getSize().x/32 && Mouse::getPosition(window).x >= 0) 
+			if(Input::getPosition().x < window.getSize().x/32 && Input::getPosition().x >= 0) 
 			{
 				if(view.getCenter().x > (view.getSize().x/2)) 
 				{ 
@@ -424,7 +436,7 @@ int main()
 				} 
 			} 
 			
-			if(Mouse::getPosition(window).x > window.getSize().x - (window.getSize().x/32) && Mouse::getPosition(window).x <= window.getSize().x) 
+			if(Input::getPosition().x > window.getSize().x - (window.getSize().x/32) && Input::getPosition().x <= window.getSize().x) 
 			{ 
 				if(view.getCenter().x < map.tground.getSize().x - (view.getSize().x/2)) 
 				{ 
@@ -608,7 +620,8 @@ int main()
 		}
 		
 		
-		MPosition = window.mapPixelToCoords(Mouse::getPosition(window));
+		
+		
 		getTopHoveredLayer();
 		
 		//render

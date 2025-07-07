@@ -230,12 +230,15 @@ class Blupi
 	
 	
 	int complainQue;
-	
-	void failed()
+
+
+
+
+
+
+
+	void sayFailed()
 	{
-		Stop();
-		//say "I can't do it!"
-		
 		if(complainQue < 2)
 		{
 			complainQue++;
@@ -263,6 +266,16 @@ class Blupi
 		
 		wav.playSound(a,now.x);
 		
+	}
+
+
+
+
+
+	void failed()
+	{
+		Stop();
+		sayFailed();
 	}
 	
 	
@@ -579,6 +592,13 @@ class Blupi
 		
 		
 		
+		if(initAction)
+		{
+			busy=true;
+			startstop=false;
+			
+		}
+		
 		
 		
 		
@@ -602,6 +622,11 @@ class Blupi
 				}
 			}
 		}
+		
+		
+		
+		
+		
 		
 		if(action == "eat")
 		{
@@ -630,6 +655,8 @@ class Blupi
 		
 		
 		
+	
+		
 		
 		
 		if(traveled())
@@ -646,11 +673,7 @@ class Blupi
 		
 			if(action == "grow")
 			{
-				if(initAction)
-				{
-					busy=true;
-					initAction=false;	
-				}
+				initAction=false;	
 				
 				
 				if(plantindex!=-1)
@@ -660,8 +683,8 @@ class Blupi
 					
 					
 					
-			
-			
+					
+					
 					sprite.setTextureRect(Shift(shift.water));
 					element[plantindex].sprite.setTextureRect(Shift(element[plantindex].shift.grow));
 					int size = element[plantindex].shift.grow.rect.size();
@@ -699,7 +722,6 @@ class Blupi
 					element[plantindex].averageHeight = element[plantindex].sprite.getTextureRect().height;
 	
 					
-					
 					element[plantindex].now = sf::Vector2f(now.x + 60,now.y);
 	
 					
@@ -727,25 +749,30 @@ class Blupi
 			
 			
 			
-			if(action=="haven")
+			if(action=="enter haven")
 			{
-				if(locomotion=="walk" && haven==-1 && element[itemindex].boolean[0]!=true)
+				if(initAction)
 				{
-					if(!element[itemindex].burning)
+				
+					if(locomotion=="walk" && element[itemindex].boolean[0]!=true)
 					{
-						locomotion="house";
-						speed=0;
-						haven=itemindex;
-						element[itemindex].boolean[0]=true;
-						element[itemindex].blupiIndex = ID;
-						sayDone();
+						if(!element[itemindex].burning)
+						{
+							locomotion="house";
+							speed=0;
+							haven=itemindex;
+							element[itemindex].boolean[0]=true;
+							element[itemindex].blupiIndex = ID;
+							sayDone();
+						}
+						else
+							failed();
+						action="none";
 					}
 					else
 						failed();
-					action="none";
+					initAction=false;
 				}
-				else
-					failed();				
 			}
 			
 			
@@ -760,21 +787,26 @@ class Blupi
 			
 			
 			
-			if(action=="drive")
+			if(action=="enter jeep" || action == "enter (placeholder)")
 			{
-				
-				if(!element[itemindex].burning)
+				if(initAction)
 				{
-					locomotion = element[itemindex].type;
-					element[itemindex].active=false;
-					itemref = itemindex;
-					speed = 5;
-					sayDone();
-				}
-				else
-					failed();
 				
-				action="none";	
+					if(!element[itemindex].burning)
+					{
+						locomotion = element[itemindex].type;
+						element[itemindex].active=false;
+						itemref = itemindex;
+						speed = 5;
+						sayDone();
+					}
+					else
+						failed();
+					
+					action="none";
+					busy=true;
+					initAction = false;
+				}
 			}			
 			
 			
@@ -791,6 +823,7 @@ class Blupi
 			{
 				if(locomotion == "walk")
 				{
+					element[itemindex].taken=true;
 					if(firstGrab == 0)
 					{
 						
@@ -821,6 +854,7 @@ class Blupi
 							{
 								firstGrab = 0;
 								element[itemindex].active = false;
+								element[itemindex].taken=true;
 								carrying = element[itemindex].sprite;
 								carryref = itemindex;
 								action = "none";
@@ -830,13 +864,13 @@ class Blupi
 				
 					}	
 					
-					
 				}
 				else if(carrying.getTextureRect().width==0)
 				{
 					firstGrab = 0;
 					carryref = 0;
 					action="none";
+					failed();
 				}						
 			}
 			
@@ -871,10 +905,12 @@ class Blupi
 				if(energy < 100)
 				{
 					energy+=0.01;
+					element[itemindex].taken=true;
 				}
 				else
 				{
 					element[itemindex].exists = false;
+					element[itemindex].taken=false;
 					action="none";
 				}
 			}
@@ -890,15 +926,21 @@ class Blupi
 		}
 		
 		
-		if(action=="leave haven")
+		if(action=="exit haven")
 		{
-			locomotion="walk";
-			speed=2;
-			element[haven].boolean[0]=false;
-			element[haven].blupiIndex=-1;
-			haven=-1;
-			sayDone();
-			action="none";
+			if(initAction)
+			{
+			
+				locomotion="walk";
+				speed=2;
+				element[haven].boolean[0]=false;
+				element[haven].blupiIndex=-1;
+				haven=-1;
+				sayDone();
+				action="none";
+				busy=false;
+				initAction=false;
+			}
 		}
 		
 		
@@ -907,13 +949,14 @@ class Blupi
 
 		
 		
-		if(action=="stop drive")
+		if(action=="exit jeep")
 		{
 			element[itemref].now = now;
 			element[itemref].active=true;
 			locomotion = "walk";	
 			speed = 2;
 			sayDone();
+			busy=false;
 			action="none";
 		}
 		
@@ -970,6 +1013,7 @@ class Blupi
 			element[carryref].active=true;
 			element[carryref].now = carrying.getPosition();
 			element[carryref].velocity.y = jumpvelo/(jumpvelo*0.90);
+			element[carryref].taken=false;
 			Sprite newsprite;
 			carrying = newsprite;
 			action = "none";
@@ -1195,7 +1239,7 @@ class Blupi
 		{
 			static bool released=false;
 			
-			if(Mouse::isButtonPressed(Mouse::Left))
+			if(Input::Mouse(Mouse::Left))
 			{
 				if(released)
 				{
@@ -1238,7 +1282,7 @@ class Blupi
 								{
 									iconrect.clear();
 									buttons.clear();
-									buttons.push_back("stop drive");
+									buttons.push_back("exit jeep");
 									
 									
 								}
@@ -1497,7 +1541,7 @@ class Blupi
 			
 			
 			
-			if(Keyboard::isKeyPressed(Keyboard::Up))
+			if(Input::Key(Keyboard::Up))
 			{
 				keyinput="up";
 			}

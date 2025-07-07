@@ -20,6 +20,7 @@ class Element
 	bool active = true;
 	bool boolean[10];
 	bool exists=true;
+	bool taken=false;
 	int displayNumber=0;
 	
 	Text numberText;
@@ -252,7 +253,7 @@ class Element
 			if((toplayer.type=="element" && toplayer.ID == ID) || (toplayer.type=="blupi" && player[ME].selected == toplayer.ID && topElement.ID == ID))
 			{
 				static bool released=true;
-				if(Mouse::isButtonPressed(Mouse::Left))
+				if(Input::Mouse(Mouse::Left))
 				{
 					if(released)
 					{
@@ -302,14 +303,14 @@ class Element
 							
 								if(boolean[0]==true)
 								{
-									buttons.push_back("leave haven");
+									buttons.push_back("exit haven");
 								}
 								
 							}
 							
 							if(boolean[0]==false)
 							{
-								buttons.push_back("haven");
+								buttons.push_back("enter haven");
 							}
 							
 							
@@ -341,7 +342,7 @@ class Element
 							
 							if(locomotion=="walk")
 							{
-								buttons.push_back("drive");
+								buttons.push_back("enter jeep");
 							}
 						}
 						

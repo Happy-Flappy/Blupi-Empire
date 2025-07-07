@@ -238,16 +238,12 @@ class SetupScreen
 	{
 		if(sprite.getGlobalBounds().contains(MPosition))
 		{
-			if(Mouse::isButtonPressed(Mouse::Left))
+			if(Input::Mouse(Mouse::Left,true))
 			{
 				sprite.setTextureRect(IntRect(81,1,39,39));	
-				if(cursor.released)
-				{
-					return true;
+				return true;
 
-				}
 				
-				cursor.released=false;
 			}
 			else
 				sprite.setTextureRect(IntRect(121,1,39,39));
@@ -288,7 +284,10 @@ class SetupScreen
 		{
 			
 			
-			MPosition = window.mapPixelToCoords(Mouse::getPosition(window));
+			Input::beginFrame();
+			
+			
+			
 			Event e;
 			while(window.pollEvent(e))
 			{
@@ -319,12 +318,13 @@ class SetupScreen
 		        } 
 				
 				
-				
+				Input::update(e);	
 			}
 			
 			
 			
 			
+			MPosition = window.mapPixelToCoords(Input::getPosition());
 			
 			
 			
@@ -345,7 +345,7 @@ class SetupScreen
 				
 				if(typing.get)
 				{
-					if(Keyboard::isKeyPressed(Keyboard::Return))
+					if(Input::Key(Keyboard::Return))
 					{
 						typing.get=false;
 						typing.name=typing.input;
@@ -364,7 +364,7 @@ class SetupScreen
 				
 				if(leveltyping.get)
 				{
-					if(Keyboard::isKeyPressed(Keyboard::Return))
+					if(Input::Key(Keyboard::Return))
 					{
 						leveltyping.get=false;
 						leveltyping.name=leveltyping.input;
