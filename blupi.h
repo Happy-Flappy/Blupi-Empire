@@ -8,6 +8,11 @@ class Blupi
 	
 	Sprite sprite;
 	Sprite carrying;
+	Sprite icon;
+	Sprite energyBar;
+	
+	
+	
 	
 	//SHIFT MODES
 	
@@ -219,6 +224,7 @@ class Blupi
 	bool running = true;
 	float idledelay = 0;
 	float scale = 1.5;//1.5
+	float energy = 15;
 	std::string state = "right"; //direction
 	std::string locomotion="walk"; //form of locomotion such as jeep,boat,walk
 	std::string action="none"; // the action that blupi is currently trying to accomplish
@@ -581,6 +587,7 @@ class Blupi
 	bool initAction=true;
 	int firstGrab = 0;
 	int carryref = 0;
+	int channel = -1;
 		
 	void doAction(Image &ground) //the initialization function for starting actions
 	{
@@ -857,6 +864,7 @@ class Blupi
 								element[itemindex].taken=true;
 								carrying = element[itemindex].sprite;
 								carryref = itemindex;
+								busy=false;
 								action = "none";
 								
 							}
@@ -870,6 +878,7 @@ class Blupi
 					firstGrab = 0;
 					carryref = 0;
 					action="none";
+					busy=false;
 					failed();
 				}						
 			}
@@ -901,17 +910,33 @@ class Blupi
 					initAction = false;
 				}
 				
-				float energy = 0;
+				
 				if(energy < 100)
 				{
-					energy+=0.01;
+					energy+=0.3;
 					element[itemindex].taken=true;
+					
+					if(channel == -1)
+						channel = wav.playSound(13,now.x,false);
+					if(channel != -1)
+					{
+						wav.playSound(13,now.x,true,channel);
+					}
 				}
 				else
 				{
+					energy = 100;
 					element[itemindex].exists = false;
-					element[itemindex].taken=false;
+					channel = -1;
 					action="none";
+					busy=false;
+					
+					
+					if(state=="eatleft")
+						state = "left";
+					if(state=="eatright")
+						state = "right";
+					
 				}
 			}
 
@@ -1017,6 +1042,7 @@ class Blupi
 			Sprite newsprite;
 			carrying = newsprite;
 			action = "none";
+			busy=false;
 		}
 		
 
@@ -1346,8 +1372,14 @@ class Blupi
 	
 	void updatePhysics(Image &ground)
 	{
-		if(locomotion=="walk")
+		if(locomotion=="walk" || locomotion == "tired" || locomotion == "sick")
 		{
+			
+			if(velocity.x != 0)
+			{
+				energy-=0.06;
+			}
+			
 			gravity = 0.2;
 			
 			int x = now.x;
@@ -1697,14 +1729,18 @@ class Blupi
 			
 		}
 		
+
+		
+		
 		if(haven==-1)
 		{
 		
 			
 			window.draw(sprite);
-			
-			
 			window.draw(carrying);
+			
+			
+			
 		}
 		else
 		{
@@ -1716,6 +1752,30 @@ class Blupi
 			sprite.setTextureRect(IntRect(137,8,29,27));
 			window.draw(sprite);
 		}
+		
+		
+		if(player[ME].color == color)
+		{
+		
+			energyBar.setTexture(textures.bars);
+			
+			energyBar.setPosition(sprite.getPosition().x - (123/2),sprite.getPosition().y - ((sprite.getTextureRect().height/2)*scale) - carrying.getTextureRect().height - 10);
+			
+			
+			
+			energyBar.setTextureRect({1,100,123,10});
+			window.draw(energyBar);
+			
+			
+			
+			int percent = 123 * (energy/100);
+			
+			energyBar.setTextureRect({1,90,percent,10});
+			window.draw(energyBar);
+			
+		}
+		
+		
 		
 		
 	}

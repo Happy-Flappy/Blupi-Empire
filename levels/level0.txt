@@ -8,7 +8,7 @@ floater level0/floater.png END
 
 atmosphere level0/nature1atmos.ogg END
 
-music level0/MUSIC006.mp3 END
+//music level0/MUSIC006.mp3 END
 
 
 

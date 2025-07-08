@@ -126,7 +126,7 @@ class Element
         
         
         
-		if(active)
+		if(active && exists)
 		{
 		
 		
@@ -252,115 +252,106 @@ class Element
 		
 			if((toplayer.type=="element" && toplayer.ID == ID) || (toplayer.type=="blupi" && player[ME].selected == toplayer.ID && topElement.ID == ID))
 			{
-				static bool released=true;
 				if(Input::Mouse(Mouse::Left))
 				{
-					if(released)
+
+					buttons.clear();
+					iconrect.clear();
+
+					if(type=="bomb" || type=="wood"||type=="tomato") //pickup
+					{
+						liveitem = ID;
+						
+						buttons.push_back("pick up");
+						iconrect.push_back(IntRect(1,239,40,40));
+					}
+
+					if(type=="tomato")
+					{
+						liveitem = ID;
+						
+						buttons.push_back("eat");
+						iconrect.push_back(IntRect(80,241,40,40));
+					}
+
+
+					if(type=="bomb")
 					{
 
-						buttons.clear();
-						iconrect.clear();
-
-
-						if(type=="bomb" || type=="wood"||type=="tomato") //pickup
+						buttons.push_back("blow up");
+						iconrect.push_back(IntRect(200,280,40,40));
+						
+					}
+					
+					if(type=="house")
+					{
+						
+						liveitem = ID;
+						
+						if(blupiIndex!=-1)
 						{
-							liveitem = ID;
-							
-							buttons.push_back("pick up");
-							iconrect.push_back(IntRect(1,239,40,40));
-						}
-
-						if(type=="tomato")
-						{
-							liveitem = ID;
-							
-							buttons.push_back("eat");
-							iconrect.push_back(IntRect(80,241,40,40));
-						}
-
-
-						if(type=="bomb")
-						{
-
-							buttons.push_back("blow up");
-							iconrect.push_back(IntRect(200,280,40,40));
-							
+							player[ME].selected = blupiIndex;
 						}
 						
-						if(type=="house")
+						
+						if(blupiIndex==player[ME].selected || blupiIndex == -1)
 						{
-							
-							liveitem = ID;
-							
-							if(blupiIndex!=-1)
+						
+							if(boolean[0]==true)
 							{
-								player[ME].selected = blupiIndex;
+								buttons.push_back("exit haven");
 							}
 							
-							
-							if(blupiIndex==player[ME].selected || blupiIndex == -1)
-							{
-							
-								if(boolean[0]==true)
-								{
-									buttons.push_back("exit haven");
-								}
-								
-							}
-							
-							if(boolean[0]==false)
-							{
-								buttons.push_back("enter haven");
-							}
-							
-							
 						}
 						
-						
-						
-						
-						if(type=="shed")
+						if(boolean[0]==false)
 						{
-							liveitem = ID;
-							
-							
-							buttons.push_back("grow");
-							iconrect.push_back(IntRect(161,200,40,40));	
+							buttons.push_back("enter haven");
 						}
 						
 						
+					}
+					
+					
+					
+					
+					if(type=="shed")
+					{
+						liveitem = ID;
 						
 						
-						if(type=="jeep")
+						buttons.push_back("grow");
+						iconrect.push_back(IntRect(161,200,40,40));	
+					}
+					
+					
+					
+					
+					if(type=="jeep")
+					{
+						liveitem = ID;
+						
+						
+						
+						
+						
+						
+						if(locomotion=="walk")
 						{
-							liveitem = ID;
-							
-							
-							
-							
-							
-							
-							if(locomotion=="walk")
-							{
-								buttons.push_back("enter jeep");
-							}
+							buttons.push_back("enter jeep");
 						}
+					}
 						
 						
 			
-						
-						released=false;
-					}
 				}
-				else
-					released=true;
 			}
 		}
 		
 	}
 	void draw(RenderWindow &window)
 	{
-		if(active)
+		if(active && exists)
 		{
 			window.draw(sprite);
 			if(displayNumber > 1)

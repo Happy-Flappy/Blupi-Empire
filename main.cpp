@@ -370,6 +370,11 @@ int main()
 	while(window.isOpen())
 	{
 	
+	
+	
+	
+	
+	
 		Input::beginFrame();
 
 		Event e;

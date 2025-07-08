@@ -16,6 +16,7 @@ class Textures
 	Texture explo;
 	Texture pelement;
 	Texture decor016;
+	Texture bars;
 	Font comic;
 	Font comicbd;
 	Font comicz;
@@ -53,7 +54,7 @@ class Textures
 		
 		Clean("ASSETS/blupiorange.png",blupiorange);
 		
-		
+		Clean("ASSETS/jauge.bmp",bars);
 		
 		buttons.loadFromFile("ASSETS/buttons.png");
 		taskbox.loadFromFile("ASSETS/taskbox.png");
