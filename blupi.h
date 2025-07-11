@@ -26,6 +26,12 @@ class Blupi
 		ShiftData idleright;
 		ShiftData blinkleft;
 		ShiftData blinkright;
+		ShiftData tiredidleleft;
+		ShiftData tiredidleright;
+		ShiftData tiredwalkleft;
+		ShiftData tiredwalkright;
+		
+		
 		ShiftData blowup; 
 		ShiftData water;
 		ShiftData eatL,eatR;
@@ -74,6 +80,103 @@ class Blupi
 			
 			
 			
+			
+			
+			
+			
+			//tired animations
+			
+			
+			tiredwalkleft.delay = 0.15;
+			tiredwalkleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredwalkleft.rect.push_back({0 + (60 * 1),1798 + (60 * 3),60,60});
+			tiredwalkleft.rect.push_back({0 + (60 * 2),1798 + (60 * 3),60,60});
+			tiredwalkleft.rect.push_back({0 + (60 * 3),1798 + (60 * 3),60,60});
+			
+			tiredwalkright.delay = 0.15;
+			tiredwalkright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredwalkright.rect.push_back({0 + (60 * 1),1798 + (60 * 4),60,60});
+			tiredwalkright.rect.push_back({0 + (60 * 2),1798 + (60 * 4),60,60});
+			tiredwalkright.rect.push_back({0 + (60 * 3),1798 + (60 * 4),60,60});	
+			
+
+
+			tiredidleleft.delay = 0.1;
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
+
+			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 0),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 1),1798 + (60 * 0),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 2),1798 + (60 * 0),60,60});
+			tiredidleleft.rect.push_back({0 + (60 * 3),1798 + (60 * 0),60,60});
+
+
+			tiredidleright.delay = 0.1;
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+						
+			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 1),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 1),1798 + (60 * 1),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 2),1798 + (60 * 1),60,60});
+			tiredidleright.rect.push_back({0 + (60 * 3),1798 + (60 * 1),60,60});
+			
+			
+			
+			//<><>><><><><><><><><
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			blowup.delay = 0.15;
 			blowup.rect.push_back(IntRect(0,1798,130,80));
 			blowup.rect.push_back(IntRect(130,1798,130,80));
@@ -83,8 +186,8 @@ class Blupi
 			blowup.rect.push_back(IntRect(130*5,1798,130,80));
 			
 			
-			water.rect.push_back(IntRect(0,1870,62,62));
-			water.rect.push_back(IntRect(62,1870,62,62));
+			water.rect.push_back(IntRect(240,1798,62,62));
+			water.rect.push_back(IntRect(240+62,1798,62,62));
 
 
 
@@ -224,7 +327,9 @@ class Blupi
 	bool running = true;
 	float idledelay = 0;
 	float scale = 1.5;//1.5
-	float energy = 15;
+	float energy = 100;
+	float workEnergyLoss = 0.02;
+	double walkEnergyLoss = 0.01;
 	std::string state = "right"; //direction
 	std::string locomotion="walk"; //form of locomotion such as jeep,boat,walk
 	std::string action="none"; // the action that blupi is currently trying to accomplish
@@ -234,10 +339,6 @@ class Blupi
 	
 	
 	
-	
-	int complainQue;
-
-
 
 
 
@@ -245,26 +346,9 @@ class Blupi
 
 	void sayFailed()
 	{
-		if(complainQue < 2)
-		{
-			complainQue++;
-		}
-		else
-		{
-			complainQue=-1;
-		}
-		
+	
 		
 		int a = rand()%4;
-		
-		
-		
-		
-		int index=0;
-		
-		
-		
-		
 		
 		
 		a+=18;//so that it will find the correct index
@@ -406,11 +490,17 @@ class Blupi
 	
 	
 	
+	float processTime = 0;
 	
 	
-	
-	
-	
+	bool enoughEnergy(float time,float energyLossPerFrame)
+	{
+		
+		float lossPerSecond = energyLossPerFrame * 60;
+		
+		float lossAmount = lossPerSecond * time;
+		return (lossAmount < energy);
+	}
 	
 	
 	
@@ -540,6 +630,24 @@ class Blupi
 			
 			
 		}
+		
+		if(locomotion == "sick" || locomotion == "tired")
+		{
+		
+			//averageDistancePerFrame: speed;
+			float totalFrames = abs(destination.x - now.x)/speed;    
+			
+			float timePerFrame = 1.f/60.f;
+			
+			float totalSeconds = totalFrames * timePerFrame;
+			
+			if(!enoughEnergy(totalSeconds,walkEnergyLoss))
+				return false;
+			
+			
+			
+		}
+		
 		return true;
 
 	}
@@ -662,6 +770,38 @@ class Blupi
 		
 		
 		
+		
+		
+		
+		
+		
+		
+		bool usesEnergy = false;
+		
+		if(action == "grow")
+		{
+			usesEnergy = true;
+		}
+		
+		if(locomotion == "sick" || locomotion == "tired")
+		{
+			if(usesEnergy)
+			{	
+				if(!traveled())
+				{
+					failed();
+				}
+				else
+					startstop = true;
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
 	
 		
 		
@@ -691,10 +831,16 @@ class Blupi
 					
 					
 					
+					energy -= workEnergyLoss;
+					
 					
 					sprite.setTextureRect(Shift(shift.water));
 					element[plantindex].sprite.setTextureRect(Shift(element[plantindex].shift.grow));
 					int size = element[plantindex].shift.grow.rect.size();
+					
+					
+					
+					
 					
 				
 					
@@ -716,24 +862,39 @@ class Blupi
 				}			
 				else
 				{
-					
-					state = "right";
-					
-					
-					plantindex = CreateElement();
-					
-					element[plantindex].type = "plant";
-					element[plantindex].sprite.setTexture(textures.element);
-					
-					element[plantindex].sprite.setTextureRect(element[plantindex].shift.grow.rect[0]);
-					element[plantindex].averageHeight = element[plantindex].sprite.getTextureRect().height;
-	
-					
-					element[plantindex].now = sf::Vector2f(now.x + 60,now.y);
-	
-					
-					wav.playSound(101,now.x);			
 				
+				
+				
+					
+					processTime = element[itemindex].shift.grow.rect.size() * element[itemindex].shift.grow.delay;
+					
+					
+					if(!enoughEnergy(processTime,workEnergyLoss))
+					{
+						failed();
+					}
+					else
+					{
+					
+					
+						state = "right";
+						
+						
+						plantindex = CreateElement();
+						
+						element[plantindex].type = "plant";
+						element[plantindex].sprite.setTexture(textures.element);
+						
+						element[plantindex].sprite.setTextureRect(element[plantindex].shift.grow.rect[0]);
+						element[plantindex].averageHeight = element[plantindex].sprite.getTextureRect().height;
+		
+						
+						element[plantindex].now = sf::Vector2f(now.x + 60,now.y);
+		
+						
+						wav.playSound(101,now.x);			
+					
+					}
 				}				
 				
 			}
@@ -1125,6 +1286,49 @@ class Blupi
 		
 		}
 		
+
+
+
+		if(locomotion=="tired" && (state == "moveleft" || state == "moveright" || state == "left" || state == "right") && action == "none" && !busy)
+		{
+			
+			
+			if(state == "left")
+				sprite.setTextureRect(Shift(shift.tiredidleleft));
+			else if(state == "right")
+				sprite.setTextureRect(Shift(shift.tiredidleright));
+			
+		
+		
+			if(state == "moveleft")
+				sprite.setTextureRect(Shift(shift.tiredwalkleft));
+			
+			if(state == "moveright")
+				sprite.setTextureRect(Shift(shift.tiredwalkright));
+		
+		}
+
+
+
+
+
+
+
+
+		if(locomotion == "sick")
+		{
+			sprite.setColor(sf::Color(0,0,0,255));
+		}
+		else
+		{
+		
+			int percent = 225 * (energy/100);
+	    	
+	    	percent = percent - 225;
+	    	
+	        sprite.setColor(sf::Color(255, 255+percent, 255+percent));
+		}
+
 		
 		if(locomotion=="jeep")
 		{
@@ -1156,6 +1360,9 @@ class Blupi
 
 		if(state == "blow up")
 		{
+			
+			
+			
 			
 			bool faceLeft = false;
 			if(element[itemindex].now.x < now.x)
@@ -1375,9 +1582,19 @@ class Blupi
 		if(locomotion=="walk" || locomotion == "tired" || locomotion == "sick")
 		{
 			
+			
+			if(locomotion == "tired" || locomotion == "sick")
+			{
+				speed = 0.5;
+			}
+			else
+			{
+				speed = 2;
+			}
+			
 			if(velocity.x != 0)
 			{
-				energy-=0.06;
+				energy-=walkEnergyLoss;
 			}
 			
 			gravity = 0.2;
@@ -1567,9 +1784,8 @@ class Blupi
 		
 		if(haven==-1)
 		{
-		
+			
 			sprite.setPosition(now.x,now.y - 40);//35
-		
 			
 			
 			
@@ -1769,6 +1985,21 @@ class Blupi
 			
 			
 			int percent = 123 * (energy/100);
+			
+			if(percent <= 25)
+			{
+				locomotion = "tired";
+			}
+			else
+			{
+				if(locomotion == "tired")
+				{
+					locomotion = "walk";
+					
+				}
+			}
+			
+			
 			
 			energyBar.setTextureRect({1,90,percent,10});
 			window.draw(energyBar);

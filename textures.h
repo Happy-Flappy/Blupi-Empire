@@ -61,6 +61,7 @@ class Textures
 		Clean("ASSETS/pblupi.png",pblupi);
 		Clean("ASSETS/element.png",element);
 		Clean("ASSETS/explo.bmp",explo);
+		
 	
 //		blupiblue.setSmooth(true);
 //		blupiyellow.setSmooth(true);

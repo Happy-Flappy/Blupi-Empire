@@ -13,7 +13,9 @@ atmosphere level0/nature1atmos.ogg END
 
 
 
-yellow blupi 2068 153 END
+yellow blupi 1500 153 END
+
+yellow blupi 1200 153 END
 
 blue blupi 1324 200 END
 
@@ -45,7 +47,7 @@ house 600 208 END
 
 shed 1100 208 END
  
-jeep 2500 208 END
+jeep 300 208 END
 
 water 1550 225 END
 
