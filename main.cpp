@@ -702,11 +702,30 @@ int main()
 
 
 
+		for(int a=0;a<blupi.size();a++)//draw blupis of specific states on a background layer.
+		{
+			if(blupi[a].haven != -1)
+			{
+				//Is in haven
+				//draw
+				blupi[a].draw(window);
+			}
+		}
+
+
+
 		for(int a=0;a<blupi.size();a++)
 		{
 			if(!blupi[a].alive)
 				continue;	
 			
+			if(blupi[a].haven != -1)
+			{
+				//Is in haven
+				//skip
+				//Already drawn before
+				continue;
+			}
 
 			
 			blupi[a].draw(window);

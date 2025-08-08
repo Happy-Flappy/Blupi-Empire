@@ -1492,6 +1492,9 @@ class Blupi
 						
 							
 							player[ME].selected = ID;
+							
+							buttons.clear();
+							iconrect.clear();
 					
 							int b = rand()%3;
 							
@@ -1917,22 +1920,24 @@ class Blupi
 		checkSelfClicks(ground);	
 			
 	
-		
-		
-		bool dropfound=false;
-		for(int z=0;z<buttons.size();z++)
+		if(player[ME].selected == ID)
 		{
-			if(buttons[z]=="drop")
+		
+			bool dropfound=false;
+			for(int z=0;z<buttons.size();z++)
 			{
-				dropfound=true;
-				break;
+				if(buttons[z]=="drop")
+				{
+					dropfound=true;
+					break;
+				}
 			}
-		}
-		
-		if(!dropfound && carrying.getTextureRect().width!=0)
-		{
-			buttons.push_back("drop");
-			iconrect.push_back(sf::IntRect(42,240,40,40));			
+			
+			if(!dropfound && carrying.getTextureRect().width!=0)
+			{
+				buttons.push_back("drop");
+				iconrect.push_back(sf::IntRect(42,240,40,40));			
+			}
 		}
 		
 	}
