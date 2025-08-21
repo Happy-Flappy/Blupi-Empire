@@ -1,17 +1,17 @@
 # Project: blupi empire(side-view)
 # Makefile created by Embarcadero Dev-C++ 6.3
 
-CPP      = g++.exe -D__DEBUG__
-CC       = gcc.exe -D__DEBUG__
+CPP      = g++.exe
+CC       = gcc.exe
 WINDRES  = windres.exe
 OBJ      = main.o
 LINKOBJ  = main.o
-LIBS     = -L"C:/mingw32/lib" -L"C:/mingw32/i686-w64-mingw32/lib" -L"C:/SFML-2.6.0/lib" -static-libgcc -static-libstdc++  -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio -lsfml-network -lcomctl32 -ldwmapi -lgdi32 -lmsimg32 -pg -g3
+LIBS     = -L"C:/mingw32/lib" -L"C:/mingw32/i686-w64-mingw32/lib" -L"C:/SFML-2.6.0/lib" -static-libgcc -static-libstdc++  -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio -lsfml-network
 INCS     = -I"C:/mingw32/include" -I"C:/mingw32/i686-w64-mingw32/include" -I"C:/mingw32/lib/gcc/i686-w64-mingw32/13.1.0/include"
 CXXINCS  = -I"C:/mingw32/include" -I"C:/mingw32/i686-w64-mingw32/include" -I"C:/mingw32/lib/gcc/i686-w64-mingw32/13.1.0/include" -I"C:/SFML-2.6.0/include"
 BIN      = "blupi empire(side-view).exe"
-CXXFLAGS = $(CXXINCS) -Wfatal-errors -pg -g3 -std=c++17
-CFLAGS   = $(INCS) -Wfatal-errors -pg -g3 -std=c++17
+CXXFLAGS = $(CXXINCS) -Wfatal-errors -std=c++17
+CFLAGS   = $(INCS) -Wfatal-errors -std=c++17
 DEL      = C:\Program Files (x86)\Embarcadero\Dev-Cpp\DevCpp.exe INTERNAL_DEL
 
 .PHONY: all all-before all-after clean clean-custom

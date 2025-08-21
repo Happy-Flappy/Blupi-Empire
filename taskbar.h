@@ -18,12 +18,12 @@ class Taskbar
 	
 	
 	// Constants for base button 
-    const std::vector<std::string> BASE_BUTTONS = {"menu"};
+    const std::vector<std::string> BASE_BUTTONS = {"menu","quit","settings","save"};
     const std::vector<IntRect> BASE_ICONS = {
-    	  {0,560,40,40} //menu
-//        {160,280,40,40},  // quit
-//        {200,320,40,40},  // settings
-//        {200,360,40,40}   // save
+    	  {0,560,40,40}, //menu
+        {160,280,40,40},  // quit
+        {200,320,40,40},  // settings
+        {200,360,40,40}   // save
     };
 
 	
@@ -75,8 +75,113 @@ class Taskbar
 	
 	
 	
-	
-	
+	void addButtons()
+	{
+		for(int a=0;a<element.size();a++)
+		{
+			if((toplayer.type=="element" && toplayer.ID == a) || (toplayer.type=="blupi" && player[ME].selected == toplayer.ID && topElement.ID == a))
+			{
+				
+				
+				std::string type = element[a].type;
+				
+				if(Input::Mouse(Mouse::Left))
+				{
+
+					buttons.clear();
+
+					if(type=="bomb" || type=="wood"||type=="tomato") //pickup
+					{
+						
+						if(blupi[player[ME].selected].carrying.getTextureRect().width==0)
+						{
+							liveitem = a;
+							buttons.push_back(Button("pick up",sf::IntRect(1,239,40,40),2,0));
+						}
+						
+						
+					}
+
+					if(type=="tomato")
+					{
+						liveitem = a;
+						
+						
+						buttons.push_back(Button("eat",sf::IntRect(80,241,40,40),4,0));
+						
+					}
+
+
+					if(type=="bomb")
+					{
+						buttons.push_back(Button("blow up",sf::IntRect(200,280,40,40),1,0));
+					}
+					
+					if(type=="house")
+					{
+						
+						liveitem = a;
+						
+						if(element[a].blupiIndex!=-1)
+						{
+							player[ME].selected = element[a].blupiIndex;
+						}
+						
+						
+						if(element[a].blupiIndex==player[ME].selected || element[a].blupiIndex == -1)
+						{
+						
+							if(element[a].boolean[0]==true)
+							{
+								buttons.push_back(Button("exit haven",sf::IntRect(0,0,0,0),0.5,0));
+							}
+							
+						}
+						
+						if(element[a].boolean[0]==false)
+						{
+							buttons.push_back(Button("enter haven",sf::IntRect(0,0,0,0),0.5,0));
+						}
+						
+						
+					}
+					
+					
+					
+					
+					if(type=="shed")
+					{
+						liveitem = a;
+						
+						
+						buttons.push_back(Button("grow",sf::IntRect(161,200,40,40),8,2));
+						
+					}
+					
+					
+					
+					
+					if(type=="jeep")
+					{
+						liveitem = a;
+						
+						
+						
+						
+						
+						
+						if(blupi[player[ME].selected].locomotion=="walk")
+						{
+							buttons.push_back(Button("enter jeep",sf::IntRect(0,0,0,0),0.5,0));
+						}
+					}
+						
+						
+			
+				}
+			}
+		}
+	}
 	
 	
 	
@@ -121,6 +226,10 @@ class Taskbar
 	void update(RenderWindow &window,Image &ground)
 	{
 
+		addButtons();
+
+
+
 		box.setPosition(window.getView().getCenter().x - (window.getView().getSize().x/2),540-5);
 		window.draw(box);
 
@@ -135,9 +244,45 @@ class Taskbar
 		
 		for(int a=0;a<BASE_BUTTONS.size();a++)
 		{
+			
+			sf::Vector2f pos;
+			
+			
+			if(a == 0)//top left
+			{
+				pos.x = boxpos.x + 190 - 39 - 4 -1;
+				pos.y = boxpos.y + 55 - 39 + 2;
+			}
+			
+			if(a == 1)//top right
+			{
+				pos.x = boxpos.x + 190 - 3 + 1 -1;
+				pos.y = boxpos.y + 55 - 39 + 2;
+			}
+			
+			if(a == 2)//bottom left
+			{
+				pos.x = boxpos.x + 190 - 3 - 39 - 1 -1;
+				pos.y = boxpos.y + 55 + 4;
+			}
+			
+			
+			if(a == 3)//bottom right
+			{
+				pos.x = boxpos.x + 190 - 3 + 1 - 1;
+				pos.y = boxpos.y + 55 + 4;
+			}
+			
+			
+			
+			
+			
+			
+			
+			
 			sprite.setScale(1,1);
 			sprite.setTextureRect(IntRect(1,1,39,39));
-			sprite.setPosition(boxpos.x + 20 +  ((sprite.getTextureRect().width * sprite.getScale().x) * a),boxpos.y + 55);
+			sprite.setPosition(pos);
 			icon.setTextureRect(BASE_ICONS[a]);
 			icon.setPosition(sprite.getPosition());
 			icon.setScale(sprite.getScale());
@@ -190,8 +335,11 @@ class Taskbar
 			{
 				
 				
-				if(buttons[a] == "stop")
+				if(buttons[a].type == "stop")
 				{
+
+					blupi[player[ME].selected].actionTime = 0;
+					blupi[player[ME].selected].actionEnergy = 0;
 
 					if(!blupi[player[ME].selected].traveled())
 					{
@@ -199,28 +347,27 @@ class Taskbar
 						blupi[player[ME].selected].Stop();
 					}
 					else
-					{
-								
+					{		
 						blupi[player[ME].selected].startstop=true;
 						blupi[player[ME].selected].sayObey();
 					}
 					
 					buttons.clear();
-					iconrect.clear();
 					break;	
 				}
 
 
 
 
-				if(buttons[a].find("exit") != std::string::npos)
+				if(buttons[a].type.find("exit") != std::string::npos)
 				{
-					blupi[player[ME].selected].action = buttons[a];
+					blupi[player[ME].selected].action = buttons[a].type;
 					blupi[player[ME].selected].itemindex = liveitem;
 					blupi[player[ME].selected].initAction = true;
+					blupi[player[ME].selected].actionTime = buttons[a].time;
+					blupi[player[ME].selected].actionEnergy = buttons[a].energy;					
 					blupi[player[ME].selected].sayObey();
 					buttons.clear();
-					iconrect.clear();			
 					break;		
 				}
 
@@ -231,16 +378,16 @@ class Taskbar
 					if(!blupi[player[ME].selected].possible(element[liveitem].now))
 					{
 						blupi[player[ME].selected].sayFailed();
-						buttons.clear();
-						iconrect.clear();						
+						buttons.clear();						
 						break;
 					}
-					blupi[player[ME].selected].action = buttons[a];
+					blupi[player[ME].selected].action = buttons[a].type;
 					blupi[player[ME].selected].itemindex = liveitem;
 					blupi[player[ME].selected].initAction = true;
+					blupi[player[ME].selected].actionTime = buttons[a].time;
+					blupi[player[ME].selected].actionEnergy = buttons[a].energy;
 					blupi[player[ME].selected].sayObey();
 					buttons.clear();
-					iconrect.clear();
 					break;
 				}
 				else
@@ -248,14 +395,13 @@ class Taskbar
 					
 					blupi[player[ME].selected].sayFailed();
 					buttons.clear();
-					iconrect.clear();
 					break;
 				}
 
 			}
 		
-			if(a < iconrect.size())
-				icon.setTextureRect(iconrect[a]);
+			if(buttons[a].icon != sf::IntRect(0,0,0,0))
+				icon.setTextureRect(buttons[a].icon);
 			else
 				icon.setTextureRect(IntRect(39*15,39*2,39,39));
 			
@@ -356,7 +502,6 @@ class Taskbar
 					}
 					
 					buttons.clear();
-					iconrect.clear();
 					liveitem=-1;
 			
 			
@@ -370,8 +515,7 @@ class Taskbar
 		
 		if(blupi[player[ME].selected].busy && buttons.size() == 0 && !blupi[player[ME].selected].startstop)
 		{
-			buttons.push_back("stop");
-			iconrect.push_back({160,280,40,40});
+			buttons.push_back(Button("stop",sf::IntRect(160,280,40,40),blupi[player[ME].selected].actionTime,0));
 	
 		}
 		
@@ -379,10 +523,9 @@ class Taskbar
 		{
 			for(int a=0;a<buttons.size();a++)
 			{
-				if(buttons[a] == "stop")
+				if(buttons[a].type == "stop")
 				{
 					buttons.erase(buttons.begin()+a);
-					iconrect.erase(iconrect.begin()+a);
 					break;
 				}
 			}
@@ -395,7 +538,7 @@ class Taskbar
 		
 		//draw energy bar <><><><><><><><><><><><><>
 		
-		energyBar.setPosition(boxpos.x + 22,boxpos.y+20);
+		energyBar.setPosition(boxpos.x + 20,boxpos.y+20);
 		energyBar.setTexture(textures.bars);
 		energyBar.setTextureRect({0,0,124,22});//empty
 		window.draw(energyBar);
@@ -411,9 +554,28 @@ class Taskbar
 		
 		//draw progress bar<><><><>
 		
-		//.......placeholder......
+		energyBar.setPosition(boxpos.x + 20,boxpos.y+20 + 25);
+		energyBar.setTexture(textures.bars);
+		energyBar.setTextureRect({0,0,124,22});//empty
+		window.draw(energyBar);
+		
+		if(blupi[player[ME].selected].actionTime != 0 && blupi[player[ME].selected].progressTime.getElapsedTime().asSeconds() != 0)
+			percent = 124 * (blupi[player[ME].selected].progressTime.getElapsedTime().asSeconds()/blupi[player[ME].selected].actionTime);
+		else
+			percent = 0;
+			
+		
+		energyBar.setTextureRect({0,22 * 3,percent,22});
+		
+		window.draw(energyBar);
 		
 		//////////////////////////
+		
+		
+		
+		
+		
+		
 	}
 	
 	

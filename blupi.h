@@ -328,13 +328,12 @@ class Blupi
 	float idledelay = 0;
 	float scale = 1.5;//1.5
 	float energy = 100;
-	float workEnergyLoss = 0.02;
 	double walkEnergyLoss = 0.01;
 	std::string state = "right"; //direction
 	std::string locomotion="walk"; //form of locomotion such as jeep,boat,walk
 	std::string action="none"; // the action that blupi is currently trying to accomplish
 	std::string keyinput="none";
-	
+	sf::Clock progressTime;
 	
 	
 	
@@ -490,15 +489,27 @@ class Blupi
 	
 	
 	
-	float processTime = 0;
+	float actionTime = 0;
+	int actionEnergy = 0;
+	sf::Clock actionRate;
 	
-	
-	bool enoughEnergy(float time,float energyLossPerFrame)
+	bool enoughEnergy(int destined,float workEnergyLoss)
 	{
+		//speed amount of movement takes about walkEnergyLoss amount per usage.
+		//walk distance takes how much energy? That depends on the current speed.
 		
-		float lossPerSecond = energyLossPerFrame * 60;
+		//How many speed additives would it take to get to the distance.
 		
-		float lossAmount = lossPerSecond * time;
+		
+		
+		int distance = abs(destined - now.x) + 100; 
+		
+		float numberOfUsesOfSpeed = distance / speed;
+		
+		float walkloss = walkEnergyLoss * numberOfUsesOfSpeed;
+		
+		float lossAmount = walkloss + workEnergyLoss;
+	
 		return (lossAmount < energy);
 	}
 	
@@ -634,14 +645,7 @@ class Blupi
 		if(locomotion == "sick" || locomotion == "tired")
 		{
 		
-			//averageDistancePerFrame: speed;
-			float totalFrames = abs(destination.x - now.x)/speed;    
-			
-			float timePerFrame = 1.f/60.f;
-			
-			float totalSeconds = totalFrames * timePerFrame;
-			
-			if(!enoughEnergy(totalSeconds,walkEnergyLoss))
+			if(!enoughEnergy(int(dest.x),0))
 				return false;
 			
 			
@@ -700,8 +704,11 @@ class Blupi
 	void doAction(Image &ground) //the initialization function for starting actions
 	{
 		if(action=="none")
+		{
+			actionTime = 0;
+			actionEnergy = 0;
 			return;
-		
+		}
 		
 		
 		
@@ -711,7 +718,7 @@ class Blupi
 		{
 			busy=true;
 			startstop=false;
-			
+			progressTime.restart();
 		}
 		
 		
@@ -763,7 +770,11 @@ class Blupi
 				{
 					state = "moveleft";
 					destination.x = right;
-				}				
+				}		
+				
+				
+				
+						
 			}
 		}
 		
@@ -776,16 +787,10 @@ class Blupi
 		
 		
 		
-		bool usesEnergy = false;
-		
-		if(action == "grow")
-		{
-			usesEnergy = true;
-		}
 		
 		if(locomotion == "sick" || locomotion == "tired")
 		{
-			if(usesEnergy)
+			if(!enoughEnergy(int(destination.x),actionEnergy))
 			{	
 				if(!traveled())
 				{
@@ -811,8 +816,10 @@ class Blupi
 		
 		
 		
-		
-		
+			if(initAction)
+			{
+				progressTime.restart();
+			}
 		
 		
 		
@@ -831,7 +838,6 @@ class Blupi
 					
 					
 					
-					energy -= workEnergyLoss;
 					
 					
 					sprite.setTextureRect(Shift(shift.water));
@@ -859,6 +865,8 @@ class Blupi
 					}
 					
 					
+					
+					
 				}			
 				else
 				{
@@ -866,10 +874,7 @@ class Blupi
 				
 				
 					
-					processTime = element[itemindex].shift.grow.rect.size() * element[itemindex].shift.grow.delay;
-					
-					
-					if(!enoughEnergy(processTime,workEnergyLoss))
+					if(!enoughEnergy(int(destination.x),actionEnergy))
 					{
 						failed();
 					}
@@ -892,7 +897,9 @@ class Blupi
 						element[plantindex].now = sf::Vector2f(now.x + 60,now.y);
 		
 						
-						wav.playSound(101,now.x);			
+						wav.playSound(101,now.x);	
+						
+						progressTime.restart();		
 					
 					}
 				}				
@@ -939,6 +946,10 @@ class Blupi
 					}
 					else
 						failed();
+						
+						
+					
+						
 					initAction=false;
 				}
 			}
@@ -973,6 +984,9 @@ class Blupi
 					
 					action="none";
 					busy=true;
+					
+					
+					
 					initAction = false;
 				}
 			}			
@@ -994,6 +1008,8 @@ class Blupi
 					element[itemindex].taken=true;
 					if(firstGrab == 0)
 					{
+						
+						
 						
 						velocity.y = jumpvelo/2;
 						firstGrab++;
@@ -1068,36 +1084,42 @@ class Blupi
 						state = "eatright";
 					
 					
+					
 					initAction = false;
 				}
 				
-				
-				if(energy < 100)
+				if(progressTime.getElapsedTime().asSeconds() < actionTime)
 				{
-					energy+=0.3;
-					element[itemindex].taken=true;
-					
+					if(energy < 100)
+					{
+						energy+=0.3;
+						element[itemindex].taken=true;
+					}
+				
 					if(channel == -1)
 						channel = wav.playSound(13,now.x,false);
 					if(channel != -1)
 					{
 						wav.playSound(13,now.x,true,channel);
 					}
+					
+					
+					
+					
 				}
 				else
 				{
+					channel = -1;
+					busy=false;
+					action="none";
 					energy = 100;
 					element[itemindex].exists = false;
-					channel = -1;
-					action="none";
-					busy=false;
-					
-					
+		
 					if(state=="eatleft")
 						state = "left";
 					if(state=="eatright")
-						state = "right";
-					
+						state = "right";			
+			
 				}
 			}
 
@@ -1117,6 +1139,7 @@ class Blupi
 			if(initAction)
 			{
 			
+				progressTime.restart();
 				locomotion="walk";
 				speed=2;
 				element[haven].boolean[0]=false;
@@ -1137,6 +1160,7 @@ class Blupi
 		
 		if(action=="exit jeep")
 		{
+			
 			element[itemref].now = now;
 			element[itemref].active=true;
 			locomotion = "walk";	
@@ -1173,6 +1197,9 @@ class Blupi
 					{
 						destination.x = now.x+50;
 					}
+					
+					
+					
 					initAction=false;
 				}
 				else
@@ -1207,8 +1234,19 @@ class Blupi
 		}
 		
 
-			
+		if(actionRate.getElapsedTime().asSeconds() > 0.15)
+		{
 		
+			if(energy > 0)
+				energy -= float(actionEnergy)/20;
+			
+			actionRate.restart();
+		}
+		
+		if(progressTime.getElapsedTime().asSeconds() > actionTime)
+		{
+			progressTime.restart();
+		}
 		
 	}
 	
@@ -1385,7 +1423,6 @@ class Blupi
 				alive = false;
 				sayDone();
 				buttons.clear();
-				iconrect.clear();
 			}
 		}
 		
@@ -1494,7 +1531,6 @@ class Blupi
 							player[ME].selected = ID;
 							
 							buttons.clear();
-							iconrect.clear();
 					
 							int b = rand()%3;
 							
@@ -1516,9 +1552,8 @@ class Blupi
 								}
 								else
 								{
-									iconrect.clear();
 									buttons.clear();
-									buttons.push_back("exit jeep");
+									buttons.push_back(Button("exit jeep",sf::IntRect(0,0,0,0),0.5,0));
 									
 									
 								}
@@ -1926,7 +1961,7 @@ class Blupi
 			bool dropfound=false;
 			for(int z=0;z<buttons.size();z++)
 			{
-				if(buttons[z]=="drop")
+				if(buttons[z].type=="drop")
 				{
 					dropfound=true;
 					break;
@@ -1935,8 +1970,8 @@ class Blupi
 			
 			if(!dropfound && carrying.getTextureRect().width!=0)
 			{
-				buttons.push_back("drop");
-				iconrect.push_back(sf::IntRect(42,240,40,40));			
+				buttons.push_back(Button("drop",sf::IntRect(42,240,40,40),0.5,0));
+							
 			}
 		}
 		
@@ -1977,7 +2012,10 @@ class Blupi
 		
 		if(player[ME].color == color)
 		{
-		
+			
+			
+			//draw energy bar <><><><><><><><><><><><><><><><><><><><>
+			
 			energyBar.setTexture(textures.bars);
 			
 			energyBar.setPosition(sprite.getPosition().x - (123/2),sprite.getPosition().y - ((sprite.getTextureRect().height/2)*scale) - carrying.getTextureRect().height - 10);
@@ -2008,6 +2046,40 @@ class Blupi
 			
 			energyBar.setTextureRect({1,90,percent,10});
 			window.draw(energyBar);
+			
+			//<><><><><><><><><><><><><><><><><>
+			
+			
+			//draw progress bar
+			
+			
+			if(action!="none" && progressTime.getElapsedTime().asSeconds() > 0 && actionTime != 0)
+			{
+			
+				energyBar.setPosition(energyBar.getPosition().x,energyBar.getPosition().y - energyBar.getTextureRect().height - 10);
+				
+				
+				
+				energyBar.setTextureRect({1,120,123,10});
+				window.draw(energyBar);
+				
+				
+				if(actionTime != 0 && progressTime.getElapsedTime().asSeconds() != 0)
+					percent = 124 * (progressTime.getElapsedTime().asSeconds()/actionTime);
+				else
+					percent = 0;
+						
+				
+				
+				
+				energyBar.setTextureRect({1,110,percent,10});
+				window.draw(energyBar);
+			}
+			
+			//////////////////////////////
+			
+			
+			
 			
 		}
 		

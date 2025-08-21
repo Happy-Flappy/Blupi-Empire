@@ -8,8 +8,27 @@
 using namespace sf;
 
 Vector2f MPosition;
-std::vector <std::string> buttons;
-std::vector <IntRect> iconrect;
+
+class Button
+{
+	public:
+	std::string type;
+	sf::IntRect icon;
+	int time;
+	int energy;
+	
+	Button(std::string type,sf::IntRect icon,int time,int energy)
+	{
+		this->type = type;
+		this->icon = icon;
+		this->time = time;
+		this->energy = energy;
+	}
+	
+};
+
+std::vector<Button> buttons;
+
 int liveitem=0;
 
 
