@@ -17,20 +17,10 @@ yellow blupi 1500 153 END
 
 yellow blupi 1200 153 END
 
-blue blupi 1324 200 END
-
-orange blupi 20 208 END
-
-green blupi 100 208 END
 
 blue blupi 1324 200 END
 
-orange blupi 20 208 END
-
-green blupi 100 208 END
-
-
-blue blupi 1324 200 END
+blue blupi 1000 200 END
 
 orange blupi 20 208 END
 

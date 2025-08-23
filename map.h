@@ -361,7 +361,7 @@ class Map
 					random = rand()%3;
 				}				
 				if(key[4] == "1" || random == 0)
-					element[index].sprite.setTextureRect(sf::IntRect(0,1361,92,125));
+					element[index].sprite.setTextureRect(sf::IntRect(0,1362,92,124));
 				if(key[4] == "2" || random == 1)
 					element[index].sprite.setTextureRect(sf::IntRect(250,1486,126,126));
 				if(key[4] == "3" || random == 2)

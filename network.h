@@ -585,6 +585,8 @@ class Network {
 		                	player[ID].port = port;
 		                	player[ID].color = color;
 		                	player[ID].known=true;
+		                	
+		                	
 		                }
 		                else
 		                {

@@ -139,12 +139,19 @@ class AI
         for (int a = 0; a < blupiByPos.size(); a++)
         {
         
-        	
         	Blupi &b = blupi[blupiByPos[a].ID];
-        	if(b.color!=player[ID].color) continue;	
         	
-        	if(!dangerousBlupiNear(a))		
-	        	b.running = false;
+        	for(int p=0;p<4;p++)
+        	{
+        		if(player[p].color == b.color && !player[p].human)
+        		{
+		        			
+		        	if(!dangerousBlupiNear(a))		
+			        	b.running = false;
+				}
+			}
+        	
+        	
 	        
         }
 		

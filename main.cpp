@@ -346,9 +346,6 @@ int main()
 	player[0].known=true;
 	player[0].participating=true;
 	player[0].port = network.udpsocket.getLocalPort();
-	player[0].selected = 0;
-	player[0].color = "yellow";
-	
 
 
 	//initialize first names until player chooses otherwise.
@@ -518,10 +515,6 @@ int main()
 						player[ME].selected = a;
 						break;
 					}
-				}
-				if(player[ME].selected==-1)
-				{
-					//no blupis of that color exist. This could mean that the player has lost the game because all of his blupis have died.
 				}
 			}
 			

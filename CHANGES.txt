@@ -28,6 +28,8 @@ Added 5 layer system in correlation to trees needing to be behind buildings. - e
 Added functions drawElements(sf::RenderWindow &window) && drawElementLayer(sf::RenderWindow &window) to element.h
 Broke topLayer functionality.
 Fixed topLayer functionality.  
+Fixed blupi controls for other colors for multiplayer.
+Attempted to fix bug where blupi under human control is also under robot control.-failed 
 
 
 GOALS:
@@ -61,6 +63,7 @@ Blupi::progressTime - sf::Clock
 3:TopLayer selection method cannot detect blupi if it is over another blupi. This can lead to the user losing complete control of both blupis if the user clicks on a third blupi. Obviously, the toplayer method is only successful for the elements. 
 
 
+4: Blupis under human control are still controlled by robot. - AI.h
 
 
 
