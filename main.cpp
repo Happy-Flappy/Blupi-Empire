@@ -254,14 +254,15 @@ void getTopHoveredLayer()
         }
     }
 
-    // 2. Find topmost element (last in vector = highest rendered)
-    for (int a = element.size() - 1; a >= 0; a--)
-    {
-        if (!element[a].active || !element[a].exists)continue;// || 
-  //          (element[a].color != UserColor && element[a].color != "any"))
-  //          continue;
 
-        // Adjusted bounds with 20px padding
+	int topE = -1;
+    // 2. Find topmost element 
+    for (int a = 0; a < element.size(); a++)
+    {
+    	
+        if (!element[a].active || !element[a].exists || element[a].layer != 5)continue;
+		
+		// Adjusted bounds with 20px padding
         FloatRect bounds = element[a].sprite.getGlobalBounds();
         bounds.left += 20;
         bounds.width -= 40;
@@ -270,11 +271,16 @@ void getTopHoveredLayer()
 
         if (bounds.contains(MPosition))
         {
+        	if(topE > a)
+				continue;
             topElement.ID = element[a].ID;
             topElement.type = "element";
-            break; // Stop at topmost element
         }
-    }
+			
+	}
+	
+	
+	
 
     // 3. Determine overall top layer (blupi > element in rendering order)
     if (topBlupi.ID != -1)
@@ -697,19 +703,7 @@ int main()
 		
 		
 		
-		for(int a=0;a<element.size();a++){
-			
-			if(!element[a].exists)
-				continue;
-			
-
-			if(element[a].active)
-			{
-				element[a].draw(window);
-			}
-		}
-
-
+		drawElements(window);
 
 
 		

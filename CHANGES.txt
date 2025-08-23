@@ -15,6 +15,19 @@ Added condition to code that adds pickup button. Condition requires that blupi i
 
 8/21/2025
 
+Modified "enoughEnergy()" function to use 25% as minimum energy allowed. (broken)
+
+Added low level marker for all gauges in jauge.bmp and removed transparency for blupi's gauges.
+
+Changed energy bar from red to blue for visual clarity.
+
+8/22/2025
+
+Added trees. - map.h && element.h
+Added 5 layer system in correlation to trees needing to be behind buildings. - element.h
+Added functions drawElements(sf::RenderWindow &window) && drawElementLayer(sf::RenderWindow &window) to element.h
+Broke topLayer functionality.
+Fixed topLayer functionality.  
 
 
 GOALS:
@@ -22,6 +35,7 @@ GOALS:
 
 
 Change networking code to allow networking by server without VPN.
+
 
 
 
@@ -38,5 +52,16 @@ Blupi::doAction()
 Blupi::actionTime - float
 
 Blupi::progressTime - sf::Clock
+
+
+2:Blupi does not stop growing tomatoes in time before he uses all of his energy.
+
+
+
+3:TopLayer selection method cannot detect blupi if it is over another blupi. This can lead to the user losing complete control of both blupis if the user clicks on a third blupi. Obviously, the toplayer method is only successful for the elements. 
+
+
+
+
 
 

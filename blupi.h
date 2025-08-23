@@ -510,7 +510,7 @@ class Blupi
 		
 		float lossAmount = walkloss + workEnergyLoss;
 	
-		return (lossAmount < energy);
+		return (lossAmount < energy + 25);
 	}
 	
 	
@@ -697,6 +697,7 @@ class Blupi
 	int itemindex = -1;
 	int plantindex = -1;
 	bool initAction=true;
+	bool startActionTime = false;
 	int firstGrab = 0;
 	int carryref = 0;
 	int channel = -1;
@@ -707,6 +708,7 @@ class Blupi
 		{
 			actionTime = 0;
 			actionEnergy = 0;
+			startActionTime = false;
 			return;
 		}
 		
@@ -718,7 +720,7 @@ class Blupi
 		{
 			busy=true;
 			startstop=false;
-			progressTime.restart();
+			startActionTime = false;
 		}
 		
 		
@@ -773,7 +775,7 @@ class Blupi
 				}		
 				
 				
-				
+				startActionTime = true;
 						
 			}
 		}
@@ -856,12 +858,22 @@ class Blupi
 						element[plantindex].sprite.setTextureRect(IntRect(67,153,51,39)); //tomato rect
 						element[plantindex].averageHeight = element[plantindex].sprite.getTextureRect().height;
 						plantindex=-1;	
+						
+						if(!enoughEnergy(float(now.x),actionEnergy))
+						{
+							action="none";
+							busy=false;
+						}
+						
 						if(startstop)
 						{
 							action="none";
 							busy=false;
 							startstop=false;
 						}
+						
+						
+						
 					}
 					
 					
@@ -873,35 +885,25 @@ class Blupi
 				
 				
 				
-					
-					if(!enoughEnergy(int(destination.x),actionEnergy))
-					{
-						failed();
-					}
-					else
-					{
+					state = "right";
 					
 					
-						state = "right";
-						
-						
-						plantindex = CreateElement();
-						
-						element[plantindex].type = "plant";
-						element[plantindex].sprite.setTexture(textures.element);
-						
-						element[plantindex].sprite.setTextureRect(element[plantindex].shift.grow.rect[0]);
-						element[plantindex].averageHeight = element[plantindex].sprite.getTextureRect().height;
-		
-						
-						element[plantindex].now = sf::Vector2f(now.x + 60,now.y);
-		
-						
-						wav.playSound(101,now.x);	
-						
-						progressTime.restart();		
+					plantindex = CreateElement();
 					
-					}
+					element[plantindex].type = "plant";
+					element[plantindex].sprite.setTexture(textures.element);
+					
+					element[plantindex].sprite.setTextureRect(element[plantindex].shift.grow.rect[0]);
+					element[plantindex].averageHeight = element[plantindex].sprite.getTextureRect().height;
+	
+					
+					element[plantindex].now = sf::Vector2f(now.x + 60,now.y);
+	
+					
+					wav.playSound(101,now.x);	
+					
+					startActionTime = true;
+			
 				}				
 				
 			}
@@ -951,6 +953,7 @@ class Blupi
 					
 						
 					initAction=false;
+					startActionTime = true;
 				}
 			}
 			
@@ -988,6 +991,7 @@ class Blupi
 					
 					
 					initAction = false;
+					startActionTime = true;
 				}
 			}			
 			
@@ -1011,6 +1015,7 @@ class Blupi
 						
 						
 						
+						startActionTime = true;
 						velocity.y = jumpvelo/2;
 						firstGrab++;
 					}
@@ -1085,6 +1090,7 @@ class Blupi
 					
 					
 					
+					startActionTime = true;
 					initAction = false;
 				}
 				
@@ -1204,6 +1210,7 @@ class Blupi
 				}
 				else
 				{
+					startActionTime = true;
 					state = "blow up";
 					
 				}
@@ -1234,7 +1241,7 @@ class Blupi
 		}
 		
 
-		if(actionRate.getElapsedTime().asSeconds() > 0.15)
+		if(actionRate.getElapsedTime().asSeconds() > 0.15 && startActionTime)
 		{
 		
 			if(energy > 0)
@@ -1245,9 +1252,13 @@ class Blupi
 		
 		if(progressTime.getElapsedTime().asSeconds() > actionTime)
 		{
-			progressTime.restart();
+			startActionTime = false;
 		}
 		
+		if(!startActionTime)
+		{
+			progressTime.restart();
+		}
 	}
 	
 	

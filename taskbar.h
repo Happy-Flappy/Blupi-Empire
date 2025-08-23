@@ -547,7 +547,7 @@ class Taskbar
 		int percent = 124 * (blupi[player[ME].selected].energy/100);
 		
 		
-		energyBar.setTextureRect({0,22,percent,22});
+		energyBar.setTextureRect({0,22 + 22,percent,22});
 		
 		window.draw(energyBar);
 		

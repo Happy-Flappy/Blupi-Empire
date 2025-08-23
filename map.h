@@ -327,6 +327,55 @@ class Map
 			
 		}
 		
+		
+		
+		if(key[0] == "tree")
+		{
+			int index = CreateElement();
+			element[index].type = "tree";
+			element[index].sprite.setTexture(textures.explo);
+			element[index].obeysRotation = false;
+			element[index].now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));			
+			element[index].layer = 1;		
+			
+			if(key[3] == "palm")
+			{
+				int random = -1;
+				if(key[4] == "random")
+				{
+					random = rand()%3;
+				}
+				if(key[4] == "1" || random == 0)
+					element[index].sprite.setTextureRect(sf::IntRect(124,1486,126,126));
+				if(key[4] == "2" || random == 1)
+					element[index].sprite.setTextureRect(sf::IntRect(0,995,127,118));
+				if(key[4] == "3" || random == 2)
+					element[index].sprite.setTextureRect(sf::IntRect(336,1361,126,125));
+					
+			}
+			if(key[3] == "pine")
+			{
+				int random = -1;
+				if(key[4] == "random")
+				{
+					random = rand()%3;
+				}				
+				if(key[4] == "1" || random == 0)
+					element[index].sprite.setTextureRect(sf::IntRect(0,1361,92,125));
+				if(key[4] == "2" || random == 1)
+					element[index].sprite.setTextureRect(sf::IntRect(250,1486,126,126));
+				if(key[4] == "3" || random == 2)
+					element[index].sprite.setTextureRect(sf::IntRect(368,1116,125,121));
+				
+				
+			}
+			
+			element[index].averageHeight = element[index].sprite.getTextureRect().height/2;	
+			
+		}
+		
+		
+		
 		if(key[0]=="jeep")
 		{
 			int index = CreateElement();

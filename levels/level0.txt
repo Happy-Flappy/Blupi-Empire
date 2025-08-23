@@ -8,7 +8,7 @@ floater level0/floater.png END
 
 atmosphere level0/nature1atmos.ogg END
 
-//music level0/MUSIC006.mp3 END
+music level0/MUSIC006.mp3 END
 
 
 
@@ -71,3 +71,17 @@ bomb 150 100 END
 bomb 150 100 END
 
 
+tree 100 100 pine random END
+tree 200 100 pine random END
+tree 300 100 pine random END
+tree 400 100 pine random END
+tree 500 100 pine random END
+tree 600 100 pine random END
+tree 700 100 pine random END
+tree 800 100 pine random END
+tree 900 100 pine random END
+tree 1000 100 pine random END
+tree 1100 100 pine random END
+tree 1200 100 pine random END
+tree 1300 100 pine random END
+tree 1400 100 pine random END

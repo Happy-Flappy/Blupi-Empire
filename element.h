@@ -21,6 +21,7 @@ class Element
 	bool boolean[10];
 	bool exists=true;
 	bool taken=false;
+	bool obeysRotation = true;
 	int displayNumber=0;
 	
 	Text numberText;
@@ -30,6 +31,7 @@ class Element
 	int blupiIndex=-1;
 	int boomID=-1;
 	int textX=0;
+	int layer = 5;
 	sf::FloatRect bounds;
 	
 	
@@ -145,7 +147,8 @@ class Element
 			Gravity(ground,velocity,now,gravity);
 			
 			
-			sprite.setRotation(getGroundAngle(ground,now, sprite.getRotation() , 10 ));
+			if(obeysRotation)
+				sprite.setRotation(getGroundAngle(ground,now, sprite.getRotation() , 10 ));
 			
 			
 			
@@ -275,3 +278,35 @@ class Element
 };
 
 std::vector <Element> element;
+
+
+
+void drawElementLayer(int layer,sf::RenderWindow &window)
+{
+	for(int a=0;a<element.size();a++)
+	{
+		
+		if(!element[a].exists)
+			continue;
+		if(element[a].layer != layer)
+			continue;
+	
+		if(element[a].active)
+		{
+			element[a].draw(window);
+		}
+	}
+}
+
+
+void drawElements(sf::RenderWindow &window)
+{
+
+	drawElementLayer(1,window);
+	drawElementLayer(2,window);
+	drawElementLayer(3,window);
+	drawElementLayer(4,window);
+	drawElementLayer(5,window);
+	
+
+}
