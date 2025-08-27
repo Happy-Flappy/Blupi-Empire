@@ -332,7 +332,7 @@ class Map
 		if(key[0] == "tree")
 		{
 			int index = CreateElement();
-			element[index].type = "tree";
+			element[index].type = key[3];
 			element[index].sprite.setTexture(textures.explo);
 			element[index].obeysRotation = false;
 			element[index].now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));			

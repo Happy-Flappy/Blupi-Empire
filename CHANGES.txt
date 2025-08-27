@@ -32,12 +32,37 @@ Fixed blupi controls for other colors for multiplayer.
 Attempted to fix bug where blupi under human control is also under robot control.-failed 
 
 
+
+8/23/2025
+
+Added cut down trees functionality. - blupi.h && taskbar.h
+Added grow trees functionality - blupi.h && taskbar.h
+
+
+8/27/2025
+
+
+Added graphics and sound to the action of cutting down a tree. - blupi.h (doAction()) action == "fell tree"
+Added item wood plank
+Improved blupi spritesheet to be a consistent grid size per frame - 62x62 is the official grid size now.
+Added "blupi hammering" front and side animation to spritesheet.
+Added "blupi sawing" side view animation to spritesheet.
+ 
+
+
 GOALS:
+
+
+
 
 
 
 Change networking code to allow networking by server without VPN.
 
+
+
+
+ 
 
 
 

@@ -35,6 +35,8 @@ class Blupi
 		ShiftData blowup; 
 		ShiftData water;
 		ShiftData eatL,eatR;
+		ShiftData saw;
+		ShiftData hammerfront;
 		
 		
 		ShiftModes()
@@ -60,12 +62,12 @@ class Blupi
 			
 			walkright.delay = 0.1;
 
-			walkright.rect.push_back(IntRect(62*10, 0+1, 62, 62));
-			walkright.rect.push_back(IntRect(62*5, 0+1, 62, 62));
-			walkright.rect.push_back(IntRect(62*6, 0+1, 62, 62));
-			walkright.rect.push_back(IntRect(62*7, 0+1, 62, 62));
-			walkright.rect.push_back(IntRect(62*8, 0+1, 62, 62));
-			walkright.rect.push_back(IntRect(62*9, 0+1, 62, 62));
+			walkright.rect.push_back(IntRect(62*10,0, 62, 62));
+			walkright.rect.push_back(IntRect(62*5, 0, 62, 62));
+			walkright.rect.push_back(IntRect(62*6, 0, 62, 62));
+			walkright.rect.push_back(IntRect(62*7, 0, 62, 62));
+			walkright.rect.push_back(IntRect(62*8, 0, 62, 62));
+			walkright.rect.push_back(IntRect(62*9, 0, 62, 62));
 
 			
 			
@@ -86,81 +88,85 @@ class Blupi
 			
 			//tired animations
 			
-			
+			//Corner of tired walk frames   y = 29 , x = 0 
 			tiredwalkleft.delay = 0.15;
-			tiredwalkleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredwalkleft.rect.push_back({0 + (60 * 1),1798 + (60 * 3),60,60});
-			tiredwalkleft.rect.push_back({0 + (60 * 2),1798 + (60 * 3),60,60});
-			tiredwalkleft.rect.push_back({0 + (60 * 3),1798 + (60 * 3),60,60});
+			tiredwalkleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredwalkleft.rect.push_back({62 * 1,62 * 32,62,62});
+			tiredwalkleft.rect.push_back({62 * 2,62 * 32,62,62});
+			tiredwalkleft.rect.push_back({62 * 3,62 * 32,62,62});
 			
 			tiredwalkright.delay = 0.15;
-			tiredwalkright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredwalkright.rect.push_back({0 + (60 * 1),1798 + (60 * 4),60,60});
-			tiredwalkright.rect.push_back({0 + (60 * 2),1798 + (60 * 4),60,60});
-			tiredwalkright.rect.push_back({0 + (60 * 3),1798 + (60 * 4),60,60});	
+			tiredwalkright.rect.push_back({62 * 0,62 * 33,62,62});
+			tiredwalkright.rect.push_back({62 * 1,62 * 33,62,62});
+			tiredwalkright.rect.push_back({62 * 2,62 * 33,62,62});
+			tiredwalkright.rect.push_back({62 * 3,62 * 33,62,62});	
 			
 
 
 			tiredidleleft.delay = 0.1;
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 3),60,60});
-
-			tiredidleleft.rect.push_back({0 + (60 * 0),1798 + (60 * 0),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 1),1798 + (60 * 0),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 2),1798 + (60 * 0),60,60});
-			tiredidleleft.rect.push_back({0 + (60 * 3),1798 + (60 * 0),60,60});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			tiredidleleft.rect.push_back({62 * 0,62 * 32,62,62});
+			
+			
+			
+			tiredidleleft.rect.push_back({62 * 0,62 * 29,62,62});
+			tiredidleleft.rect.push_back({62 * 1,62 * 29,62,62});
+			tiredidleleft.rect.push_back({62 * 2,62 * 29,62,62});
+			tiredidleleft.rect.push_back({62 * 3,62 * 29,62,62});
 
 
 			tiredidleright.delay = 0.1;
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 4),60,60});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 33),62,62});
 						
-			tiredidleright.rect.push_back({0 + (60 * 0),1798 + (60 * 1),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 1),1798 + (60 * 1),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 2),1798 + (60 * 1),60,60});
-			tiredidleright.rect.push_back({0 + (60 * 3),1798 + (60 * 1),60,60});
+			tiredidleright.rect.push_back({(62 * 0), (62 * 30),62,62});
+			tiredidleright.rect.push_back({(62 * 1), (62 * 30),62,62});
+			tiredidleright.rect.push_back({(62 * 2), (62 * 30),62,62});
+			tiredidleright.rect.push_back({(62 * 3), (62 * 30),62,62});
 			
 			
 			
@@ -186,8 +192,8 @@ class Blupi
 			blowup.rect.push_back(IntRect(130*5,1798,130,80));
 			
 			
-			water.rect.push_back(IntRect(240,1798,62,62));
-			water.rect.push_back(IntRect(240+62,1798,62,62));
+			water.rect.push_back(IntRect(62 * 4,62 * 29,62,62));
+			water.rect.push_back(IntRect(62 * 5,62 * 29,62,62));
 
 
 
@@ -217,6 +223,22 @@ class Blupi
 			eatL.rect.push_back({62*5,62*2,62,62});
 			eatL.rect.push_back({62*6,62*2,62,62});
 			
+
+
+
+			saw.delay = 0.15;
+			saw.rect.push_back({62*6,62*29,62,62});
+			saw.rect.push_back({62*7,62*29,62,62});
+			saw.rect.push_back({62*8,62*29,62,62});
+			saw.rect.push_back({62*7,62*29,62,62});
+
+			
+			hammerfront.delay = 0.15;
+			hammerfront.rect.push_back({62*9,62*29,62,62});
+			hammerfront.rect.push_back({62*10,62*29,62,62});
+			hammerfront.rect.push_back({62*11,62*29,62,62});
+			hammerfront.rect.push_back({62*10,62*29,62,62});
+
 
 				
 		}
@@ -701,6 +723,7 @@ class Blupi
 	int firstGrab = 0;
 	int carryref = 0;
 	int channel = -1;
+	sf::Clock growTimer;
 		
 	void doAction(Image &ground) //the initialization function for starting actions
 	{
@@ -820,14 +843,83 @@ class Blupi
 		
 			if(initAction)
 			{
+				growTimer.restart();
 				progressTime.restart();
 			}
 		
 		
 		
+			if(action == "fell tree")
+			{
+				initAction = false;
+				
+				if(growTimer.getElapsedTime().asSeconds() < 4)
+				{
+					//blupi animation of chopping tree with axe
+					sprite.setTextureRect(Shift(shift.saw));
+					wav.playSound(103,now.x);
+				}
+				
+				
+				if(growTimer.getElapsedTime().asSeconds() > 2 && growTimer.getElapsedTime().asSeconds() < 6)
+				{
+					element[itemindex].obeysRotation = false;
+					float groundangle = getGroundAngle(ground,element[itemindex].now,element[itemindex].sprite.getRotation(),10,false);
+					element[itemindex].sprite.setRotation(groundangle + 70);
+				
+				}
+				
+				if(growTimer.getElapsedTime().asSeconds() > 2 && growTimer.getElapsedTime().asSeconds() < 4)
+				{
+					//fell tree
+					if(element[itemindex].type == "palm")
+						element[itemindex].sprite.setTextureRect(sf::IntRect(124,1486,126,126));//set to 1 tree to avoid floating trees
+					if(element[itemindex].type == "pine")
+						element[itemindex].sprite.setTextureRect(sf::IntRect(0,1362,92,124));// set to 1 tree to avoid floating trees
+				}
+				
+				
+				
+				if(growTimer.getElapsedTime().asSeconds() > 4 && growTimer.getElapsedTime().asSeconds() < 6)
+				{
+					
+					if(element[itemindex].type == "palm")
+						element[itemindex].sprite.setTextureRect(sf::IntRect(124,1885 + 92 + 1,126,126));//no brush
+					if(element[itemindex].type == "pine")
+						element[itemindex].sprite.setTextureRect(sf::IntRect(0,1885,92,125));//no brush					
+					
+					//remove underbrush
+					sprite.setTextureRect(Shift(shift.hammerfront));
+					wav.playSound(102,now.x);
+					
+				}
+				if(growTimer.getElapsedTime().asSeconds() >= 6)
+				{
+					//transform into wood
+					
+					element[itemindex].obeysRotation = true;
+					element[itemindex].type = "wood";
+					element[itemindex].sprite.setTexture(textures.element);
+					element[itemindex].sprite.setTextureRect(sf::IntRect(288,644,40,35));
+					element[itemindex].averageHeight = element[itemindex].sprite.getTextureRect().height;
+					element[itemindex].layer = 5;
+					sprite.setTextureRect(Shift(shift.saw));
+					wav.playSound(103,now.x);
+				}
+				if(growTimer.getElapsedTime().asSeconds() > 7)
+				{
+					//finished.
+					action = "none";
+					busy = false;
+					startstop = false;
+					growTimer.restart();
+				}
+				
+				
+				
+			}		
 		
-		
-			if(action == "grow")
+			if(action.find("grow") != std::string::npos)
 			{
 				initAction=false;	
 				
@@ -838,25 +930,74 @@ class Blupi
 					
 					
 					
-					
-					
-					
+					bool grown = false;
 					
 					sprite.setTextureRect(Shift(shift.water));
-					element[plantindex].sprite.setTextureRect(Shift(element[plantindex].shift.grow));
 					int size = element[plantindex].shift.grow.rect.size();
+		
+					if(action.find("tomato")!=std::string::npos)	
+					{
+						element[plantindex].sprite.setTextureRect(Shift(element[plantindex].shift.grow));
+						
+						if(element[plantindex].sprite.getTextureRect() == element[plantindex].shift.grow.rect[size-1])
+						{
+							grown = true;
+						}
+					}
 					
+					if(action.find("palm")!=std::string::npos)
+					{
+						if(growTimer.getElapsedTime().asSeconds() > 2)
+						{
+							element[plantindex].scale = element[plantindex].scale + 0.333;//grows in three stages till full scale
+							element[plantindex].averageHeight = (element[plantindex].sprite.getTextureRect().height*element[plantindex].scale) - (element[plantindex].sprite.getTextureRect().height/2);
+							growTimer.restart();
+						}		
+						
+						if(element[plantindex].scale >= 1)
+							grown = true;
+					}
 					
+					if(action.find("pine")!=std::string::npos)
+					{
+						if(growTimer.getElapsedTime().asSeconds() > 2)
+						{
+							element[plantindex].scale = element[plantindex].scale + 0.333;//grows in three stages till full scale
+							element[plantindex].averageHeight = (element[plantindex].sprite.getTextureRect().height*element[plantindex].scale) - (element[plantindex].sprite.getTextureRect().height/2);
+							growTimer.restart();
+						}
+						
+						if(element[plantindex].scale >= 1)
+							grown = true;
+					}					
 					
 					
 					
 				
-					
-					if(element[plantindex].sprite.getTextureRect() == element[plantindex].shift.grow.rect[size-1])
+					if(grown)	
 					{
-						element[plantindex].type = "tomato"; 
-						element[plantindex].sprite.setTextureRect(IntRect(67,153,51,39)); //tomato rect
-						element[plantindex].averageHeight = element[plantindex].sprite.getTextureRect().height;
+					
+						if(action.find("tomato")!=std::string::npos)
+						{
+						
+							element[plantindex].type = "tomato"; 
+							element[plantindex].sprite.setTextureRect(IntRect(67,153,51,39)); //tomato rect
+							element[plantindex].averageHeight = element[plantindex].sprite.getTextureRect().height;
+						}
+						if(action.find("palm")!=std::string::npos)
+						{
+							element[plantindex].type = "palm";	
+							action="none";
+							busy=false;
+						}
+						
+						if(action.find("pine")!=std::string::npos)
+						{
+							element[plantindex].type = "pine";
+							action="none";
+							busy=false;
+						}
+						
 						plantindex=-1;	
 						
 						if(!enoughEnergy(float(now.x),actionEnergy))
@@ -891,12 +1032,58 @@ class Blupi
 					plantindex = CreateElement();
 					
 					element[plantindex].type = "plant";
-					element[plantindex].sprite.setTexture(textures.element);
 					
-					element[plantindex].sprite.setTextureRect(element[plantindex].shift.grow.rect[0]);
-					element[plantindex].averageHeight = element[plantindex].sprite.getTextureRect().height;
+					if(action.find("tomato")!=std::string::npos)
+					{
+						element[plantindex].sprite.setTexture(textures.element);
+						element[plantindex].sprite.setTextureRect(element[plantindex].shift.grow.rect[0]);
+						element[plantindex].averageHeight = element[plantindex].sprite.getTextureRect().height;
+						element[plantindex].now = sf::Vector2f(now.x + 60,now.y);
+					}
+
+					if(action.find("palm")!=std::string::npos)
+					{
+						
+						
+						element[plantindex].sprite.setTexture(textures.explo);
+						
+						int	random = rand()%3;
+						if(random == 0)
+							element[plantindex].sprite.setTextureRect(sf::IntRect(124,1486,126,126));
+						if(random == 1)
+							element[plantindex].sprite.setTextureRect(sf::IntRect(0,995,127,118));
+						if(random == 2)
+							element[plantindex].sprite.setTextureRect(sf::IntRect(336,1361,126,125));
+						
+						
+						element[plantindex].averageHeight = 0;
+						element[plantindex].scale = 0;
+						element[plantindex].obeysRotation = false;
+						element[plantindex].layer = 1;
+					}
+					
+					if(action.find("pine")!=std::string::npos)
+					{
+						
+						element[plantindex].sprite.setTexture(textures.explo);
+						int random = rand()%3;
+							
+						if(random == 0)
+							element[plantindex].sprite.setTextureRect(sf::IntRect(0,1362,92,124));
+						if(random == 1)
+							element[plantindex].sprite.setTextureRect(sf::IntRect(250,1486,126,126));
+						if(random == 2)
+							element[plantindex].sprite.setTextureRect(sf::IntRect(368,1116,125,121));
+						
+						element[plantindex].averageHeight = 0;
+						element[plantindex].scale  = 0;	
+						element[plantindex].obeysRotation = false;	
+						element[plantindex].layer = 1;				
+					}					
+					
+					growTimer.restart();
+					
 	
-					
 					element[plantindex].now = sf::Vector2f(now.x + 60,now.y);
 	
 					

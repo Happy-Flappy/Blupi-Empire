@@ -220,7 +220,31 @@ AI ai[4];
 using namespace sf;
 
 
+int getTopmostElementLayer(int layer)
+{
+	int topE = -1;
+	for (int a = 0; a < element.size(); a++)
+    {
+    	
+        if (!element[a].active || !element[a].exists || element[a].layer != layer)continue;
+		
+		// Adjusted bounds with 20px padding
+        FloatRect bounds = element[a].sprite.getGlobalBounds();
+        bounds.left += 20;
+        bounds.width -= 40;
+        bounds.top += 20;
+        bounds.height -= 20;
 
+        if (bounds.contains(MPosition) && MPosition.y < groundEdge[MPosition.x])
+        {
+        	if(topE < a)
+				topE = a;
+        }
+			
+	}
+	
+	return topE;
+}
 
 
 
@@ -257,30 +281,22 @@ void getTopHoveredLayer()
 
 	int topE = -1;
     // 2. Find topmost element 
-    for (int a = 0; a < element.size(); a++)
-    {
-    	
-        if (!element[a].active || !element[a].exists || element[a].layer != 5)continue;
+    
+	topE = getTopmostElementLayer(5);
+	if(topE == -1)
+		topE = getTopmostElementLayer(4);
+	if(topE == -1)
+		topE = getTopmostElementLayer(3);
+	if(topE == -1)
+		topE = getTopmostElementLayer(2);
+	if(topE == -1)
+		topE = getTopmostElementLayer(1);
 		
-		// Adjusted bounds with 20px padding
-        FloatRect bounds = element[a].sprite.getGlobalBounds();
-        bounds.left += 20;
-        bounds.width -= 40;
-        bounds.top += 20;
-        bounds.height -= 20;
-
-        if (bounds.contains(MPosition))
-        {
-        	if(topE > a)
-				continue;
-            topElement.ID = element[a].ID;
-            topElement.type = "element";
-        }
-			
+	if(topE != -1)	
+	{
+		topElement.ID = topE;
+        topElement.type = "element";	
 	}
-	
-	
-	
 
     // 3. Determine overall top layer (blupi > element in rendering order)
     if (topBlupi.ID != -1)

@@ -154,7 +154,11 @@ class Taskbar
 						liveitem = a;
 						
 						
-						buttons.push_back(Button("grow",sf::IntRect(161,200,40,40),8,2));
+						buttons.push_back(Button("grow tomato",sf::IntRect(161,200,40,40),8,2));
+						
+						buttons.push_back(Button("grow pine",sf::IntRect(40*2,40*2,40,40),8,2));
+						
+						buttons.push_back(Button("grow palm",sf::IntRect(40*4,40*2,40,40),8,2));
 						
 					}
 					
@@ -177,6 +181,15 @@ class Taskbar
 					}
 						
 						
+						
+					if(type=="pine" || type == "palm")
+					{
+						liveitem = a;
+						if(blupi[player[ME].selected].locomotion=="walk")
+						{
+							buttons.push_back(Button("fell tree",sf::IntRect(40*4,40*4,40,40),6,4));
+						}
+					}
 			
 				}
 			}

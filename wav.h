@@ -123,7 +123,8 @@ class Wav
 		
 		buffer[100].loadFromFile("ASSETS/miscSound/boom.wav");
 		buffer[101].loadFromFile("ASSETS/miscSound/en/sound050.wav");
-		
+		buffer[102].loadFromFile("ASSETS/miscSound/en/sound076.wav");
+		buffer[103].loadFromFile("ASSETS/miscSound/en/sound015.wav");
 		
 		
 		
