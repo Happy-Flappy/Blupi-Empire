@@ -154,7 +154,6 @@ class Element
 			
 			
 			
-			
 			if(type=="boat")
 			{
 				

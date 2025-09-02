@@ -82,7 +82,6 @@ class Taskbar
 			if((toplayer.type=="element" && toplayer.ID == a) || (toplayer.type=="blupi" && player[ME].selected == toplayer.ID && topElement.ID == a))
 			{
 				
-				
 				std::string type = element[a].type;
 				
 				if(Input::Mouse(Mouse::Left))
@@ -101,6 +100,20 @@ class Taskbar
 						
 						
 					}
+					
+					
+					
+					if(type == "wood")
+					{
+						liveitem = a;
+						buttons.push_back(Button("make house",sf::IntRect(40*3,40*14,40,40),6,4));
+						
+						liveitem = a;
+						buttons.push_back(Button("make shed",sf::IntRect(40*1,40*4,40,40),6,4));
+						
+						
+					}
+					
 
 					if(type=="tomato")
 					{

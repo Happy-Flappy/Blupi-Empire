@@ -753,7 +753,7 @@ class Blupi
 		
 		
 		
-		if(action!="stop drive"&&action!="drop" && action!="eat"&&itemindex!=-1)
+		if(action.find("exit") == std::string::npos &&action!="drop" && action!="eat"&&itemindex!=-1)
 		{
 			if(initAction)
 			{
@@ -829,7 +829,23 @@ class Blupi
 		
 		
 		
-		
+		if(action=="exit jeep")
+		{
+			
+			element[itemref].now = now;
+			element[itemref].active=true;
+			locomotion = "walk";	
+			speed = 2;
+			sayDone();
+			busy=false;
+			action="none";
+			
+		}
+		else if(locomotion == "jeep")
+		{
+			failed();
+			
+		}
 		
 		
 	
@@ -846,6 +862,94 @@ class Blupi
 				growTimer.restart();
 				progressTime.restart();
 			}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			if(action== "make house" || action == "make shed")
+			{
+				
+				initAction = false;
+				
+				
+				if(growTimer.getElapsedTime().asSeconds() < 2)
+				{
+					sprite.setTextureRect(Shift(shift.saw));
+					wav.playSound(103,now.x);
+
+				}
+				
+				
+				if(growTimer.getElapsedTime().asSeconds() > 2 && growTimer.getElapsedTime().asSeconds() < 4)
+				{
+					sprite.setTextureRect(Shift(shift.hammerfront));
+					wav.playSound(102,now.x);
+
+					sf::IntRect rect;
+					if(action == "make house")
+						rect = sf::IntRect(220,1885,125,98);
+					if(action == "make shed")
+						rect = sf::IntRect(351,1885,120,99);
+					
+					
+					element[itemindex].sprite.setTexture(textures.explo);
+					element[itemindex].sprite.setTextureRect(rect);
+					element[itemindex].averageHeight = element[itemindex].sprite.getTextureRect().height;
+				}
+				
+				if(growTimer.getElapsedTime().asSeconds() > 4 && growTimer.getElapsedTime().asSeconds() < 6)
+				{
+					
+					sprite.setTextureRect(Shift(shift.hammerfront));
+					wav.playSound(102,now.x);
+					if(action == "make house")
+					{
+						element[itemindex].type = "house";
+						element[itemindex].sprite.setTexture(textures.explo);
+						element[itemindex].sprite.setTextureRect(sf::IntRect(0,650,127,107));
+					}
+				
+				
+				
+					if(action == "make shed")
+					{
+						element[itemindex].type = "shed";
+						element[itemindex].sprite.setTexture(textures.explo);
+						element[itemindex].sprite.setTextureRect(sf::IntRect(0,438,127,95));
+					}
+				
+				
+				
+					element[itemindex].averageHeight = element[itemindex].sprite.getTextureRect().height;
+				
+				}
+				if(growTimer.getElapsedTime().asSeconds() >= 6)
+				{
+					action = "none";
+					busy = false;
+					startstop = false;
+					sayDone();
+					growTimer.restart();					
+				}
+				
+			}
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		
@@ -912,6 +1016,7 @@ class Blupi
 					action = "none";
 					busy = false;
 					startstop = false;
+					sayDone();
 					growTimer.restart();
 				}
 				
@@ -989,6 +1094,7 @@ class Blupi
 							element[plantindex].type = "palm";	
 							action="none";
 							busy=false;
+							sayDone();
 						}
 						
 						if(action.find("pine")!=std::string::npos)
@@ -996,6 +1102,7 @@ class Blupi
 							element[plantindex].type = "pine";
 							action="none";
 							busy=false;
+							sayDone();
 						}
 						
 						plantindex=-1;	
@@ -1004,6 +1111,7 @@ class Blupi
 						{
 							action="none";
 							busy=false;
+							failed();
 						}
 						
 						if(startstop)
@@ -1011,6 +1119,7 @@ class Blupi
 							action="none";
 							busy=false;
 							startstop=false;
+							sayDone();
 						}
 						
 						
@@ -1172,11 +1281,10 @@ class Blupi
 					else
 						failed();
 					
+					
+					
 					action="none";
-					busy=true;
-					
-					
-					
+					busy=false;
 					initAction = false;
 					startActionTime = true;
 				}
@@ -1351,18 +1459,7 @@ class Blupi
 
 		
 		
-		if(action=="exit jeep")
-		{
-			
-			element[itemref].now = now;
-			element[itemref].active=true;
-			locomotion = "walk";	
-			speed = 2;
-			sayDone();
-			busy=false;
-			action="none";
-		}
-		
+
 		
 		
 		
@@ -1426,6 +1523,9 @@ class Blupi
 			action = "none";
 			busy=false;
 		}
+	
+	
+
 		
 
 		if(actionRate.getElapsedTime().asSeconds() > 0.15 && startActionTime)
@@ -1750,9 +1850,11 @@ class Blupi
 								}
 								else
 								{
-									buttons.clear();
-									buttons.push_back(Button("exit jeep",sf::IntRect(0,0,0,0),0.5,0));
-									
+									if(locomotion == "jeep")
+									{
+										buttons.clear();
+										buttons.push_back(Button("exit jeep",sf::IntRect(0,0,0,0),0.5,0));
+									}
 									
 								}
 							}
@@ -2000,6 +2102,67 @@ class Blupi
 				
 		}
 		
+		
+		if(locomotion == "jeep")
+		{
+
+			
+			
+			
+			
+			int x = now.x;
+			int index = water.getPuddleIndex(x);
+			
+			if(index!=-1)
+			{
+				
+				
+				
+				
+				int deep=0;
+				if(x >= 0 && x < water.width)
+					deep = groundEdge[x] - water.puddle[index].pos.y;
+				
+				
+				if(deep > water.depthlimit)
+				{
+				
+					if(now.y > water.puddle[index].pos.y-20)
+					{
+					
+					
+						if(water.puddle[index].left!=-1)
+						{
+						
+							int middle = water.puddle[index].left + ((water.puddle[index].right-water.puddle[index].left)/2/*width*/);//left + half-width
+							
+							if(now.x > middle)
+							{
+								now.x += (water.puddle[index].right - now.x)/20;
+								Stop();
+							}
+							else
+							{
+								Stop();
+								now.x -= (now.x - water.puddle[index].left)/20;
+							}
+						}
+						
+						return;
+					}
+				}
+			}
+			
+			speed = 4;
+			gravity = 0.2;
+			
+			
+			Gravity(ground,velocity,now,gravity); // apply gravity and resolve collisions.
+			if(checkGroundNow(ground,now))
+				rotation = getGroundAngle(ground,now,sprite.getRotation() ,10);
+						
+			
+		}
 		
 		
 		

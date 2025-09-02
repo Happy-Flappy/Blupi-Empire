@@ -50,6 +50,12 @@ Added "blupi sawing" side view animation to spritesheet.
  
 
 
+9/2/2025
+
+Added "make house" action and  "make shed" action.
+
+
+
 GOALS:
 
 

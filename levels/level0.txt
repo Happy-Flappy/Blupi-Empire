@@ -33,7 +33,7 @@ green blupi 100 208 END
 
 
 
-house 600 208 END
+
 
 shed 1100 208 END
  
