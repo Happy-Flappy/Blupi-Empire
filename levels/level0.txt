@@ -35,7 +35,7 @@ green blupi 100 208 END
 
 
 
-shed 1100 208 END
+
  
 jeep 300 208 END
 
@@ -43,9 +43,9 @@ water 1550 225 END
 
 water 2068 225 END
 
-boat 2500 100 END
 
-boat 2500 100 END
+
+
 
 
 bomb 400 100 END

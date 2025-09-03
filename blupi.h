@@ -807,8 +807,82 @@ class Blupi
 		
 		
 		
+		if(action == "pick up" && water.getPuddleIndex(destination.x) != -1)
+		{
+			//item is over water. - change destination to account for it.
+			
+			
+			int index = water.getPuddleIndex(destination.x);
+			
+			if(index != -1)
+			{
+				
+				int distleft =  destination.x - water.puddle[index].left;
+				int distright = water.puddle[index].right - destination.x;
+				
+				
+				if(distleft < distright)
+				{
+					element[itemindex].now.x = water.puddle[index].left - 20;
+				}
+				else
+				{
+					element[itemindex].now.x = water.puddle[index].right + 20;
+				}
+				
+				destination.x = element[itemindex].now.x;
+			}
+			
+		}
 		
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		if(action == "scoot left" || action == "scoot right")
+		{
+			int index = water.getPuddleIndex(element[itemindex].now.x);
+			
+			if(index != -1)
+			{
+				int distleft = element[itemindex].now.x - water.puddle[itemindex].left;
+				int distright =  water.puddle[itemindex].right - element[itemindex].now.x;
+				
+				bool isleft = false;
+				if(distleft < distright)
+				{
+					isleft = true;
+				}
+				
+				
+				if(action == "scoot left")
+				{
+					if(isleft)
+						element[itemindex].now.x = water.puddle[index].left - 20;
+					else
+						failed();
+				}
+				else
+				{
+					if(!isleft)
+						element[itemindex].now.x = water.puddle[index].right + 20;
+					else
+						failed();
+				}
+				
+				action = "none";
+				busy=false;
+				sayDone();
+			}
+		}
 		
 		
 		
@@ -866,15 +940,32 @@ class Blupi
 		
 		
 		
+			if(action == "scoot left")
+			{
+				element[itemindex].now.x -= 40;
+				action = "none";
+				initAction = false;
+				busy = false;
+				sayDone();
+			}
+		
+		
+		
+			if(action == "scoot right")
+			{
+				element[itemindex].now.x += 40;
+				action = "none";
+				initAction = false;
+				busy = false;
+				sayDone();
+			}
 		
 		
 		
 		
 		
 		
-		
-		
-			if(action== "make house" || action == "make shed")
+			if(action== "make house" || action == "make shed" || action == "make boat")
 			{
 				
 				initAction = false;
@@ -899,10 +990,12 @@ class Blupi
 					if(action == "make shed")
 						rect = sf::IntRect(351,1885,120,99);
 					
-					
-					element[itemindex].sprite.setTexture(textures.explo);
-					element[itemindex].sprite.setTextureRect(rect);
-					element[itemindex].averageHeight = element[itemindex].sprite.getTextureRect().height;
+					if(action != "make boat")	
+					{
+						element[itemindex].sprite.setTexture(textures.explo);
+						element[itemindex].sprite.setTextureRect(rect);
+						element[itemindex].averageHeight = element[itemindex].sprite.getTextureRect().height;
+					}
 				}
 				
 				if(growTimer.getElapsedTime().asSeconds() > 4 && growTimer.getElapsedTime().asSeconds() < 6)
@@ -926,6 +1019,14 @@ class Blupi
 						element[itemindex].sprite.setTextureRect(sf::IntRect(0,438,127,95));
 					}
 				
+				
+				
+					if(action == "make boat")
+					{
+						element[itemindex].type = "boat";
+						element[itemindex].sprite.setTexture(textures.element);
+						element[itemindex].sprite.setTextureRect(sf::IntRect(0,645,58,27));	
+					}
 				
 				
 					element[itemindex].averageHeight = element[itemindex].sprite.getTextureRect().height;

@@ -53,8 +53,9 @@ Added "blupi sawing" side view animation to spritesheet.
 9/2/2025
 
 Added "make house" action and  "make shed" action.
-
-
+Added "make boat"
+Added "pickup" boat
+Added "scoot left" && "scoot right". - scoots an element left or right a little.
 
 GOALS:
 

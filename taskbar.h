@@ -89,7 +89,7 @@ class Taskbar
 
 					buttons.clear();
 
-					if(type=="bomb" || type=="wood"||type=="tomato") //pickup
+					if(type=="bomb" || type=="wood"||type=="tomato" || ((type == "boat") && !element[a].taken)  ) //pickup
 					{
 						
 						if(blupi[player[ME].selected].carrying.getTextureRect().width==0)
@@ -103,13 +103,32 @@ class Taskbar
 					
 					
 					
+					
+					if(type == "boat")
+					{
+						if(!element[a].taken)//is on ground
+						{
+							liveitem = a;
+							
+							buttons.push_back(Button("scoot left",sf::IntRect(40*2,40*9,40,40),0,0));
+							buttons.push_back(Button("scoot right",sf::IntRect(40*3,40*9,40,40),0,0));
+						}
+					}
+					
+					
+					
+					
+					
 					if(type == "wood")
 					{
 						liveitem = a;
 						buttons.push_back(Button("make house",sf::IntRect(40*3,40*14,40,40),6,4));
 						
-						liveitem = a;
 						buttons.push_back(Button("make shed",sf::IntRect(40*1,40*4,40,40),6,4));
+						
+						buttons.push_back(Button("make boat",sf::IntRect(40*4,40*10,40,40),6,4));
+						
+						
 						
 						
 					}
