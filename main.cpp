@@ -215,6 +215,7 @@ AI ai[4];
 #include "network.h"
 #include <thread>
 #include "SetupScreen.h"
+#include "cheats.h"
 
 
 using namespace sf;
@@ -422,6 +423,8 @@ int main()
 				window.close();
 				
 			Input::update(e);
+			
+			Cheats::update(e);
 		}		
 		
 		
@@ -446,7 +449,6 @@ int main()
 			
 			
 			
-	
 			
 
 			

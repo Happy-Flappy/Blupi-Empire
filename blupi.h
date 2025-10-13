@@ -1,6 +1,27 @@
 
 
 
+#ifndef BLUPI_H
+#define BLUPI_H
+
+#include <deque>
+
+
+struct VarModify
+{
+	std::string type = "none";
+	float speed = 2;
+	float actionTime = 0;
+	float actionEnergy = 0;
+	float walkEnergyLoss = 0;
+	float modSpeed = 1;
+	float SLOW = 0.5;
+	float FAST = 3;		
+};
+
+
+
+
 
 class Blupi
 {
@@ -12,6 +33,149 @@ class Blupi
 	Sprite energyBar;
 	
 	
+	Sprite trailSprite;
+	struct TrailData
+	{
+		sf::Vector2i pos;
+		ShiftData currentShift;
+		ShiftData sparkle;
+		ShiftData smoke;
+		
+		
+		TrailData()
+		{
+			sparkle.delay = 0.15;
+			sparkle.rect.push_back({833,584,60,60});
+			sparkle.rect.push_back({774,584,59,60});
+			sparkle.rect.push_back({719,584,55,60});
+			sparkle.rect.push_back({396,642,60,58});
+			sparkle.rect.push_back({277,584,59,58});
+			sparkle.rect.push_back({168,526,59,55});
+			sparkle.rect.push_back({110,526,59,55});
+			sparkle.rect.push_back({164,584,56,58});
+			sparkle.rect.push_back({587,526,53,57});
+			sparkle.rect.push_back({369,368,52,49});
+			sparkle.rect.push_back({688,418,40,53});
+			sparkle.rect.push_back({372,321,48,44});
+			sparkle.rect.push_back({221,153,43,40});
+			
+			
+			
+			smoke.delay = 0.15;
+			
+			smoke.rect.push_back({376,0,28,21});
+			smoke.rect.push_back({457,0,27,22});
+			smoke.rect.push_back({545,0,30,24});
+			smoke.rect.push_back({398,0,44,21});
+			smoke.rect.push_back({527,24,54,25});
+			smoke.rect.push_back({324,0,52,20});
+			smoke.rect.push_back({133,50,54,27});
+		}
+			
+	};
+	std::deque<TrailData> trailQue;
+
+
+	Vector2f now;
+	Vector2f destination;
+	Vector2f velocity;
+	
+	
+	
+	int maxjumpdist = -1;
+	int jumpvelo = -10;
+	int ID;
+	int haven=-1;
+	int itemref = -1;
+	
+	
+	float rotation = 0;
+	float gravity = 0.2;
+	float speed;
+	float idledelay = 0;
+	float scale = 1.5;//1.5
+	float energy = 100;
+	
+	double walkEnergyLoss = 0.01;
+	
+	bool busy = false;
+	bool startstop = false;
+	bool alive = true;
+	bool running = true;
+	
+	std::string color;
+	std::string state = "right"; //direction
+	std::string locomotion="walk"; //form of locomotion such as jeep,boat,walk
+	std::string action="none"; // the action that blupi is currently trying to accomplish
+	std::string keyinput="none";
+	std::string trailType = "none";
+	
+	sf::Clock progressTime;
+	sf::Clock trailTime;
+
+
+	
+	Blupi()
+	{
+		sprite.setTexture(textures.blupiblue);
+		sprite.setTextureRect(IntRect(202+1,185+1,32,49));
+		destination = sprite.getPosition();
+		sprite.setScale(scale,scale);
+		sprite.setOrigin(sprite.getTextureRect().width/2,sprite.getTextureRect().height);
+		
+		trailSprite.setTexture(textures.element);
+		trailSprite.setOrigin(sprite.getTextureRect().width/2,sprite.getTextureRect().height);
+		
+		
+		speed=2;
+		
+		sf::Sprite newsprite;
+		carrying = newsprite;
+		carryref = -1;
+	
+	}	
+	
+
+
+
+	VarModify mod;
+	
+	
+	void updateVarModify()
+	{
+		if(mod.type == "none")
+		{
+			mod.speed = speed;
+			mod.actionTime = actionTime;
+			mod.actionEnergy = actionEnergy;
+			mod.walkEnergyLoss = walkEnergyLoss;
+		}
+		
+		
+			
+		if(mod.type.find("Speed") != std::string::npos)
+		{
+			
+			if(mod.type == "slowSpeed")
+				mod.modSpeed = mod.SLOW;
+			if(mod.type == "fastSpeed")
+				mod.modSpeed = mod.FAST;
+				
+			mod.speed = speed * mod.modSpeed;
+			mod.actionTime = actionTime / mod.modSpeed;
+			mod.actionEnergy = actionEnergy / mod.modSpeed; 
+			mod.walkEnergyLoss = walkEnergyLoss * mod.modSpeed;
+		}
+		
+		
+		
+		
+		
+	}
+	
+	
+	
+
 	
 	
 	//SHIFT MODES
@@ -38,6 +202,9 @@ class Blupi
 		ShiftData saw;
 		ShiftData hammerfront;
 		
+		
+		
+
 		
 		ShiftModes()
 		{
@@ -240,10 +407,12 @@ class Blupi
 			hammerfront.rect.push_back({62*10,62*29,62,62});
 
 
+
+
+			
+
 				
 		}
-		
-		
 		
 		
 		
@@ -329,34 +498,15 @@ class Blupi
 	
 	
 	
-	Vector2f now;
 	
-	std::string color;
+		
 	
-	Vector2f destination;
-	float rotation = 0;
-	float gravity = 0.2;
-	Vector2f velocity;
-	float speed;
-	int maxjumpdist = -1;
-	int jumpvelo = -10;
-	int ID;
-	int haven=-1;
-	int itemref = -1;
-	bool busy = false;
-	bool startstop = false;
-	bool alive = true;
-	bool running = true;
-	float idledelay = 0;
-	float scale = 1.5;//1.5
-	float energy = 100;
-	double walkEnergyLoss = 0.01;
-	std::string state = "right"; //direction
-	std::string locomotion="walk"; //form of locomotion such as jeep,boat,walk
-	std::string action="none"; // the action that blupi is currently trying to accomplish
-	std::string keyinput="none";
-	sf::Clock progressTime;
 	
+	
+
+	
+	
+
 	
 	
 	
@@ -399,19 +549,7 @@ class Blupi
 	
 	
 	
-	
-	Blupi()
-	{
-		sprite.setTexture(textures.blupiblue);
-		sprite.setTextureRect(IntRect(202+1,185+1,32,49));
-		destination = sprite.getPosition();
-		sprite.setScale(scale,scale);
-		sprite.setOrigin(sprite.getTextureRect().width/2,sprite.getTextureRect().height);
-		
-		speed=2;
-	
-	}	
-	
+
 	
 
 	
@@ -526,9 +664,9 @@ class Blupi
 		
 		int distance = abs(destined - now.x) + 100; 
 		
-		float numberOfUsesOfSpeed = distance / speed;
+		float numberOfUsesOfSpeed = distance / mod.speed;
 		
-		float walkloss = walkEnergyLoss * numberOfUsesOfSpeed;
+		float walkloss = mod.walkEnergyLoss * numberOfUsesOfSpeed;
 		
 		float lossAmount = walkloss + workEnergyLoss;
 	
@@ -889,7 +1027,7 @@ class Blupi
 		
 		if(locomotion == "sick" || locomotion == "tired")
 		{
-			if(!enoughEnergy(int(destination.x),actionEnergy))
+			if(!enoughEnergy(int(destination.x),mod.actionEnergy))
 			{	
 				if(!traveled())
 				{
@@ -942,24 +1080,31 @@ class Blupi
 		
 			if(action == "scoot left")
 			{
-				element[itemindex].now.x -= 40;
-				action = "none";
-				initAction = false;
-				busy = false;
-				sayDone();
+				int index = water.getPuddleIndex(element[itemindex].now.x);
+				if(index == -1)
+				{
+					element[itemindex].now.x -= 40;
+					action = "none";
+					initAction = false;
+					busy = false;
+					sayDone();
+				}
 			}
 		
 		
 		
 			if(action == "scoot right")
 			{
-				element[itemindex].now.x += 40;
-				action = "none";
-				initAction = false;
-				busy = false;
-				sayDone();
+				int index = water.getPuddleIndex(element[itemindex].now.x);
+				if(index == -1)
+				{
+					element[itemindex].now.x += 40;
+					action = "none";
+					initAction = false;
+					busy = false;
+					sayDone();
+				}
 			}
-		
 		
 		
 		
@@ -1058,7 +1203,7 @@ class Blupi
 			{
 				initAction = false;
 				
-				if(growTimer.getElapsedTime().asSeconds() < 4)
+				if(growTimer.getElapsedTime().asSeconds() < 4 / mod.modSpeed)
 				{
 					//blupi animation of chopping tree with axe
 					sprite.setTextureRect(Shift(shift.saw));
@@ -1066,7 +1211,7 @@ class Blupi
 				}
 				
 				
-				if(growTimer.getElapsedTime().asSeconds() > 2 && growTimer.getElapsedTime().asSeconds() < 6)
+				if(growTimer.getElapsedTime().asSeconds() > 2 / mod.modSpeed && growTimer.getElapsedTime().asSeconds() < 6 / mod.modSpeed)
 				{
 					element[itemindex].obeysRotation = false;
 					float groundangle = getGroundAngle(ground,element[itemindex].now,element[itemindex].sprite.getRotation(),10,false);
@@ -1074,7 +1219,7 @@ class Blupi
 				
 				}
 				
-				if(growTimer.getElapsedTime().asSeconds() > 2 && growTimer.getElapsedTime().asSeconds() < 4)
+				if(growTimer.getElapsedTime().asSeconds() > 2 / mod.modSpeed && growTimer.getElapsedTime().asSeconds() < 4 / mod.modSpeed)
 				{
 					//fell tree
 					if(element[itemindex].type == "palm")
@@ -1085,7 +1230,7 @@ class Blupi
 				
 				
 				
-				if(growTimer.getElapsedTime().asSeconds() > 4 && growTimer.getElapsedTime().asSeconds() < 6)
+				if(growTimer.getElapsedTime().asSeconds() > 4 / mod.modSpeed && growTimer.getElapsedTime().asSeconds() < 6 / mod.modSpeed)
 				{
 					
 					if(element[itemindex].type == "palm")
@@ -1098,7 +1243,7 @@ class Blupi
 					wav.playSound(102,now.x);
 					
 				}
-				if(growTimer.getElapsedTime().asSeconds() >= 6)
+				if(growTimer.getElapsedTime().asSeconds() >= 6 / mod.modSpeed)
 				{
 					//transform into wood
 					
@@ -1111,7 +1256,7 @@ class Blupi
 					sprite.setTextureRect(Shift(shift.saw));
 					wav.playSound(103,now.x);
 				}
-				if(growTimer.getElapsedTime().asSeconds() > 7)
+				if(growTimer.getElapsedTime().asSeconds() > 7 / mod.modSpeed)
 				{
 					//finished.
 					action = "none";
@@ -1153,7 +1298,7 @@ class Blupi
 					
 					if(action.find("palm")!=std::string::npos)
 					{
-						if(growTimer.getElapsedTime().asSeconds() > 2)
+						if(growTimer.getElapsedTime().asSeconds() > 2 / mod.modSpeed)
 						{
 							element[plantindex].scale = element[plantindex].scale + 0.333;//grows in three stages till full scale
 							element[plantindex].averageHeight = (element[plantindex].sprite.getTextureRect().height*element[plantindex].scale) - (element[plantindex].sprite.getTextureRect().height/2);
@@ -1166,7 +1311,7 @@ class Blupi
 					
 					if(action.find("pine")!=std::string::npos)
 					{
-						if(growTimer.getElapsedTime().asSeconds() > 2)
+						if(growTimer.getElapsedTime().asSeconds() > 2 / mod.modSpeed)
 						{
 							element[plantindex].scale = element[plantindex].scale + 0.333;//grows in three stages till full scale
 							element[plantindex].averageHeight = (element[plantindex].sprite.getTextureRect().height*element[plantindex].scale) - (element[plantindex].sprite.getTextureRect().height/2);
@@ -1208,7 +1353,7 @@ class Blupi
 						
 						plantindex=-1;	
 						
-						if(!enoughEnergy(float(now.x),actionEnergy))
+						if(!enoughEnergy(float(now.x),mod.actionEnergy))
 						{
 							action="none";
 							busy=false;
@@ -1490,13 +1635,15 @@ class Blupi
 					initAction = false;
 				}
 				
-				if(progressTime.getElapsedTime().asSeconds() < actionTime)
+				if(progressTime.getElapsedTime().asSeconds() < actionTime / mod.modSpeed)
 				{
+
 					if(energy < 100)
 					{
 						energy+=0.3;
-						element[itemindex].taken=true;
 					}
+					element[itemindex].taken = true;
+					
 				
 					if(channel == -1)
 						channel = wav.playSound(13,now.x,false);
@@ -1511,6 +1658,20 @@ class Blupi
 				}
 				else
 				{
+					
+					if(element[itemindex].type == "energy")
+					{
+						trailType = "sparkle";
+						mod.type = "fastSpeed";
+					}
+					if(element[itemindex].type == "tomato")
+					{
+						mod.type = "none";
+						trailType = "none";
+					}
+					
+					
+
 					channel = -1;
 					busy=false;
 					action="none";
@@ -1619,8 +1780,10 @@ class Blupi
 			element[carryref].now = carrying.getPosition();
 			element[carryref].velocity.y = jumpvelo/(jumpvelo*0.90);
 			element[carryref].taken=false;
-			Sprite newsprite;
+			
+			sf::Sprite newsprite;
 			carrying = newsprite;
+			carryref = -1;
 			action = "none";
 			busy=false;
 		}
@@ -1638,7 +1801,7 @@ class Blupi
 			actionRate.restart();
 		}
 		
-		if(progressTime.getElapsedTime().asSeconds() > actionTime)
+		if(progressTime.getElapsedTime().asSeconds() > mod.actionTime)
 		{
 			startActionTime = false;
 		}
@@ -1704,6 +1867,10 @@ class Blupi
 
 	void updateShifts()
 	{
+		
+		
+		
+		
 		
 		if(locomotion=="walk")
 		{
@@ -2024,16 +2191,13 @@ class Blupi
 			
 			if(locomotion == "tired" || locomotion == "sick")
 			{
-				speed = 0.5;
-			}
-			else
-			{
-				speed = 2;
+				mod.type = "slowSpeed";
+				trailType = "smoke";
 			}
 			
 			if(velocity.x != 0)
 			{
-				energy-=walkEnergyLoss;
+				energy-=mod.walkEnergyLoss;
 			}
 			
 			gravity = 0.2;
@@ -2134,7 +2298,7 @@ class Blupi
 			{
 				Vector2f v;
 				Vector2f p;
-				v.x=speed;
+				v.x=mod.speed;
 				v.y=jumpvelo;
 				p.x=0;
 				p.y=0;
@@ -2164,6 +2328,8 @@ class Blupi
 		}
 		if(locomotion=="boat")
 		{
+			trailType = "water";
+			
 			now.x += velocity.x;
 			
 			
@@ -2207,8 +2373,8 @@ class Blupi
 		if(locomotion == "jeep")
 		{
 
-			
-			
+			if(mod.modSpeed != mod.FAST)
+				trailType = "smoke";
 			
 			
 			int x = now.x;
@@ -2274,11 +2440,17 @@ class Blupi
 	
 	
 	
+	
+	
+	
 	void update(Image &ground)
 	{
 		
-	
+
 		
+		
+		if(carryref != -1)
+			carrying.setTextureRect(element[carryref].sprite.getTextureRect());
 		
 		sprite.setOrigin(sprite.getTextureRect().width/2,sprite.getTextureRect().height/2);
 		
@@ -2307,6 +2479,7 @@ class Blupi
 			if(isHost)
 			{
 			
+				updateVarModify();
 				updatePhysics(ground);
 			
 			
@@ -2378,13 +2551,13 @@ class Blupi
 		            if (destination.x < now.x)
 		            {
 		            	state = "moveleft";
-						velocity.x = -speed - damper;
+						velocity.x = -mod.speed - damper;
 					
 		            }
 		            else if (destination.x > now.x)
 		            {
 	            		state = "moveright";
-						velocity.x = speed + damper;
+						velocity.x = mod.speed + damper;
 				    
 		            }
 		        }
@@ -2452,7 +2625,65 @@ class Blupi
 		
 		if(haven==-1)
 		{
-		
+			
+			//TrailQue UPDATES
+			int trailFrameOffset = 0;
+			if(trailTime.getElapsedTime().asSeconds() > 0.1)
+			{
+				TrailData d;
+				d.pos = sf::Vector2i(now.x,now.y);
+				if(trailType == "sparkle")
+					d.currentShift = d.sparkle;
+				if(trailType == "smoke")
+					d.currentShift = d.smoke;
+				
+				d.currentShift.currentframe = trailFrameOffset;
+				
+				
+				if(trailFrameOffset == 0)
+					trailFrameOffset = 1;
+				else
+					trailFrameOffset = 0;
+						
+				trailQue.push_front(d);
+				trailTime.restart();
+			}
+			for(int a=0;a<trailQue.size();a++)
+			{
+				if(trailQue[a].currentShift.ended)
+				{
+					trailQue.erase(trailQue.begin() + a);
+					break;
+				}
+			}
+			
+			//display it
+			if(trailType != "none")
+			{
+				for(int a=0;a<trailQue.size();a++)
+				{
+					if(trailQue[a].pos == sf::Vector2i(now.x,now.y))
+						continue;
+						
+					trailSprite.setPosition(trailQue[a].pos.x,trailQue[a].pos.y);
+					if(trailQue[a].currentShift.rect.size() > 0 && !trailQue[a].currentShift.ended)
+						trailSprite.setTextureRect(Shift(trailQue[a].currentShift));
+					else
+						continue;
+						
+					float tscale = 1;
+					
+					tscale = 1.f/(float(trailQue[a].currentShift.currentframe) + 1.f);
+					
+					if(tscale == 1)
+						continue;
+					trailSprite.setScale(tscale,tscale);
+					window.draw(trailSprite);
+				}
+			}
+			
+			/////////////////////////////////////////////////////////////////
+			
 			
 			window.draw(sprite);
 			window.draw(carrying);
@@ -2553,3 +2784,10 @@ class Blupi
 };
 
 std::vector<Blupi> blupi;
+
+
+
+#endif
+
+
+

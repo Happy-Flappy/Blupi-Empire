@@ -162,7 +162,7 @@ std::vector<std::pair<std::string, sf::Mouse::Button>> getMouseMapping() {
 
 
 
-	 
+	 	
 
 
 

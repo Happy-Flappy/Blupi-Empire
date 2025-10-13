@@ -39,26 +39,10 @@ green blupi 100 208 END
  
 jeep 300 208 END
 
-water 1550 225 END
+water 1550 300 END
 
-water 2068 225 END
+energy 1300 100 END
 
-
-
-
-
-
-bomb 400 100 END
-
-bomb 100 100 END
-
-bomb 200 100 END
-
-bomb 300 100 END
-
-bomb 150 100 END
-
-bomb 150 100 END
 
 
 tree 100 100 pine random END
@@ -75,3 +59,4 @@ tree 1100 100 pine random END
 tree 1200 100 pine random END
 tree 1300 100 pine random END
 tree 1400 100 pine random END
+

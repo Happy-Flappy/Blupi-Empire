@@ -57,6 +57,23 @@ Added "make boat"
 Added "pickup" boat
 Added "scoot left" && "scoot right". - scoots an element left or right a little.
 
+
+
+10/13/2025
+
+Added powerup called "energy"
+Added "speedy" powerup.(energy powerup)
+Added Varmod class
+Added Cheats class
+Added TrailData class
+Updated shift.h to use its own clock for consistency in draw function.
+Added trail type for jeep,tired,slow,sick,and fast.
+
+
+
+
+
+
 GOALS:
 
 
@@ -96,6 +113,9 @@ Blupi::progressTime - sf::Clock
 
 
 4: Blupis under human control are still controlled by robot. - AI.h
+
+
+5: scoot right causes boat to scoot too far to the other side of the water puddle.
 
 
 

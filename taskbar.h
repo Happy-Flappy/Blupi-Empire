@@ -89,7 +89,7 @@ class Taskbar
 
 					buttons.clear();
 
-					if(type=="bomb" || type=="wood"||type=="tomato" || ((type == "boat") && !element[a].taken)  ) //pickup
+					if(type=="bomb" || type=="wood"||type=="tomato" || ((type == "boat") && !element[a].taken)  || type == "energy") //pickup
 					{
 						
 						if(blupi[player[ME].selected].carrying.getTextureRect().width==0)
@@ -134,7 +134,7 @@ class Taskbar
 					}
 					
 
-					if(type=="tomato")
+					if(type=="tomato" || type == "energy")
 					{
 						liveitem = a;
 						

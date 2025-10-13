@@ -426,7 +426,18 @@ class Map
 		}
 		
 		
-	
+		if(key[0]=="energy")
+		{
+			int index = CreateElement();
+			element[index].type = "energy";
+			element[index].sprite.setTexture(textures.element);
+			element[index].sprite.setTextureRect(element[index].shift.energy.rect[0]);
+			element[index].obeysRotation = false;
+			element[index].scale = 1;
+			element[index].now = Vector2f(stringToInt(key[1]),stringToInt(key[2]));			
+			element[index].averageHeight = element[index].sprite.getTextureRect().height/2;	
+		}
+		
 		
 		
 	}

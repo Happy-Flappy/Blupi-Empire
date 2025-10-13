@@ -62,6 +62,7 @@ class Element
 	{
 		ShiftData blowup;
 		ShiftData grow;
+		ShiftData energy;
 		
 		ShiftMode()
 		{
@@ -88,6 +89,15 @@ class Element
 			grow.rect.push_back(sf::IntRect(59+45+45,644 + 1,45 - 1,56+offset - 1));
 			grow.rect.push_back(sf::IntRect(59+45+45+45,644 + 1,45 - 1,56+offset - 1));
 			grow.rect.push_back(sf::IntRect(59+45+45+45+45,644 + 1,45 - 1,56+offset - 1));
+			
+			
+			energy.delay = 0.15;
+			int x1 = 328;
+			int y1 = 644;
+		    
+			for(int a=0;a<6;a++)
+				energy.rect.push_back({x1 + (77 * a),y1,77,73});
+		    
 			
 		}
 		
@@ -120,10 +130,10 @@ class Element
 	{
 		
 		bounds = sprite.getGlobalBounds();
-        bounds.left += 20;
-        bounds.width -= 40;
-        bounds.top += 20;
-        bounds.height -= 20;
+        bounds.left += bounds.left/6;
+        bounds.width -= bounds.width/6;
+        bounds.top += bounds.top/5;
+        bounds.height -= bounds.height/5;
         
         
         
@@ -198,8 +208,10 @@ class Element
 			}
 			
 			
-			
-			
+			if(type=="energy")
+			{
+				sprite.setTextureRect(Shift(shift.energy));
+			}
 			
 			
 			if(type=="bomb")

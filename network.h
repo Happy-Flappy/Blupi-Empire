@@ -275,8 +275,9 @@ class Network {
 		                
 		                packet << b.alive;
 						packet << b.haven;
+						
 						sf::IntRect r = b.carrying.getTextureRect();
-			            packet << r.left << r.top << r.width << r.height;
+						packet << r.left << r.top << r.width << r.height;
 			                
 			                
 		                packet << b.itemref;
@@ -677,6 +678,7 @@ class Network {
 			                {
 			                	b.carrying = element[b.itemref].sprite;
 							}
+							
 							packet >> b.running;
 							
 							

@@ -1,4 +1,4 @@
-# Project: blupi empire(side-view)
+# Project: Blupi Empire
 # Makefile created by Embarcadero Dev-C++ 6.3
 
 CPP      = g++.exe
@@ -9,10 +9,10 @@ LINKOBJ  = main.o
 LIBS     = -L"C:/mingw32/lib" -L"C:/mingw32/i686-w64-mingw32/lib" -L"C:/SFML-2.6.0/lib" -static-libgcc -static-libstdc++  -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio -lsfml-network
 INCS     = -I"C:/mingw32/include" -I"C:/mingw32/i686-w64-mingw32/include" -I"C:/mingw32/lib/gcc/i686-w64-mingw32/13.1.0/include"
 CXXINCS  = -I"C:/mingw32/include" -I"C:/mingw32/i686-w64-mingw32/include" -I"C:/mingw32/lib/gcc/i686-w64-mingw32/13.1.0/include" -I"C:/SFML-2.6.0/include"
-BIN      = "blupi empire(side-view).exe"
-CXXFLAGS = $(CXXINCS) -Wfatal-errors -std=c++17
-CFLAGS   = $(INCS) -Wfatal-errors -std=c++17
-DEL      = C:\Program Files (x86)\Embarcadero\Dev-Cpp\DevCpp.exe INTERNAL_DEL
+BIN      = "Blupi Empire.exe"
+CXXFLAGS = $(CXXINCS) -Ofast -std=c++17
+CFLAGS   = $(INCS) -Ofast -std=c++17
+DEL      = C:\Program Files (x86)\Embarcadero\Dev-Cpp\devcpp.exe INTERNAL_DEL
 
 .PHONY: all all-before all-after clean clean-custom
 
