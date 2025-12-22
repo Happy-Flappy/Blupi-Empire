@@ -1,771 +1,397 @@
-#include <chrono>
-#include <windows.h>
-#include <fstream>
-#include <filesystem>
-#include <cstring>
-class Network {
+#ifndef NETWORK_H
+#define NETWORK_H
 
-    public:
-        UdpSocket udpsocket;
-        IpAddress hostip;
-        std::string pcname;
-        std::string hostname = "";
-        unsigned short hostport = 12345;
-        bool hostknown=false;
-		bool allLoaded = false;
-		int loadPercent=0;
-
-        
-
-
-
-        Network() {
-
-        }
-
-
-
-		
-		
-		
-		
-		
-		
-		
-//		void sendFile(sf::TcpSocket& socket, const std::string& filePath) 
-//		{
-//		    sf::Packet packet;
-//		    std::ifstream inFile(map.folder + filePath, std::ios::binary);
-//		    std::vector<char> fileData((std::istreambuf_iterator<char>(inFile)), std::istreambuf_iterator<char>());
-//		
-//		    
-//		    // Send the file path
-//		    
-//		    
-//		    packet << filePath;
-//		    socket.send(packet);
-//		
-//		    // Send the file data
-//		    packet.clear();
-//		    packet.append(fileData.data(), fileData.size());
-//		    socket.send(packet);
-//		    
-//		
-//		}
-//		
-//		
-//		
-//		
-//		std::string receiveFile(sf::TcpSocket& socket, const std::string& folder) {
-//		    sf::Packet packet;
-//		    std::string filedir;
-//		    std::vector<char> fileData;
-//		
-//		    // Receive the file name
-//		    socket.receive(packet);
-//		    packet >> filedir;
-//		
-//		    // Receive the file data
-//		    packet.clear();
-//		    socket.receive(packet);
-//		    fileData.resize(packet.getDataSize());
-//		    memcpy(fileData.data(), packet.getData(), packet.getDataSize());
-//
-//
-//
-//
-//			
-//			size_t pos = filedir.find_last_of('/');
-//			
-//			std::string path = filedir.substr(0,pos+1);
-//			
-//			std::string fileName =  filedir.substr(pos+1);
-//
-//
-//
-//			std::filesystem::create_directories(folder + path);
-//
-//						
-//				
-//
-//		    std::ofstream outFile(folder + path + fileName, std::ios::binary);
-//		    outFile.write(fileData.data(),fileData.size());
-//		    outFile.close();
-//		    
-//		    
-//		    return path + fileName;
-//		}
-//		
-//		
-//		
-//		
-//		
-//		void sendLevel(const sf::IpAddress& clientIp, unsigned short clientPort)
-//		{
-//			
-//		    sf::TcpSocket socket;
-//			socket.connect(clientIp,clientPort);
-//			
-//			Packet packet;
-//			packet << map.filepaths.size();//that number includes the script file since filepath size is more than literal size by 1.
-//			socket.send(packet);
-//			
-//			system("cls");
-//			std::cout << "Sending Level Data to clients> ";
-//			
-//			std::cout << ".";
-//			sendFile(socket,map.name);//send script file
-//			
-//			for(int a=0;a<map.filepaths.size();a++)
-//			{
-//				std::cout << ".";
-//				sendFile(socket,map.filepaths[a]);
-//			}
-//			
-//			
-//			system("cls");
-//		}
-//		
-//		
-//		
-//		
-//		
-//		void getLevel(unsigned short clientPort)
-//		{
-//
-//			if(map.folder!="ClientData/")
-//			{
-//			
-//			//Empty if existing folder
-//			std::string folder = "ClientData";
-//			
-//			if (std::filesystem::exists(folder)) 
-//			{
-//		        std::filesystem::remove_all(folder);
-//			}
-//			else
-//				std::filesystem::create_directory(folder);
-//		    
-//		    folder = "ClientData/";
-//		    
-//		    
-//		    
-//
-//
-//		    sf::TcpListener listener;
-//		    if (listener.listen(clientPort) != sf::Socket::Done) {
-//		        std::cout << "Error listening on port " << clientPort << std::endl;
-//		        return;
-//		    }
-//		
-//		    sf::TcpSocket socket;
-//		    if (listener.accept(socket) != sf::Socket::Done) {
-//		        std::cout << "Error accepting connection on port " << clientPort << std::endl;
-//		        return;
-//		    }
-//		    
-//
-//
-//		    
-//		    
-//		    
-//		    Packet packet;
-//		    socket.receive(packet);
-//		    
-//		    
-//		    
-//		    
-//		    int files;
-//		    packet >> files;
-//		    packet.clear();
-//		    
-//		    
-//		    system("cls");
-//		    
-//		    
-//		    int percent;
-//		    
-//			percent = 100 * static_cast<double>(1) / files;
-//		    
-//			loadPercent = percent;	
-//		    
-//		    receiveFile(socket,folder);
-//		    
-//		   
-//		    
-//		    std::vector<std::string> filename;
-//		    for(int a=0;a<files;a++)
-//		    {
-//				percent = 100 * static_cast<double>(a + 1) / files;
-//		    	
-//		    	
-//				loadPercent = percent;	
-//		    
-//				filename.push_back(receiveFile(socket,folder));
-//
-//			}
-//			
-//			if(percent==100)
-//			{
-//				loadPercent=200;
-//			}
-//			
-//			map.folder = folder;
-//		    
-//		    
-//		    if(!map.loadMap(filename[0]))
-//		    {
-//		    	loadPercent=-1;
-//			}
-//		    
-//		    
-//			}
-//			
-//			system("cls");
-//
-//		}
-//		
-//		
+#include <SFML/Network.hpp>
+#include <vector>
+#include <iostream>
 
 
 
 
 
+sf::IpAddress serverIP = sf::IpAddress::getLocalAddress();
+unsigned short serverPort = 5000;
 
 
 
-
-
-
-
-
-		void sendData() 
-		{
-			
-			
-			
-	        if(isHost) 
-	        {
-	            Packet packet;
-	            
-
-				
-				
-				packet << map.name; 
-    	
-				packet << allLoaded;
-				packet << playing;
-	            
-	            if(playing) 
-	            {
-	            	
-	        	
-	                
-					
-		            for (const auto& b : blupi) {
-		                packet << b.color;
-		                packet << b.now.x;
-		                packet << b.now.y;
-		                packet << b.velocity.x;
-		                packet << b.velocity.y;
-		                packet << b.state;
-		                packet << b.rotation;
-		                packet << b.locomotion;	
-		                packet << b.startstop;
-		                
-		                packet << b.alive;
-						packet << b.haven;
-						
-						sf::IntRect r = b.carrying.getTextureRect();
-						packet << r.left << r.top << r.width << r.height;
-			                
-			                
-		                packet << b.itemref;
-		                packet << b.running;
-		               		
-							
-		            }
-		            
-		            
-	            
-					for(int a=0;a<element.size();a++)
-					{
-						packet << element[a].exists;
-						packet << element[a].burning;
-						packet << element[a].active;
-						packet << element[a].blupiIndex;
-						packet << element[a].boomID;
-						for(int b=0;b<10;b++)
-						{
-							packet << element[a].boolean[b];
-						}
-						packet << element[a].now.x;
-						packet << element[a].now.y;
-						packet << element[a].type;
-						packet << element[a].color;
-						
-					}		            
-		            
-		            
-		            
-	            }
-	            
-	            
-	            
-  
-	            
-	            
-	        	for(int a=0;a<4;a++)
-	            {
-	            	if(player[a].ip != IpAddress::None)
-	            	{
-	            		player[a].human=true;
-	            		player[a].participating=true;
-					}
-				}
-	            
-	            
-	            
-	            
-	            
-	            //send awareness of other clients.
-	            
-	            
-	            for(int a=0;a<4;a++)
-	            {
-	            	packet << player[a].name;
-					packet << player[a].color;
-	            	packet << player[a].loadedLevel;
-	            	packet << player[a].human;
-		            packet << player[a].participating;
-		            
-				}
-	            
-	            
-	            
-	            
-  				for(int a=0;a<4;a++)
-		        {
-		            udpsocket.send(packet, player[a].ip, player[a].port);
-		        }
-	           		
-	        } 
-	        else 
-	        {
-        
-		        Packet packet;
-                
-				
-				packet << map.name;
-				
-				
-				packet << UserColor;
-
-
-	            if(playing) 
-	            {
-
-                    for(int a = 0; a < blupi.size(); a++) 
-                    {
-                        if(blupi[a].color == UserColor) 
-                        {
-                    		packet << blupi[a].action;	
-							packet << blupi[a].destination.x;
-							packet << blupi[a].destination.y;	
-							packet << blupi[a].keyinput;
-							packet << blupi[a].running;
-						}
-                    }
- 	            } 
-	            
-	            
-	        	
-	            
-				udpsocket.send(packet, hostip, hostport);
-               
-                
-	        }
+class Client
+{
+	public:
 	
-		}
+
+	
+	
+	Client()
+	{
+		//init player hookup on both sides for testing
+		self.color = "yellow";
+		self.name = "Flappy";	
+		self.ip = sf::IpAddress::getLocalAddress();
+		self.port = 4000;	
+	}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		bool getData() 
+	void start(sf::UdpSocket &socket)
+	{
+		if(socket.bind(self.port) != sf::Socket::Done)
 		{
-		   
-			if (!hostknown)
+			std::cerr << "Failed to Start Client!\n";
+			system("pause");
+			exit(0);
+		}
+		else
+			std::cerr << "Client started!\n";
+		
+	}
+
+
+	
+	void requestConnect(sf::Packet &packet)
+	{
+		//Send self to Server
+		
+		packet << "REQUEST_CONNECT";
+		packet << self.color << self.name;
+		
+	}	
+	
+	
+	
+	void sendInput(sf::Packet &packet)
+	{
+		packet << "GAME_INPUT";
+		
+		packet << blupi.size();
+		
+		for(int a=0; a < blupi.size(); a++)
+		{
+			packet << a;
+			blupi[a].sendInput(packet);
+		}
+	}
+	
+	
+	
+	void getGameState(sf::Packet &packet)
+	{
+		int blupiSize = 0;
+		packet >> blupiSize;
+		
+		for(int a=0; a < blupiSize; a++)
+		{
+			int index = 0;
+			packet >> index;
+			
+			while(blupiSize >= blupi.size()) // if not enough blupis in the vector then only use CreateBlupi for making new vector indices.
 			{
-				if(hostname!="")
-				{
-					hostip = IpAddress(hostname);
-					
-					
-					
-					if(hostip != IpAddress::None)
-					{
-					
-			            char pc[MAX_COMPUTERNAME_LENGTH + 1];
-					    DWORD size = sizeof(pc) / sizeof(pc[0]);
-					
-					    if (GetComputerName(pc, &size))
-						{
-							std::string str(pc);
-							pcname = str;
-						}
-						
-						
-						
-						if(pcname==hostname)
-						{
-				            // Try to bind to host port
-				            if (udpsocket.bind(hostport) != Socket::Done)
-				            {
-				                isHost = false;
-				                udpsocket.bind(Socket::AnyPort);
-				            }
-				            else
-				            {
-							   isHost = true;
-				            }							
-						}
-						else
-						{
-						    // Client mode - bind to any available port
-				            isHost = false;
-				            if (udpsocket.bind(Socket::AnyPort) != Socket::Done)
-				            {
-				                return false;
-				            }	
-						}
-						
-						selfIP = IpAddress::getPublicAddress();	
-						
-				        hostknown = true;
-				        udpsocket.setBlocking(false);
-				    }
-				}
+				CreateBlupi();
 			}
-		   	else
-		   	{
-		
-		        if(isHost) 
-		        {
-		            Packet packet;
-		            IpAddress ip;
-		            unsigned short port;
-		            
-	        	    Socket::Status status = udpsocket.receive(packet, ip, port);
-    				if(status == Socket::NotReady)
-	        	    {
-	        	    	return false;
-					}    
-		            
-		            
-		            std::string level;
-				    packet >> level;
-				    
-				    if(level=="" && playing && map.name!="")
-					{
-						for(int a = 0; a < 4; a++) 
-		                {
-		                    if(player[a].ip == ip) 
-		                    {
-		                    	player[a].loadedLevel=false;
-		                    	break;
-		                    }
-		                }
-					}
-					if(level!="")
-					{
-						for(int a = 0; a < 4; a++) 
-		                {
-		                    if(player[a].ip == ip) 
-		                    {
-		                    	player[a].loadedLevel=true;
-		                    	break;
-		                    }
-		                }
-					}
-					
-	
-	                std::string color;
-	                packet >> color;
-	
-		            if(playing) 
-		            {
-		                for(int a = 0; a < blupi.size(); a++) 
-		                {
-		                    if(blupi[a].color == color) 
-		                    {
-		                        packet >> blupi[a].action;
-	                        	packet >> blupi[a].destination.x;
-	                        	packet >> blupi[a].destination.y;
-								packet >> blupi[a].keyinput;
-		                    }
-		                }
-		                
-	
-		                
-		                
-		            } 
-		            else 
-		            {
-		
-		
-						
-		                bool known = false;
-						int ID=-1;
-		                for(int a = 0; a < 4; a++) 
-		                {
-		                    if(player[a].ip == ip) 
-		                    {
-		                    	if(player[a].known)
-		                    	{
-									known = true;
-			                       	ID=a;
-			                       	
-			                       	if(player[a].ip==selfIP)
-			                       		ME=a;	
-									
-			                       	
-			                       	break;
-			                    }
-		                    }
-		                }
-		
-		
-		
-						if(!known)
-						{
-							for(int a=0;a<4;a++)
-							{
-								if(player[a].ip==IpAddress::None)
-								{
-									ID=a;
-									break;
-								}
-							}
-						}
-		
-		
-		
-		                if(!known) 
-		                {
-		                	player[ID].participating = true;
-		                	player[ID].human=true;
-		                	player[ID].ip = ip;
-		                	player[ID].port = port;
-		                	player[ID].color = color;
-		                	player[ID].known=true;
-		                	
-		                	
-		                }
-		                else
-		                {
-		                	player[ID].color = color;
-						}
-		                
-	
-		                
-		            }
-		            
-		            
-		            bool clearold=true;
-		                
-	                while(clearold)
-	                {
-						packet.clear();
-		                
-		        	    Socket::Status status = udpsocket.receive(packet, ip, port);
-	    				if(status == Socket::NotReady)
-		        	    {
-		        	    	clearold=false;
-						}
-					}
-		        } 
-		        else 
-		        {
-	        	 
-		            Packet packet;
-		            IpAddress ip;
-		            unsigned short port;
-	        	    
-	        	    
-	        	    Socket::Status status = udpsocket.receive(packet, ip, port);
-    				if(status == Socket::NotReady)
-	        	    {
-	        	    	return false;
-					}
-		        	
-		        	
-		        	
-					std::string mapname;
-					packet >> mapname;
-		        	
-		        	if(mapname!="" && map.name=="")
-		        	{
-		        		map.loadMap(mapname);
-					}
-					
-	        		packet >> allLoaded;
-		            packet >> playing;
-		                
-		                
-		                
-		            
-		            if(playing) 
-		            {
-		            
-		                
-						
-						
-						
-						
-		
-		            
-			            for (auto& b : blupi) {
-			                
-							
-							
-							packet >> b.color;
-			                packet >> b.now.x;
-			                packet >> b.now.y;
-			                packet >> b.velocity.x;
-			                packet >> b.velocity.y;
-			                packet >> b.state;
-				            packet >> b.rotation;
-				            packet >> b.locomotion;
-			                packet >> b.startstop;
-			                
-			                packet >> b.alive;
-							packet >> b.haven;
-							int left,top,width,height;
-			                packet >> left >> top >> width >> height;
-			                
-			                
-			                packet >> b.itemref;
-			                
-			                if(sf::IntRect(left,top,width,height) != b.carrying.getTextureRect())
-			                {
-			                	b.carrying = element[b.itemref].sprite;
-							}
-							
-							packet >> b.running;
-							
-							
-			            }
-
-						for(int a=0;a<element.size();a++)
-						{
-							packet >> element[a].exists;
-							packet >> element[a].burning;
-							packet >> element[a].active;
-							packet >> element[a].blupiIndex;
-							packet >> element[a].boomID;
-							for(int b=0;b<10;b++)
-							{
-								packet >> element[a].boolean[b];
-							}
-							packet >> element[a].now.x;
-							packet >> element[a].now.y;
-							packet >> element[a].type;
-							packet >> element[a].color;
-							
-						}
-
-
-		            }
-		            
-		            
-		            
-		            
-		            for(int a=0;a<4;a++) // copy list of clients from host to this client
-		            {
-		            	std::string color;
-		            	bool loaded;
-		            	bool human;
-		            	bool participating;
-		            	std::string name;
-		            	packet >> name;
-		            	packet >> color;
-		            	packet >> loaded;
-		            	packet >> human;
-		            	packet >> participating;
-		            	
-		            	
-		            	player[a].name = name;
-		            	player[a].color = color;
-		            	player[a].loadedLevel = loaded;
-		            	player[a].human = human;
-		            	player[a].participating = participating;
-		            	
-		            	
-		            	
-					}
-		            
-		            
-		            bool clearold=true;
-		                
-	                while(clearold)
-	                {
-						packet.clear();
-		                
-		        	    Socket::Status status = udpsocket.receive(packet, ip, port);
-	    				if(status == Socket::NotReady)
-		        	    {
-		        	    	clearold=false;
-						}
-					}
-		            
-				
-		        }
-		    }
-		    return true;
+			
+			//now there are enough vector indices and the proper indices mentioned by the host can be modified.
+			
+			blupi[index].getState(packet);
+			
 		}
 		
 		
 		
+		int elementSize = 0;
+		packet >> elementSize;
+		
+		for(int a=0; a < elementSize; a++)
+		{
+			int index = 0;
+			packet >> index;
+			
+			while(elementSize >= element.size()) //Same reason as done for blupi
+			{
+				CreateElement();
+			}
+			
+			element[index].getState(packet);
+			
+		}
 		
 		
+	}
+	
+	
+	
+	
+	
+	void sendAllPacket(sf::Packet &packet,sf::UdpSocket &socket)
+	{
+		packet.clear();
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		requestConnect(packet);
+		sendInput(packet);
 
-} network;
+		//send to already known server
+		socket.send(packet,serverIP,serverPort);
+	}
+	
+	bool getAllPacket(sf::Packet &packet,sf::UdpSocket &socket)
+	{
+		sf::IpAddress ip;
+		unsigned short port;
+		
+		if(socket.receive(packet,ip,port) != sf::Socket::Done)
+		{
+			packet.clear();
+			return false;
+		}
+		if(ip != serverIP || port != serverPort)
+		{
+			//false source
+			packet.clear();
+		}
+		
+		sf::Packet empty;
+		while(socket.receive(empty,ip,port) != sf::Socket::Done)
+		{
+			//empty garbage data
+		}
+		
+		getGameState(packet);
+		
+		return true;
+	}
+		
+};
+
+
+class Server
+{
+	public:
+	
+	
+	
+	
+	std::vector<Player> players;
+	
+	
+	
+	Server()
+	{
+		
+		
+	}
+	
+	
+	
+	void start(sf::UdpSocket &socket)
+	{
+		if(socket.bind(serverPort) != sf::Socket::Done)
+		{
+			std::cerr << "Failed to Start Server!\n";
+			system("pause");
+			exit(0);
+		}
+		else
+			std::cerr << "Server started!\n";
+		
+	}
+	
+	
+	
+		
+	void getRequest(Player player)
+	{
+		
+		for(int a=0; a < players.size(); a++)
+		{
+			
+			if(player.name == players[a].name)
+			{
+				return;
+			}
+			
+		}
+		
+		
+		players.push_back(player);
+
+		std::cerr << "Connected to "<< player.name << "\n";
+		
+		
+	}	
+		
+	
+	void getInput(sf::Packet &packet)
+	{
+		int size = 0;
+		packet >> size;
+		for(int a=0; a < size; a++)
+		{
+			
+			int index = 0;
+			packet >> index;
+			
+			
+			if(index < blupi.size())
+				blupi[index].getInput(packet);
+			else
+			{
+				Blupi dummy;
+				dummy.getInput(packet);
+			}	
+				
+		}
+		
+	}	
+		
+	
+	void sendGameState(sf::Packet &packet)
+	{
+		//Clients dont need to know player count. 
+		//Only elements and blupis and needed on client side.
+		
+		int blupiSize = static_cast<int>(blupi.size());
+		
+		packet << blupiSize;
+		
+		for(int a = 0; a < blupiSize; a++)
+		{
+			packet << a;
+			blupi[a].sendState(packet);
+		}
+		
+		int elementSize = static_cast<int>(element.size());
+		
+		packet << elementSize;
+		
+		for(int a = 0; a < elementSize; a++)
+		{
+			packet << a;
+			element[a].sendState(packet);
+		}
+		
+		
+	
+		
+	}
+	
+	
+	
+	void sendAllPacket(sf::Packet &packet,sf::UdpSocket &socket)
+	{
+
+		sendGameState(packet);
+			
+		//send to all known clients
+		
+		for(int a=0; a < players.size(); a++)
+		{
+			socket.send(packet,players[a].ip,players[a].port);
+		}
+	}
+	
+	bool getAllPacket(sf::Packet &packet,sf::UdpSocket &socket)
+	{
+		
+		sf::IpAddress ip;
+		unsigned short port;
+		while(socket.receive(packet,ip,port) == sf::Socket::Done)
+		{
+			std::string type;
+			packet >>  type;
+			
+			if(type == "REQUEST_CONNECT")
+			{
+				std::string color,name;
+				packet >> color >> name;
+				getRequest({name,color,ip,port});
+			}
+			
+			
+			if(type == "GAME_INPUT")
+			{
+				getInput(packet);
+			}
+			
+			packet.clear();
+		}
+
+		return true;
+	}
+	
+		
+};
+
+
+
+
+
+class Network
+{
+	public:
+		
+		
+	sf::UdpSocket socket;	
+		
+	Client client;
+	Server server;
+	
+	
+	//already connected to only client for now
+	
+	
+	
+	
+	
+	Network()
+	{
+
+	}
+	
+
+
+	void init()
+	{
+		socket.setBlocking(false);
+		if(isServer)
+			server.start(socket);
+		else
+			client.start(socket);
+	}
+	
+	
+	void getData()
+	{
+		sf::Packet packet;
+		if(isServer)
+		{
+			//call server functions
+			server.getAllPacket(packet,socket);
+		}
+		else
+		{
+			//call client functions
+			client.getAllPacket(packet,socket);
+		}
+	}
+	
+	
+	void sendData()
+	{
+		sf::Packet packet;
+		if(isServer)
+		{
+			//call server functions
+			server.sendAllPacket(packet,socket);
+		}
+		else
+		{
+			//call client functions
+			client.sendAllPacket(packet,socket);
+		}		
+	}
+	
+	
+	
+}network;
+
+
+
+
+#endif

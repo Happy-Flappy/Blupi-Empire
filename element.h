@@ -35,6 +35,79 @@ class Element
 	sf::FloatRect bounds;
 	
 	
+	
+	
+	void getState(sf::Packet &packet) //CLIENT FUNCTION THAT RECEIVES GAME STATE
+	{
+		packet >> type 
+		>> color
+		>> velocity.x 
+		>> velocity.y
+		>> now.x 
+		>> now.y
+		>> scale
+		>> burning
+		>> active
+		>> boolean[0] 
+		>> boolean[1]
+		>> boolean[2]
+		>> boolean[3]
+		>> boolean[4]
+		>> boolean[5]
+		>> boolean[6]
+		>> boolean[7]
+		>> boolean[8]
+		>> boolean[9]
+		>> exists
+		>> taken
+		>> obeysRotation
+		>> displayNumber
+		>> soundChannel
+		>> /*blupiIndex << boomID*/ textX
+		>> layer
+		>> bounds.left
+		>> bounds.top
+		>> bounds.width
+		>> bounds.height;		
+	}
+	
+	void sendState(sf::Packet &packet)//HOST FUNCTION THAT SENDS GAME STATE TO CLIENTS
+	{
+		packet << type 
+		<< color
+		<< velocity.x 
+		<< velocity.y
+		<< now.x 
+		<< now.y
+		<< scale
+		<< burning
+		<< active
+		<< boolean[0] 
+		<< boolean[1]
+		<< boolean[2]
+		<< boolean[3]
+		<< boolean[4]
+		<< boolean[5]
+		<< boolean[6]
+		<< boolean[7]
+		<< boolean[8]
+		<< boolean[9]
+		<< exists
+		<< taken
+		<< obeysRotation
+		<< displayNumber
+		<< soundChannel
+		<< /*blupiIndex << boomID*/ textX
+		<< layer
+		<< bounds.left
+		<< bounds.top
+		<< bounds.width
+		<< bounds.height;
+		
+	}
+	
+	
+	
 	Element()
 	{
 		numberText.setFillColor(Color::Green);
@@ -126,8 +199,11 @@ class Element
 	
 	
 	
-	void update(Image &ground,std::string locomotion)
+	void update(sf::Image &ground,std::string locomotion)
 	{
+		
+		if(ground.getSize().x == 0 || ground.getSize().y == 0)
+			return;
 		
 		bounds = sprite.getGlobalBounds();
         bounds.left += bounds.left/6;

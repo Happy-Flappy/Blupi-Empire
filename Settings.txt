@@ -1,0 +1,4 @@
+fullscreen = false 
+width = 480 
+height = 540 
+server = false 

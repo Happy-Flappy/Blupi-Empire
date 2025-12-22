@@ -21,51 +21,51 @@ namespace Cheats
 		
 		if(input.find("slowpoke") != std::string::npos)
 		{
-			if(blupi[player[ME].selected].mod.type == "slowSpeed")
-				blupi[player[ME].selected].mod.type = "none";
+			if(blupi[self.selected].mod.type == "slowSpeed")
+				blupi[self.selected].mod.type = "none";
 			else
 			{
-				blupi[player[ME].selected].mod.type = "slowSpeed";
-				blupi[player[ME].selected].trailType = "smoke";
+				blupi[self.selected].mod.type = "slowSpeed";
+				blupi[self.selected].trailType = "smoke";
 			}
 			input = "";
 		}
 		
 		if(input.find("speedy") != std::string::npos)
 		{
-			if(blupi[player[ME].selected].mod.type == "fastSpeed")
+			if(blupi[self.selected].mod.type == "fastSpeed")
 			{
-				blupi[player[ME].selected].mod.type = "none";
+				blupi[self.selected].mod.type = "none";
 			}
 			else
 			{
-				blupi[player[ME].selected].mod.type = "fastSpeed";
-				blupi[player[ME].selected].trailType = "sparkle";
+				blupi[self.selected].mod.type = "fastSpeed";
+				blupi[self.selected].trailType = "sparkle";
 			}
 			input = "";
 		}
 		
 		if(input.find("invincible") != std::string::npos)
 		{
-			if(blupi[player[ME].selected].mod.type == "invincible")
-				blupi[player[ME].selected].mod.type = "none";
+			if(blupi[self.selected].mod.type == "invincible")
+				blupi[self.selected].mod.type = "none";
 			else
-				blupi[player[ME].selected].mod.type = "invincible";
+				blupi[self.selected].mod.type = "invincible";
 			input = "";
 		}
 		
 		if(input.find("alwaysfull") != std::string::npos)
 		{
-			if(blupi[player[ME].selected].mod.type == "alwaysfull")
-				blupi[player[ME].selected].mod.type = "none";
+			if(blupi[self.selected].mod.type == "alwaysfull")
+				blupi[self.selected].mod.type = "none";
 			else
-				blupi[player[ME].selected].mod.type = "alwaysfull";
+				blupi[self.selected].mod.type = "alwaysfull";
 			input = "";
 		}
 		
 		if(input.find("givelife") != std::string::npos)
 		{
-			blupi[player[ME].selected].energy = 100;
+			blupi[self.selected].energy = 100;
 			input = "";
 		}
 		

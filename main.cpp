@@ -3,6 +3,26 @@
 #include <SFML\Graphics.hpp>
 #include <SFML\Audio.hpp>
 #include <SFML\Network.hpp>
+
+
+
+
+
+class Player
+{
+	public:
+	
+	std::string name = "";
+	std::string color = "yellow";
+	sf::IpAddress ip = sf::IpAddress::getLocalAddress();
+	unsigned short port = 4000;
+	int selected = -1;
+		
+};
+Player self;
+
+
+
 #include "wav.h"
 #include "input.h"
 using namespace sf;
@@ -79,34 +99,7 @@ int findChannel()
 
 
 
-bool isHost=false;
-
-bool playing;
-
-
-
-
-
-
-
-
-int ME=0;
-std::string UserColor = "none";
-IpAddress selfIP;
-
-struct Player
-{
-	bool participating=false;
-	bool human=false;
-	bool loadedLevel=false;
-	bool known=false;
-	IpAddress ip;
-	unsigned short port;
-	std::string color="none";
-	std::string name;
-	int selected = -1;
-	
-}player[4];
+bool isServer = false;
 
 
 
@@ -209,12 +202,9 @@ std::vector<BlupiByPos> blupiByPos;
 
 
 
-#include "AI.h"
-AI ai[4];
 
 #include "network.h"
 #include <thread>
-#include "SetupScreen.h"
 #include "cheats.h"
 
 
@@ -260,7 +250,7 @@ void getTopHoveredLayer()
     // 1. Find topmost blupi (last in vector = highest rendered)
     for (int a = blupi.size() - 1; a >= 0; a--)
     {
-        if (!blupi[a].alive || blupi[a].color != UserColor) 
+        if (!blupi[a].alive || blupi[a].color != self.color) 
             continue;
 
         // Adjusted bounds with 20px padding
@@ -350,6 +340,36 @@ struct GridComparator {
 
 
 
+#include <cctype> // For isdigit()
+
+bool findNumberInString(const std::string& str,int &number) {
+    std::string currentNumber;
+    for (char c : str) {
+        if (std::isdigit(c)) {
+            currentNumber += c;
+        } else {
+            if (!currentNumber.empty()) {
+                std::cout << "Found number: " << currentNumber << std::endl;
+                currentNumber.clear(); // Reset for the next number
+            }
+        }
+    }
+    // Check for a number at the end of the string
+    if (!currentNumber.empty()) 
+	{
+	    int n = -1;
+		n = std::stoi(currentNumber);	
+	    
+	    if(n != -1 & n > 0)
+	    {
+	    	number = n;
+	    	return true;
+		}
+		
+    }
+    return false;
+}
+
 
 
 
@@ -357,54 +377,126 @@ struct GridComparator {
 int main()
 {
 
-	//init self as a player
-	player[0].human = true;
-	player[0].ip = IpAddress::None;
-	player[0].known=true;
-	player[0].participating=true;
-	player[0].port = network.udpsocket.getLocalPort();
+	sf::Uint32 style = sf::Style::Default;
+	int width = 960 + 100;
+	int height = 540 + 100;
+	
+	
+	std::ifstream settings;
+	settings.open("Settings.txt"); 
+	
+	
+	std::string line;
+	
+	while(getline(settings,line))
+	{
+		if(line.find("fullscreen") != std::string::npos)
+		{
+			if(line.find("true") != std::string::npos)
+			{
+				style = sf::Style::Fullscreen;
+			}
+		}
+		
+		if(line.find("width") != std::string::npos)
+		{
+			if(findNumberInString(line,width))
+			{
+				width = width + 100;
+			}	
+		}
+		
+		if(line.find("height") != std::string::npos)
+		{
+			if(findNumberInString(line,height))
+			{
+				height = height + 100;
+			}	
+		}
+		
+		
+		if(line.find("server") != std::string::npos)
+		{
+			if(line.find("true")!=std::string::npos)
+			{
+				isServer = true;
+			}
+		}	
+		
+	}
+	
+	settings.close();
 
 
-	//initialize first names until player chooses otherwise.
+	map.loadMap("level0.txt");
+
 	
-	
-	player[0].name = "Player 1";
-	player[1].name = "Player 2";
-	player[2].name = "Player 3";
-	player[3].name = "Player 4";
-	
-	
-	
-	
-	
-	
-	
-	float parallax;
+	network.init();
+
+
+
 	
 
 	
 	Time timesincelastupdate = Time::Zero;
 	Time timeperframe = seconds(1.f/60.f);
-	Clock clock;
+	Clock clock;	
 	
-	
-	SetupScreen setup;
-	
-	setup.loop();
-	
-	if(setup.quitAll)
+
+		
+	if(isServer)
+	{
+		while(true)
+		{
+			timesincelastupdate += clock.restart();
+			
+			while(timesincelastupdate > timeperframe)
+			{
+				timesincelastupdate -= timeperframe;
+			
+			
+			
+				for(int a=0;a<blupi.size();a++)
+				{
+					if(!blupi[a].alive)
+						continue;
+					blupi[a].ID=a;
+					blupi[a].update(map.iground);
+				}			
+								
+			
+				water.update(map.iground);
+
+
+				for(int a=0;a < element.size();a++)
+				{
+				
+					if(!element[a].exists)
+						continue;
+					element[a].ID=a;
+					element[a].update(map.iground,"walk");
+					element[a].displayNumber=0;
+				
+				}
+
+						
+				network.getData();
+				network.sendData();
+			}
+		}
 		return 0;
-
-
-
+	}
+	
+	
 	//,Style::Fullscreen
-	RenderWindow window(VideoMode(960+100,540+100),"",Style::Fullscreen);
+	RenderWindow window(VideoMode(width,height),"",style);
 	View view;
-	view.reset(FloatRect(0,0,960+100,540+100));
+	view.reset(FloatRect(0,0,width,height));
 	window.setMouseCursorVisible(false);
 
 	
-	
+	float parallax;
+		
 	
 	while(window.isOpen())
 	{
@@ -524,13 +616,13 @@ int main()
 			
 			
 		
-			if(player[ME].selected==-1)
+			if(self.selected==-1)
 			{
 				for(int a=0;a<blupi.size();a++)
 				{
-					if(blupi[a].color==UserColor && blupi[a].alive)
+					if(blupi[a].color==self.color && blupi[a].alive)
 					{
-						player[ME].selected = a;
+						self.selected = a;
 						break;
 					}
 				}
@@ -573,7 +665,7 @@ int main()
 				if(!element[a].exists)
 					continue;
 				element[a].ID=a;
-				element[a].update(map.iground,blupi[player[ME].selected].locomotion);
+				element[a].update(map.iground,blupi[self.selected].locomotion);
 				element[a].displayNumber=0;
 			
 			
@@ -649,12 +741,6 @@ int main()
 			
 			cursor.update(window);
 		
-			for(int a=0;a<4;a++)
-			{
-				if(playing && !player[a].human)
-					ai[a].update();
-				
-			}
 		
 		
 		

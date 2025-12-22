@@ -79,7 +79,7 @@ class Taskbar
 	{
 		for(int a=0;a<element.size();a++)
 		{
-			if((toplayer.type=="element" && toplayer.ID == a) || (toplayer.type=="blupi" && player[ME].selected == toplayer.ID && topElement.ID == a))
+			if((toplayer.type=="element" && toplayer.ID == a) || (toplayer.type=="blupi" && self.selected == toplayer.ID && topElement.ID == a))
 			{
 				
 				std::string type = element[a].type;
@@ -92,7 +92,7 @@ class Taskbar
 					if(type=="bomb" || type=="wood"||type=="tomato" || ((type == "boat") && !element[a].taken)  || type == "energy") //pickup
 					{
 						
-						if(blupi[player[ME].selected].carrying.getTextureRect().width==0)
+						if(blupi[self.selected].carrying.getTextureRect().width==0)
 						{
 							liveitem = a;
 							buttons.push_back(Button("pick up",sf::IntRect(1,239,40,40),2,0));
@@ -156,11 +156,11 @@ class Taskbar
 						
 						if(element[a].blupiIndex!=-1)
 						{
-							player[ME].selected = element[a].blupiIndex;
+							self.selected = element[a].blupiIndex;
 						}
 						
 						
-						if(element[a].blupiIndex==player[ME].selected || element[a].blupiIndex == -1)
+						if(element[a].blupiIndex==self.selected || element[a].blupiIndex == -1)
 						{
 						
 							if(element[a].boolean[0]==true)
@@ -206,7 +206,7 @@ class Taskbar
 						
 						
 						
-						if(blupi[player[ME].selected].locomotion=="walk")
+						if(blupi[self.selected].locomotion=="walk")
 						{
 							buttons.push_back(Button("enter jeep",sf::IntRect(0,0,0,0),0.5,0));
 						}
@@ -217,7 +217,7 @@ class Taskbar
 					if(type=="pine" || type == "palm")
 					{
 						liveitem = a;
-						if(blupi[player[ME].selected].locomotion=="walk")
+						if(blupi[self.selected].locomotion=="walk")
 						{
 							buttons.push_back(Button("fell tree",sf::IntRect(40*4,40*4,40,40),6,4));
 						}
@@ -270,8 +270,21 @@ class Taskbar
 	
 	void update(RenderWindow &window,Image &ground)
 	{
-
-		addButtons();
+	
+	    std::cout << "=== Taskbar Update ===" << std::endl;
+	    std::cout << "Selected blupi: " << self.selected << std::endl;
+	    if(self.selected >= 0 && self.selected < blupi.size()) {
+	        std::cout << "Blupi busy: " << blupi[self.selected].busy << std::endl;
+	        std::cout << "Blupi action: " << blupi[self.selected].action << std::endl;
+	    }
+	
+	    addButtons();
+	
+	    std::cout << "Number of buttons: " << buttons.size() << std::endl;
+	    for(int i = 0; i < buttons.size(); i++) {
+	        std::cout << "Button " << i << ": " << buttons[i].type << std::endl;
+	    }
+	    std::cout << "Live item: " << liveitem << std::endl;
 
 
 
@@ -379,70 +392,21 @@ class Taskbar
 			if(checkbutton() || pressed)
 			{
 				
-				
-				if(buttons[a].type == "stop")
-				{
-
-					blupi[player[ME].selected].actionTime = 0;
-					blupi[player[ME].selected].actionEnergy = 0;
-
-					if(!blupi[player[ME].selected].traveled())
-					{
-						blupi[player[ME].selected].sayObey();
-						blupi[player[ME].selected].Stop();
-					}
-					else
-					{		
-						blupi[player[ME].selected].startstop=true;
-						blupi[player[ME].selected].sayObey();
-					}
-					
-					buttons.clear();
-					break;	
-				}
 
 
-
-
-				if(buttons[a].type.find("exit") != std::string::npos)
-				{
-					blupi[player[ME].selected].action = buttons[a].type;
-					blupi[player[ME].selected].itemindex = liveitem;
-					blupi[player[ME].selected].initAction = true;
-					blupi[player[ME].selected].actionTime = buttons[a].time;
-					blupi[player[ME].selected].actionEnergy = buttons[a].energy;					
-					blupi[player[ME].selected].sayObey();
-					buttons.clear();
-					break;		
-				}
-
+				//Make a request no matter the situation and let the host determine the action. The host will send acknowledgement if the action is possible.
+			    
+			    blupi[self.selected].makeRequest(
+			        buttons[a].type,
+			        element[liveitem].now,
+			        liveitem,
+			        buttons[a].time,
+			        buttons[a].energy
+			    );
+			    
+			    buttons.clear();
+			    break;
 			
-				
-				if(!blupi[player[ME].selected].busy)
-				{
-					if(!blupi[player[ME].selected].possible(element[liveitem].now))
-					{
-						blupi[player[ME].selected].sayFailed();
-						buttons.clear();						
-						break;
-					}
-					blupi[player[ME].selected].action = buttons[a].type;
-					blupi[player[ME].selected].itemindex = liveitem;
-					blupi[player[ME].selected].initAction = true;
-					blupi[player[ME].selected].actionTime = buttons[a].time;
-					blupi[player[ME].selected].actionEnergy = buttons[a].energy;
-					blupi[player[ME].selected].sayObey();
-					buttons.clear();
-					break;
-				}
-				else
-				{
-					
-					blupi[player[ME].selected].sayFailed();
-					buttons.clear();
-					break;
-				}
-
 			}
 		
 			if(buttons[a].icon != sf::IntRect(0,0,0,0))
@@ -481,76 +445,26 @@ class Taskbar
 		
 		if(window.hasFocus() && MPosition.y < ground.getSize().y && MPosition.x < ground.getSize().x && MPosition.x >=0 && MPosition.y >=0)
 		{
-			gridguide.setPosition(int(MPosition.x/32)*32,int(MPosition.y/32)*32);
-			window.draw(gridguide);
-			
-			
-			
+		    gridguide.setPosition(int(MPosition.x/32)*32,int(MPosition.y/32)*32);
+		    window.draw(gridguide);
+		    
 			if(checkGroundNow(ground,MPosition))
 			{
-				
-			
-				static bool released=false;
-				if(Input::Mouse(Mouse::Left,true))
-				{
-					if(!blupi[player[ME].selected].busy && blupi[player[ME].selected].possible(MPosition) && blupi[player[ME].selected].haven==-1)
-					{
+			    if(Input::Mouse(Mouse::Left,true))
+			    {
+			        if(self.selected >= 0 && self.selected < blupi.size()) {
+			            Blupi& selectedBlupi = blupi[self.selected];
+			            
+			            
+			            selectedBlupi.makeRequest("move", MPosition, -1, 0, 0);
+			            //I could move blupi sayings to a place where blupi only says obey or says failed depending on received acknowledgement from server.
+						selectedBlupi.sayObey();
 						
-						if(toplayer.type!="element")
-						{
-						
-						
-						
-						
-							bool skip=false;
-							if(toplayer.ID!=player[ME].selected && toplayer.type=="blupi")
-							{
-								skip=true;
-							}
-							
-							if(!skip)
-							{
-							
-								if(blupi[player[ME].selected].state=="moveleft")
-									blupi[player[ME].selected].state="left";
-								if(blupi[player[ME].selected].state=="moveright")
-									blupi[player[ME].selected].state="right";
-								
-								
-								blupi[player[ME].selected].destination = MPosition;
-								
-								blupi[player[ME].selected].action="none";
-								
-							}
-						}
-						
-					}
-					else
-					{
-						
-						if(blupi[player[ME].selected].busy)
-						{
-							if(!blupi[player[ME].selected].traveled())
-							{
-								blupi[player[ME].selected].sayObey();
-								blupi[player[ME].selected].Stop();
-							}
-							
-						}
-						else
-						{
-							if(!blupi[player[ME].selected].possible(MPosition))
-								blupi[player[ME].selected].failed();
-								
-						}
-						
-					}
-					
-					buttons.clear();
-					liveitem=-1;
-			
-			
-				}
+						buttons.clear();
+			        	liveitem=-1;
+			        }
+
+			    }
 			}
 		}
 		
@@ -558,23 +472,6 @@ class Taskbar
 
 		
 		
-		if(blupi[player[ME].selected].busy && buttons.size() == 0 && !blupi[player[ME].selected].startstop)
-		{
-			buttons.push_back(Button("stop",sf::IntRect(160,280,40,40),blupi[player[ME].selected].actionTime,0));
-	
-		}
-		
-		if(!blupi[player[ME].selected].busy || blupi[player[ME].selected].startstop)
-		{
-			for(int a=0;a<buttons.size();a++)
-			{
-				if(buttons[a].type == "stop")
-				{
-					buttons.erase(buttons.begin()+a);
-					break;
-				}
-			}
-		}
 		
 		
 		
@@ -589,7 +486,7 @@ class Taskbar
 		window.draw(energyBar);
 		
 		
-		int percent = 124 * (blupi[player[ME].selected].energy/100);
+		int percent = 124 * (blupi[self.selected].energy/100);
 		
 		
 		energyBar.setTextureRect({0,22 + 22,percent,22});
@@ -604,8 +501,8 @@ class Taskbar
 		energyBar.setTextureRect({0,0,124,22});//empty
 		window.draw(energyBar);
 		
-		if(blupi[player[ME].selected].actionTime != 0 && blupi[player[ME].selected].progressTime.getElapsedTime().asSeconds() != 0)
-			percent = 124 * (blupi[player[ME].selected].progressTime.getElapsedTime().asSeconds()/blupi[player[ME].selected].actionTime);
+		if(blupi[self.selected].actionTime != 0 && blupi[self.selected].progressTime.getElapsedTime().asSeconds() != 0)
+			percent = 124 * (blupi[self.selected].progressTime.getElapsedTime().asSeconds()/blupi[self.selected].actionTime);
 		else
 			percent = 0;
 			

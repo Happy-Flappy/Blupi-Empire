@@ -193,8 +193,9 @@ class Map
 		
 		if(key[0]=="atmosphere")
 		{
+			
 			atmosphere.stop();
-			if(atmosphere.getStatus()!=Sound::Status::Playing)
+			if(atmosphere.getStatus()!=Sound::Status::Playing && !isServer)
 			{
 			
 				atmosphere.openFromFile(folder + key[1]);
@@ -208,7 +209,7 @@ class Map
 		
 		if(key[0]=="music")
 		{
-			if(music.getStatus()!=Sound::Status::Playing)
+			if(music.getStatus()!=Sound::Status::Playing && !isServer)
 			{
 			
 				music.stop();
