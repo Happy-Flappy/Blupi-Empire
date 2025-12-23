@@ -270,24 +270,8 @@ class Taskbar
 	
 	void update(RenderWindow &window,Image &ground)
 	{
-	
-	    std::cout << "=== Taskbar Update ===" << std::endl;
-	    std::cout << "Selected blupi: " << self.selected << std::endl;
-	    if(self.selected >= 0 && self.selected < blupi.size()) {
-	        std::cout << "Blupi busy: " << blupi[self.selected].busy << std::endl;
-	        std::cout << "Blupi action: " << blupi[self.selected].action << std::endl;
-	    }
-	
 	    addButtons();
 	
-	    std::cout << "Number of buttons: " << buttons.size() << std::endl;
-	    for(int i = 0; i < buttons.size(); i++) {
-	        std::cout << "Button " << i << ": " << buttons[i].type << std::endl;
-	    }
-	    std::cout << "Live item: " << liveitem << std::endl;
-
-
-
 		box.setPosition(window.getView().getCenter().x - (window.getView().getSize().x/2),540-5);
 		window.draw(box);
 
@@ -455,9 +439,9 @@ class Taskbar
 			        if(self.selected >= 0 && self.selected < blupi.size()) {
 			            Blupi& selectedBlupi = blupi[self.selected];
 			            
+			            selectedBlupi.request.destination = MPosition;
+			            std::cerr << "Request Move>>>>\n";
 			            
-			            selectedBlupi.makeRequest("move", MPosition, -1, 0, 0);
-			            //I could move blupi sayings to a place where blupi only says obey or says failed depending on received acknowledgement from server.
 						selectedBlupi.sayObey();
 						
 						buttons.clear();

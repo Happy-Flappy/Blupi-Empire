@@ -9,10 +9,10 @@
 
 
 
-sf::IpAddress serverIP = sf::IpAddress::getLocalAddress();
-unsigned short serverPort = 5000;
-
-
+sf::IpAddress serverIP = sf::IpAddress("147.185.221.16");
+unsigned short serverLocalPort = 5000;  // What the game binds to locally
+unsigned short serverTunnelPort = 20821; // What playit.gg exposes to the internet
+unsigned short clientLocalPort = 4000;  // What client binds to locally
 
 class Client
 {
@@ -27,21 +27,20 @@ class Client
 		self.color = "yellow";
 		self.name = "Flappy";	
 		self.ip = sf::IpAddress::getLocalAddress();
-		self.port = 4000;	
+		self.port = clientLocalPort;	
 	}
+
 
 
 	void start(sf::UdpSocket &socket)
 	{
-		if(socket.bind(self.port) != sf::Socket::Done)
-		{
-			std::cerr << "Failed to Start Client!\n";
-			system("pause");
-			exit(0);
-		}
-		else
-			std::cerr << "Client started!\n";
-		
+        if(socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)
+        {
+            std::cerr << "Client failed to bind\n";
+            return;
+        }
+        std::cerr << "Client bound to port " << socket.getLocalPort() << "\n";
+
 	}
 
 
@@ -122,12 +121,15 @@ class Client
 	void sendAllPacket(sf::Packet &packet,sf::UdpSocket &socket)
 	{
 		packet.clear();
-		
+		// Send connection request to TUNNEL port
 		requestConnect(packet);
+		socket.send(packet,serverIP,serverTunnelPort);
+
+		packet.clear();
 		sendInput(packet);
 
 		//send to already known server
-		socket.send(packet,serverIP,serverPort);
+		socket.send(packet,serverIP,serverTunnelPort);
 	}
 	
 	bool getAllPacket(sf::Packet &packet,sf::UdpSocket &socket)
@@ -140,19 +142,21 @@ class Client
 			packet.clear();
 			return false;
 		}
-		if(ip != serverIP || port != serverPort)
-		{
-			//false source
-			packet.clear();
-		}
-		
-		sf::Packet empty;
-		while(socket.receive(empty,ip,port) != sf::Socket::Done)
-		{
-			//empty garbage data
-		}
-		
-		getGameState(packet);
+//		sf::Packet empty;
+//		while(socket.receive(empty,ip,port) != sf::Socket::Done)
+//		{
+//			//empty garbage data
+//		}
+//		
+	    std::string type;
+	    if(packet >> type)
+	    {
+	        if(type == "GAME_STATE")
+	        {
+	            getGameState(packet);
+	            return true;
+	        }
+	    }
 		
 		return true;
 	}
@@ -181,14 +185,14 @@ class Server
 	
 	void start(sf::UdpSocket &socket)
 	{
-		if(socket.bind(serverPort) != sf::Socket::Done)
+		if(socket.bind(serverLocalPort) != sf::Socket::Done)
 		{
-			std::cerr << "Failed to Start Server!\n";
-			system("pause");
+            std::cerr << "Failed to Start Server on port " << serverLocalPort << "!\n";
+            system("pause");
 			exit(0);
 		}
 		else
-			std::cerr << "Server started!\n";
+			std::cerr << "Server started on port " << serverLocalPort << "!\n";
 		
 	}
 	
@@ -219,6 +223,7 @@ class Server
 	
 	void getInput(sf::Packet &packet)
 	{
+		
 		int size = 0;
 		packet >> size;
 		for(int a=0; a < size; a++)
@@ -243,6 +248,8 @@ class Server
 	
 	void sendGameState(sf::Packet &packet)
 	{
+		packet << "GAME_STATE";
+		
 		//Clients dont need to know player count. 
 		//Only elements and blupis and needed on client side.
 		
@@ -304,6 +311,7 @@ class Server
 			}
 			
 			
+			
 			if(type == "GAME_INPUT")
 			{
 				getInput(packet);
@@ -343,6 +351,8 @@ class Network
 	{
 
 	}
+
+
 	
 
 
@@ -353,6 +363,7 @@ class Network
 			server.start(socket);
 		else
 			client.start(socket);
+		
 	}
 	
 	

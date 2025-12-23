@@ -232,7 +232,6 @@ class Blupi
 		packet << startstop;
 		packet << alive;
 		packet << haven;
-		packet << busy;
 		packet << action;
 		
 		// Carrying sprite data
@@ -256,7 +255,6 @@ class Blupi
 	        packet >> startstop;
 	        packet >> alive;
 	        packet >> haven;
-	        packet >> busy;
 	        packet >> action;
 	        
 	        // Carrying sprite data
@@ -288,10 +286,10 @@ class Blupi
 
 
     
-	void makeRequest(const std::string& action, const sf::Vector2f& dest = {0,0}, int itemIdx = -1, float time = 0, float energy = 0)
+	void makeRequest(const std::string& raction, const sf::Vector2f& dest = {0,0}, int itemIdx = -1, float time = 0, float energy = 0)
 	{
 	    request.reset();
-	    request.action = action;
+	    request.action = raction;
 	    request.destination = dest;
 	    request.itemindex = itemIdx;
 	    request.actionTime = time;
@@ -312,26 +310,31 @@ class Blupi
 	    tempRequest.getData(packet);
 	    
 	    
+		if(!possible(request.destination))
+		{
+			//Send message to blupi. Tell him that this is not possible. He will respond with sayFailed()
+			//return;
+		}
+		else
+		{
+			destination = request.destination;
+		}	    
 	    
-	    if (tempRequest.action != "none") 
+	    
+	    
+		if (tempRequest.action != "none" && tempRequest.action != request.action) 
 		{
 	        
 	        request = tempRequest;
 	        
+
 	        
-			if(!possible(element[request.itemindex].now))
+	        if (action != request.action) 
 			{
-				//Send message to blupi. Tell him that this is not possible. He will respond with sayFailed()
-				//return;
-			}
-	        
-	        if (true)//action != request.action) 
-			{
-				std::cerr << "Started action "<<request.action<<"\n";
 	            Stop();
+
+				action = request.action;
 	        
-		        // Mark that we need to process this action
-		        action = request.action;
 		        itemindex = request.itemindex;
 		        initAction = request.initAction;
 		        actionTime = request.actionTime;
@@ -356,7 +359,7 @@ class Blupi
     
     void sendInput(Packet& packet) 
     {
-        request.sendData(packet);
+    	request.sendData(packet);
     }
 
 
@@ -821,8 +824,11 @@ class Blupi
 		
 		
 		
-		
-		
+		if(action == "fell tree")
+		{
+			//action is not the same up to this point. Somehow action != "fell tree" by the time it reaches this function.
+			std::cerr << "Action reached doAction() with a destinationX = " << destination.x << "\n";
+		}
 		
 		
 		if(action.find("exit") == std::string::npos &&action!="drop" && action!="eat"&&itemindex!=-1)

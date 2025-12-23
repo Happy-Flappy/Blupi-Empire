@@ -349,7 +349,6 @@ bool findNumberInString(const std::string& str,int &number) {
             currentNumber += c;
         } else {
             if (!currentNumber.empty()) {
-                std::cout << "Found number: " << currentNumber << std::endl;
                 currentNumber.clear(); // Reset for the next number
             }
         }
